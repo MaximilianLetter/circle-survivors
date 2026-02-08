@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7705801253608974458}
   - component: {fileID: 6217545042208888710}
   - component: {fileID: 4292867959629858770}
+  - component: {fileID: -2122906457507627429}
   m_Layer: 0
   m_Name: Arrow
   m_TagString: Untagged
@@ -70,6 +71,19 @@ MonoBehaviour:
   _speed: 20
   _timeToLive: 4
   _sound: 8
+--- !u!114 &-2122906457507627429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1614341048115884782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6d0b2fdb9eaadc45953c9b5680f3241, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RotatingProjectile
+  _rotSpeed: 200
 --- !u!1001 &971560835387419829
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -35,6 +35,13 @@ public enum SoundType
     ENEMY_WALL_IMPACT,
     // General
     GAME_OVER,
+    GAME_WIN,
+    // Added later because of stupid enum structure
+    ENEMY_SPECIAL_ABILITY,
+    WAVE_INCOMING,
+    AXE_THROW,
+    ENEMY_WOLF_GET_HIT,
+    ENEMY_WOLF_DEATH
 }
 
 [System.Serializable]

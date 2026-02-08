@@ -248,7 +248,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DepleteSpecial
   _totalAmmo: 5
-  _reloadTime: 2
+  _reloadTime: 3
 --- !u!1001 &5643010690004806313
 PrefabInstance:
   m_ObjectHideFlags: 0

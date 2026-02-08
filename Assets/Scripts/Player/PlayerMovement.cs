@@ -48,10 +48,9 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3 moveDirOnPlane = new Vector3(_moveDirection.x, 0, _moveDirection.y).ToIso();
 
-        Vector3 targetPos = _rb.position + moveDirOnPlane * _moveSpeed * Time.fixedDeltaTime;
-
-        //_rb.linearVelocity = moveDirOnPlane * _moveSpeed;
-        _rb.MovePosition(targetPos);
+        // Smoothes movement notably
+        Vector3 targetVelocity = moveDirOnPlane * _moveSpeed;
+        _rb.linearVelocity = Vector3.Lerp(_rb.linearVelocity, targetVelocity, 0.5f);
     }
 
     void Turn()

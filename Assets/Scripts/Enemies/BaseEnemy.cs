@@ -3,21 +3,25 @@ using UnityEngine;
 
 public class BaseEnemy : MonoBehaviour
 {
-    [SerializeField] private float _baseHP = 18f;
-    [SerializeField] private float _dmg = 6f;
-    [SerializeField] private SoundType _getHitSound;
-    [SerializeField] private SoundType _deathSound;
+    [SerializeField] protected EnemyStats _stats;
+
+    public static event Action<BaseEnemy> OnEnemyDied;
+
+    protected float CurrentHP => _currentHP;
+    protected float MaxHP => _stats.BaseHp;
 
     private float _currentHP;
     private Rigidbody _rb;
     private KnockBackEnvironmentInteraction _knockBackEnvironment;
+    protected RunTowardsPlayer _movement;
 
-    private void Start()
+    protected virtual void Awake()
     {
-        _currentHP = _baseHP;
+        _currentHP = _stats.BaseHp;
 
         _rb = GetComponent<Rigidbody>();
         _knockBackEnvironment = GetComponent<KnockBackEnvironmentInteraction>();
+        _movement = GetComponent<RunTowardsPlayer>();
     }
 
     public void TakeDmg(float incomingDmg, float knockBack)
@@ -30,22 +34,36 @@ public class BaseEnemy : MonoBehaviour
             DeathSequence();
         } else
         {
-            _knockBackEnvironment.CheckInteractionEnable(knockBack);
-            if (_getHitSound != SoundType.NONE) SoundManager.PlaySound(_getHitSound);
+            OnDamageTaken(incomingDmg, knockBack);
         }
+    }
+
+    protected virtual void OnDamageTaken(float amount, float knockBack)
+    {
+        _knockBackEnvironment.CheckInteractionEnable(knockBack);
+        if (_stats.GetHitSound != SoundType.NONE) SoundManager.PlaySound(_stats.GetHitSound);
+
+        _movement.ResetMoveSpeed();
     }
 
     public float GetDmgStat()
     {
-        return _dmg;
+        return _stats.Damage;
     }
 
     public void DeathSequence()
     {
-        if (_deathSound != SoundType.NONE) SoundManager.PlaySound(_deathSound);
+        if (_stats.DeathSound != SoundType.NONE) SoundManager.PlaySound(_stats.DeathSound);
 
         Collider collider = transform.GetComponent<Collider>();
         collider.enabled = false;
+
+        Die();
+    }
+
+    protected virtual void Die()
+    {
+        OnEnemyDied?.Invoke(this);
 
         // Remove enemy layer so that it does not become a target while dying
         gameObject.layer = 0;

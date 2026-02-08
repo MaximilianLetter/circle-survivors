@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7705801253608974458}
   - component: {fileID: 6217545042208888710}
   - component: {fileID: 6274255347704801655}
+  - component: {fileID: 7825679036443695445}
   m_Layer: 0
   m_Name: Bolt
   m_TagString: Untagged
@@ -71,6 +72,19 @@ MonoBehaviour:
   _timeToLive: 3
   _sound: 11
   _maxPierces: 5
+--- !u!114 &7825679036443695445
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1614341048115884782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6d0b2fdb9eaadc45953c9b5680f3241, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RotatingProjectile
+  _rotSpeed: 200
 --- !u!1001 &8381118798208477673
 PrefabInstance:
   m_ObjectHideFlags: 0

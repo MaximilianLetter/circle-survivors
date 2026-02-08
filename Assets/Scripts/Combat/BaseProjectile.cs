@@ -9,7 +9,7 @@ public abstract class BaseProjectile : MonoBehaviour
     [SerializeField] private float _timeToLive = 5;
     [SerializeField] private SoundType _sound;
 
-    private int _dmg;
+    private float _dmg;
     private float _knockBack;
 
     private HashSet<BaseEnemy> _hitEnemies = new();
@@ -24,7 +24,7 @@ public abstract class BaseProjectile : MonoBehaviour
         transform.position += _speed * Time.deltaTime * transform.forward;
     }
 
-    public void SetValues(int dmg, float knockBack)
+    public void SetValues(float dmg, float knockBack)
     {
         _dmg = dmg;
         _knockBack = knockBack;

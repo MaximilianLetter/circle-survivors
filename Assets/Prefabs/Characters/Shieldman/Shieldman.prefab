@@ -295,7 +295,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -4285857816463271873, guid: 6d3aa132a07fc744a86d993ec86c68bd, type: 3}
       propertyPath: _totalHp
-      value: 24
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 5584326037215752057, guid: 6d3aa132a07fc744a86d993ec86c68bd, type: 3}
       propertyPath: m_Name
@@ -415,7 +415,7 @@ MonoBehaviour:
   _obstacleMask:
     serializedVersion: 2
     m_Bits: 64
-  _cooldown: 1.5
+  _cooldown: 1
   _attackSound: 3
   _specialAttackSound: 4
   _turnSpeed: 180

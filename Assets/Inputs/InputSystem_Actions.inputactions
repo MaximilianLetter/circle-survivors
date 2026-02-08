@@ -52,7 +52,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "InitialStart",
+                    "name": "AnyKey",
                     "type": "Button",
                     "id": "0f9e9ad0-37d7-40a5-814d-a611ca8f67fc",
                     "expectedControlType": "",
@@ -278,7 +278,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
-                    "action": "InitialStart",
+                    "action": "AnyKey",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

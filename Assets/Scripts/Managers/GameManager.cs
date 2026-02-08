@@ -12,16 +12,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float _cameraSizeStep = 0.5f;
     private SmoothCameraSizeAdjustment _cameraAdjustment;
 
-    [SerializeField] private float _pauseGrayFadeDuration = 0.25f;
     [SerializeField] private float _gameOverGrayFadeDuration = 2f;
+
     private GrayScaleEffect _grayScaleEffect;
-
-    [Header("Inputs")]
-    [SerializeField] private InputActionReference _exit;
-    [SerializeField] private InputActionReference _anyKeyPress;
-    [SerializeField] private bool _showInstructionsOnStart;
-
-    private bool _isPlaying = true;
 
     public static GameManager Instance
     {
@@ -36,86 +29,37 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         _instance = this;
-        _grayScaleEffect = GetComponent<GrayScaleEffect>();
+    }
 
-        // Inputs
-        _exit.action.started += ExitPress;
+    private void OnEnable()
+    {
+        BossEnemy.OnBossDefeated += HandleBossDefeated;
+    }
+
+    private void OnDisable()
+    {
+        BossEnemy.OnBossDefeated -= HandleBossDefeated;
     }
 
     private void Start()
     {
         _cameraAdjustment = Camera.main.GetComponent<SmoothCameraSizeAdjustment>();
 
-        if (_showInstructionsOnStart)
-        {
-            _grayScaleEffect.SetToGray();
-            UiManager.Instance.ShowInstructionsOnGameStart();
-
-            // Start paused
-            PauseGame();
-        } else
-        {
-            UiManager.Instance.HideAll();
-        }
+        _grayScaleEffect = GetComponent<GrayScaleEffect>();
     }
 
-    private void OnDestroy()
+    private void HandleBossDefeated()
     {
-        // NOTE: should be unnecessary as game manager always persists
-        _anyKeyPress.action.started -= AnyKeyPress;
-        _exit.action.started -= ExitPress;
+        Debug.Log("Boss defeated!");
+        WinGame();
     }
 
-    private void AnyKeyPress(InputAction.CallbackContext obj)
+    private void WinGame()
     {
-        ResumeGameWithFade();
-    }
+        SoundManager.PlaySound(SoundType.GAME_WIN);
+        UiManager.Instance.ShowTextOnGameWin();
 
-    private void ExitPress(InputAction.CallbackContext obj)
-    {
-        if (_isPlaying) StartCoroutine(PauseGameAfterFade());
-        else
-        {
-#if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-#else
-            Application.Quit();
-#endif
-        }
-    }
-
-    private IEnumerator PauseGameAfterFade()
-    {
-        _grayScaleEffect.FadeToGray(_pauseGrayFadeDuration);
-
-        yield return new WaitForSecondsRealtime(_pauseGrayFadeDuration);
-
-        PauseGame();
-        UiManager.Instance.ShowTextOnGamePause();
-    }
-
-    private void ResumeGameWithFade()
-    {
-        ResumeGame();
-        UiManager.Instance.HideAll();
-
-        _grayScaleEffect.FadeToColor(_pauseGrayFadeDuration);
-    }
-
-    private void PauseGame()
-    {
-        Time.timeScale = 0;
-        _isPlaying = false;
-
-        _anyKeyPress.action.started += AnyKeyPress;
-    }
-
-    private void ResumeGame()
-    {
-        Time.timeScale = 1;
-        _isPlaying = true;
-
-        _anyKeyPress.action.started -= AnyKeyPress;
+        Debug.Log("Game won");
     }
 
     public void EndGame()

@@ -14,7 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UITextData
   demoTitle: CIRCLE DEMO
   pauseText: PAUSED
+  newWaveText: New Wave Incoming!
+  newBossWaveText: Boss incoming!
   gameOverText: YOU DIED
+  gameWonText: DEMO FINISHED
   gameStartGameplayInstructions: 'Move with WASD.
 
     Turn by pointing the mouse.

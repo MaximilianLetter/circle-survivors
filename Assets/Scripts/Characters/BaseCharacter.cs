@@ -79,5 +79,13 @@ public class BaseCharacter : MonoBehaviour
             TakeDmg(enemy.GetDmgStat());
             enemy.TakeDmg(0, 600);
         }
+
+        if (other.CompareTag("EnemyProjectile"))
+        {
+            var projectile = other.GetComponent<EnemyProjectile>();
+            TakeDmg(projectile.GetDmgStat());
+
+            Destroy(projectile.gameObject);
+        }
     }
 }

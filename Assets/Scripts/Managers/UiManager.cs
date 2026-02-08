@@ -11,6 +11,11 @@ public class UiManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _bottomInstructions;
     [SerializeField] private TextMeshProUGUI _bigCenterInstructions;
 
+    [SerializeField] private float _statusHideTimer = 3f;
+
+    // NOTE: this manager is a bit junk, needs refactor at some point
+    // texts can break if going in pause mode overlaps
+
     public static UiManager Instance
     {
         get
@@ -29,8 +34,6 @@ public class UiManager : MonoBehaviour
     private void Start()
     {
         HideAll();
-
-        ShowInstructionsOnGameStart();
     }
 
     public void ShowInstructionsOnGameStart()
@@ -45,9 +48,30 @@ public class UiManager : MonoBehaviour
         _bottomInstructions.enabled = true;
     }
 
+    public void ShowNewWaveText(bool boss = false)
+    {
+        string text = boss ? _uiTextData.newBossWaveText : _uiTextData.newWaveText;
+
+        _statusText.text = text;
+        _statusText.enabled = true;
+
+        Invoke(nameof(HideStatusText), _statusHideTimer);
+    }
+
+    public void HideStatusText()
+    {
+        _statusText.enabled = false;
+    }
+
     public void ShowTextOnGameOver()
     {
         _statusText.text = _uiTextData.gameOverText;
+        _statusText.enabled = true;
+    }
+
+    public void ShowTextOnGameWin()
+    {
+        _statusText.text = _uiTextData.gameWonText;
         _statusText.enabled = true;
     }
 

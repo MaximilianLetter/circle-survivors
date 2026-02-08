@@ -1,6 +1,5 @@
 using UnityEngine;
 
-[RequireComponent (typeof(BaseCharacter))]
 public class HealthPointsIndicator : MonoBehaviour
 {
     [Range(0f, 1f)]

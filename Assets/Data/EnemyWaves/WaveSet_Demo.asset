@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1f002404ec5cd14da9fa2c3470b46fe, type: 3}
+  m_Name: WaveSet_Demo
+  m_EditorClassIdentifier: Assembly-CSharp::WaveSet
+  waves:
+  - {fileID: 11400000, guid: d6b931c68d0cd394fafa4917e9c2b2f6, type: 2}
+  - {fileID: 11400000, guid: 2ed8260d807c392429dc128037fab8c9, type: 2}
+  - {fileID: 11400000, guid: 79020a9d5f84e7a49879edeadb0ef1cd, type: 2}
+  - {fileID: 11400000, guid: e0abdc67409f9a340a587bf99b517536, type: 2}
+  - {fileID: 11400000, guid: 34450417c9633cd488d14a32dd1a79f4, type: 2}
+  - {fileID: 11400000, guid: 1397423484fb1b14198b44990313e6e9, type: 2}

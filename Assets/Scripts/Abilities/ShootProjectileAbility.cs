@@ -13,6 +13,11 @@ public class ShootProjectileAbility : TargetedAttackAbility
         base.ExecuteAttack(target);
 
         Vector3 dir = (target.position - _projectileSpawn.position).normalized;
+
+        // Projectiles are supposed to go straight, in order to hit potentially multiple targets
+        dir.y = 0;
+        dir.Normalize();
+
         var projectile = Instantiate(_projectilePrefab, _projectileSpawn.position, Quaternion.LookRotation(dir));
         projectile.GetComponent<BaseProjectile>().SetValues(_dmg, _knockBack);
     }

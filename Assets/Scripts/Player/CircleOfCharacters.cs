@@ -21,7 +21,7 @@ public class CircleOfCharacters : MonoBehaviour
     private int _amountOfCharacters = 0;
     private Dictionary<CharacterType, GameObject> _characterPrefabs;
     private List<GameObject> _characters = new List<GameObject>();
-    private SphereCollider _playerCollider;
+    private CapsuleCollider _playerCollider;
 
     private void Awake()
     {
@@ -36,7 +36,7 @@ public class CircleOfCharacters : MonoBehaviour
 
     private void Start()
     {
-        _playerCollider = _playerMovement.GetComponent<SphereCollider>();
+        _playerCollider = _playerMovement.GetComponent<CapsuleCollider>();
         AddCharacter(_startAsType);
     }
 
@@ -74,7 +74,8 @@ public class CircleOfCharacters : MonoBehaviour
     private void RearrangeCircle()
     {
         float rotAngle = 360f / _amountOfCharacters;
-        float radius = _radius + (_amountOfCharacters - 1) * _radiusIncrease;
+        float radiusIncrease = (_amountOfCharacters - 1) * _radiusIncrease;
+        float radius = _radius + radiusIncrease;
         if (_amountOfCharacters == 1) radius = 0; // No offset if only a single character
 
         for (int i = 0; i < _amountOfCharacters; i++)
@@ -91,7 +92,7 @@ public class CircleOfCharacters : MonoBehaviour
         }
 
         // Adjust collider for terrain collision & pickups
-        _playerCollider.radius = (_amountOfCharacters == 1) ? 0.5f : radius;
+        _playerCollider.radius = (_amountOfCharacters == 1) ? 0.5f : 1 + radiusIncrease;
         _playerMovement.AdjustTurnSpeed(_amountOfCharacters);
     }
 

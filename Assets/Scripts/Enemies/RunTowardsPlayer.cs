@@ -7,6 +7,10 @@ public class RunTowardsPlayer : MonoBehaviour
     private Transform _playerTransform;
     private bool _canMove = true;
 
+    // NOTE: this could in future replaced with different types of enemy movements
+    // placeholder flag for now
+    [SerializeField] private bool _canTurn = true;
+
     private float _moveSpeed;
 
     private void Start()
@@ -19,10 +23,13 @@ public class RunTowardsPlayer : MonoBehaviour
 
     private void Update()
     {
-        // Always keep facing the player
-        var dir = _playerTransform.position - transform.position;
-        dir.Normalize();
-        transform.rotation = Quaternion.LookRotation(dir);
+        if (_canTurn)
+        {
+            // Always keep facing the player
+            var dir = _playerTransform.position - transform.position;
+            dir.Normalize();
+            transform.rotation = Quaternion.LookRotation(dir);
+        }
 
         if (!_canMove) return;
 
@@ -43,5 +50,10 @@ public class RunTowardsPlayer : MonoBehaviour
     private void IncreaseSpeed()
     {
         _moveSpeed += _stats.MoveSpeedIncrease;
+    }
+
+    public void RevertMoveDirection()
+    {
+        _moveSpeed *= -1;
     }
 }

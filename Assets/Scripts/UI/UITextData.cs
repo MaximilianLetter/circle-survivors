@@ -11,6 +11,7 @@ public class UITextData : ScriptableObject
     public string newBossWaveText;
     public string gameOverText;
     public string gameWonText;
+    public string levelDoneText;
 
     // Instructions
     [TextArea(3, 10)]
@@ -19,4 +20,6 @@ public class UITextData : ScriptableObject
     public string gameStartResumeInstructions;
     [TextArea(3, 5)]
     public string pauseInstructions;
+    [TextArea(3, 5)]
+    public string restartInstructions;
 }

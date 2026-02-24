@@ -18,6 +18,7 @@ MonoBehaviour:
   newBossWaveText: Boss incoming!
   gameOverText: YOU DIED
   gameWonText: DEMO FINISHED
+  levelDoneText: Stage cleared!
   gameStartGameplayInstructions: 'Move with WASD.
 
     Turn by pointing the mouse.
@@ -35,3 +36,4 @@ MonoBehaviour:
   pauseInstructions: 'Press any Key to Resume.
 
     Press ESC to Quit.'
+  restartInstructions: Press any Key to Restart.

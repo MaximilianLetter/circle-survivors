@@ -47,6 +47,9 @@ public class BossEnemy : BaseEnemy
         _movement.EnableMovement(false);
 
         if (_stats.SpecialAbilitySound != SoundType.NONE) SoundManager.PlaySound(_stats.SpecialAbilitySound);
+        CameraShake.Instance.TriggerShake(2.5f, 0.01f);
+
+        _spawnAdds.TriggerSpecialAbility();
 
         yield return StartCoroutine(Retreat());
 

@@ -10,12 +10,19 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private InputActionReference _turnInput;
     [SerializeField] private Rigidbody _rb;
 
-    [SerializeField] private float _moveSpeed = 5f;
-    [SerializeField] private float _turnSpeed = 360f;    // Rotation per sec
-    [SerializeField] private float _minTurnSpeed = 180f;
+    [SerializeField] private PartyStats _stats;
+    private float _turnSpeed = 360f; // Set from outside
 
     private Vector3 _moveDirection;
     private Quaternion _turnDirection = Quaternion.identity;
+
+    // NOTE: used in tutorial, could also become relevant somewhere else later
+    // Events
+    public static event Action OnPlayerMoved;
+    private bool _hasFiredMoveEvent;
+
+    public static event Action OnPlayerTurned;
+    private bool _hasFiredTurnEvent;
 
     private void Update()
     {
@@ -49,8 +56,17 @@ public class PlayerMovement : MonoBehaviour
         Vector3 moveDirOnPlane = new Vector3(_moveDirection.x, 0, _moveDirection.y).ToIso();
 
         // Smoothes movement notably
-        Vector3 targetVelocity = moveDirOnPlane * _moveSpeed;
+        Vector3 targetVelocity = moveDirOnPlane * _stats.MovementSpeed;
         _rb.linearVelocity = Vector3.Lerp(_rb.linearVelocity, targetVelocity, 0.5f);
+
+        //if (!_hasFiredMoveEvent)
+        //{
+        //    _hasFiredMoveEvent = true;
+        //    OnPlayerMoved?.Invoke();
+        //}
+
+        if (moveDirOnPlane.sqrMagnitude > 0.002f)
+            OnPlayerMoved?.Invoke();
     }
 
     void Turn()
@@ -62,11 +78,27 @@ public class PlayerMovement : MonoBehaviour
         );
 
         _rb.MoveRotation(newRotation);
+
+        //if (!_hasFiredTurnEvent)
+        //{
+        //    _hasFiredTurnEvent = true;
+        //    OnPlayerTurned?.Invoke();
+        //}
+        if (Quaternion.Angle(_rb.rotation, _turnDirection) > 1f)
+            OnPlayerTurned?.Invoke();
     }
 
     public void AdjustTurnSpeed(int amountOfCharacters)
     {
-        float newTurnSpeed = Mathf.Clamp(360f - amountOfCharacters * 30, _minTurnSpeed, 360f);
+        float newTurnSpeed = Mathf.Clamp(_stats.MaxTurnSpeed - amountOfCharacters * _stats.TurnSpeedAdjustPerCharacter, _stats.MinTurnSpeed, _stats.MaxTurnSpeed);
         _turnSpeed = newTurnSpeed;
+    }
+
+    public void ToggleMovement(bool state)
+    {
+        _rb.linearVelocity = Vector3.zero;
+        _rb.angularVelocity = Vector3.zero;
+
+        this.enabled = state;
     }
 }

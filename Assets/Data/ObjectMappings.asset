@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff0b69089de320a419b3059c183f9a9c, type: 3}
+  m_Name: ObjectMappings
+  m_EditorClassIdentifier: Assembly-CSharp::ObjectMappings
+  characters:
+  - type: 3
+    collectablePrefab: {fileID: 2581656286734716916, guid: e3e2198f980367349b7c59c650e7d2c7, type: 3}
+    playablePrefab: {fileID: 6617975372857046821, guid: 8601acb7031843c4c972106157653444, type: 3}
+  - type: 1
+    collectablePrefab: {fileID: 2581656286734716916, guid: 37fb372fe2586f54fa68e797276b11f2, type: 3}
+    playablePrefab: {fileID: 8949533212512426688, guid: 07cb94eb1fc8576478289af63f4785f2, type: 3}
+  - type: 4
+    collectablePrefab: {fileID: 2581656286734716916, guid: 2343cc23ca0376646b6138211e76ae19, type: 3}
+    playablePrefab: {fileID: 1519371829711652672, guid: e59b904829b441644812bf1d66349aeb, type: 3}
+  - type: 2
+    collectablePrefab: {fileID: 2581656286734716916, guid: 802ee9e222c20174e8d66786ad2e8ebc, type: 3}
+    playablePrefab: {fileID: 8949533212512426688, guid: abe934b12be6ce0438ebdc6804569e2d, type: 3}

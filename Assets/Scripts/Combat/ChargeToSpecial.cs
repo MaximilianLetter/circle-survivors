@@ -11,15 +11,31 @@ public class ChargeToSpecial : SpecialResource
     public override bool CanUseSpecialAttack => _charges >= _requiredCharges;
     public override bool LocksAttacking => false;
 
+    private int Charges
+    {
+        get { return _charges; }
+        set {
+            _charges = Mathf.Clamp(value, 0, _requiredCharges);
+            float fillPercentage = (float)_charges / (float)_requiredCharges;
+
+            _indicator.SetFillPercentage(fillPercentage, true);
+        }
+    }
+
+    private void Start()
+    {
+        Charges = 0;
+    }
+
     public override void OnNormalAttack()
     {
-        _charges++;
+        Charges++;
         if (_charges == _requiredCharges) NotifyStateChanged();
     }
 
     public override void OnSpecialAttack()
     {
-        _charges = 0;
+        Charges = 0;
         NotifyStateChanged();
     }
 }

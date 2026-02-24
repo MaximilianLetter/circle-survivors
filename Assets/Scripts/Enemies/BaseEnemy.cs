@@ -1,8 +1,13 @@
 using System;
 using UnityEngine;
 
-public class BaseEnemy : MonoBehaviour
+public class BaseEnemy : MonoBehaviour, IStatContext
 {
+    public Faction Faction => Faction.Enemy;
+    public AttackType AttackType => _attackType;
+    public CharacterType CharacterType => CharacterType.None;
+
+    [SerializeField] protected AttackType _attackType;
     [SerializeField] protected EnemyStats _stats;
 
     public static event Action<BaseEnemy> OnEnemyDied;
@@ -57,6 +62,16 @@ public class BaseEnemy : MonoBehaviour
 
         Collider collider = transform.GetComponent<Collider>();
         collider.enabled = false;
+
+        // Dirty fix for now
+        // instead have base enemy know about abilities of the enemy and deactivate everything attached to it
+        if (_attackType == AttackType.Ranged)
+        {
+            if (TryGetComponent<ShootAtPlayer>(out ShootAtPlayer rangedAttack))
+            {
+                rangedAttack.DeactivateAbility();
+            }
+        }
 
         Die();
     }

@@ -1,16 +1,16 @@
 using System.Collections;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class ShootAtPlayer : MonoBehaviour
 {
-    [SerializeField] private RangedEnemyStats _stats;
+    [SerializeField] private EnemyRangedStats _stats;
     [SerializeField] private Transform _projectileSpawn;
     [SerializeField] private Animator _animator;
 
     private RunTowardsPlayer _movement;
     private Transform _playerTransform;
 
+    private bool _canAttack = true;
     private bool _isShooting = false;
     private bool _isMoving = false;
 
@@ -22,6 +22,8 @@ public class ShootAtPlayer : MonoBehaviour
 
     private void Update()
     {
+        if (!_canAttack) return;
+
         if (_isShooting) return;
 
         float distToPlayer = Vector3.Distance(transform.position, _playerTransform.position);
@@ -55,5 +57,12 @@ public class ShootAtPlayer : MonoBehaviour
         yield return new WaitForSeconds(_stats.RangedAttackCooldown);
 
         _isShooting = false;
+    }
+
+    public void DeactivateAbility()
+    {
+        _canAttack = false;
+
+        StopAllCoroutines();
     }
 }

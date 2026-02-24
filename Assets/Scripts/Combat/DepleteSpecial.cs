@@ -3,8 +3,7 @@ using UnityEngine;
 
 public class DepleteSpecial : SpecialResource
 {
-    [SerializeField] private int _totalAmmo = 5;
-    [SerializeField] private float _reloadTime = 2f;
+    [SerializeField] private RangedAttackStats _stats;
 
     private int _ammo;
     private bool _reloading = false;
@@ -14,15 +13,38 @@ public class DepleteSpecial : SpecialResource
     public override bool CanUseNormalAttack => !_reloading && _ammo > 0;
     public override bool LocksAttacking => _reloading;
 
+    // TODO: Revisit at some point, see comment in Reload() for more information.
+    private float _indicatorAnimationTime;
+
+    private int Ammo
+    {
+        get { return _ammo; }
+        set
+        {
+            _ammo = Mathf.Clamp(value, 0, _stats.TotalAmmo);
+            float fillPercentage = (float)_ammo / (float)_stats.TotalAmmo;
+
+            if (fillPercentage == 1f)
+            {
+                _indicator.SetFillPercentage(fillPercentage, false, _indicatorAnimationTime);
+            }
+            else
+            {
+                _indicator.SetFillPercentage(fillPercentage);
+            }
+        }
+    }
+
     private void Start()
     {
-        _ammo = _totalAmmo;
+        Ammo = _stats.TotalAmmo;
     }
 
     public override void OnNormalAttack()
     {
-        _ammo--;
-        if (_ammo <= 0 )
+        Ammo--;
+
+        if (Ammo <= 0)
         {
             StartCoroutine(Reload());
         }
@@ -30,14 +52,25 @@ public class DepleteSpecial : SpecialResource
 
     IEnumerator Reload()
     {
-        // NOTE: when special has an indicator - 
-        // this could visually add one munition after another
         _reloading = true;
         NotifyStateChanged();
 
-        yield return new WaitForSeconds(_reloadTime);
+        // TODO: Revisit at some point.
 
-        _ammo = _totalAmmo;
+        // NOTE: this is kinda hacky.
+        // Indicator needs time after reaching 0 ammunition to visualize.
+        // Show reload process after that time
+        float delayTime = 0.3f; // Animation time is 0.25f for reference
+        float totalReloadTime = _character.ResolveStat(StatType.ReloadTime, _stats.ReloadTime);
+
+        _indicatorAnimationTime = totalReloadTime - delayTime;
+
+        yield return new WaitForSeconds(delayTime);
+
+        Ammo = _stats.TotalAmmo;
+
+        yield return new WaitForSeconds(_indicatorAnimationTime);
+
         _reloading = false;
         NotifyStateChanged();
     }

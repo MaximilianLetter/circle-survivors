@@ -41,7 +41,9 @@ public enum SoundType
     WAVE_INCOMING,
     AXE_THROW,
     ENEMY_WOLF_GET_HIT,
-    ENEMY_WOLF_DEATH
+    ENEMY_WOLF_DEATH,
+    HAND_PLACING_CHAR,
+    TUTORIAL_STEP
 }
 
 [System.Serializable]

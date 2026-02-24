@@ -83,7 +83,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6d0b2fdb9eaadc45953c9b5680f3241, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::RotatingProjectile
-  _rotSpeed: 200
+  _rotSpeed: 500
 --- !u!1001 &971560835387419829
 PrefabInstance:
   m_ObjectHideFlags: 0

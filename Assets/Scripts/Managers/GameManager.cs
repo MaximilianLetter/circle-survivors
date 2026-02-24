@@ -1,30 +1,17 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
+/// <summary>
+/// Manages the overall logic for running the game flow.
+/// </summary>
 public class GameManager : MonoBehaviour
 {
     private static GameManager _instance;
+    public static GameManager Instance => _instance;
 
-    [SerializeField] private GameObject _player;
+    private bool _levelCompleted;
 
-    [SerializeField] private float _cameraSize = 5f;
-    [SerializeField] private float _cameraSizeStep = 0.5f;
-    private SmoothCameraSizeAdjustment _cameraAdjustment;
-
-    [SerializeField] private float _gameOverGrayFadeDuration = 2f;
-
-    private GrayScaleEffect _grayScaleEffect;
-
-    public static GameManager Instance
-    {
-        get
-        {
-            if (_instance == null) Debug.LogError("GameManger is NULL");
-
-            return _instance;
-        }
-    }
+    [SerializeField] private PartyOfCharacters _partyOfCharacters;
 
     private void Awake()
     {
@@ -33,52 +20,91 @@ public class GameManager : MonoBehaviour
 
     private void OnEnable()
     {
-        BossEnemy.OnBossDefeated += HandleBossDefeated;
+        EnemyManager.OnWaveSetCompleted += HandleLevelCompleted;
     }
 
     private void OnDisable()
     {
-        BossEnemy.OnBossDefeated -= HandleBossDefeated;
+        EnemyManager.OnWaveSetCompleted -= HandleLevelCompleted;
     }
 
     private void Start()
     {
-        _cameraAdjustment = Camera.main.GetComponent<SmoothCameraSizeAdjustment>();
-
-        _grayScaleEffect = GetComponent<GrayScaleEffect>();
+        StartCoroutine(RunGameLoop());
     }
 
-    private void HandleBossDefeated()
+    private IEnumerator RunGameLoop()
     {
-        Debug.Log("Boss defeated!");
+        // Tutorial
+        bool tutorialRan = false;
+        if (LevelManager.Instance.TryGetTutorialLevel(out var tutorial))
+        {
+            tutorialRan = true;
+            yield return RunTutorial(tutorial);
+        }
+
+        // First real level
+        if (LevelManager.Instance.TryGetNextLevel(out var firstLevel))
+        {
+            yield return RunLevel(firstLevel, resetParty: tutorialRan);
+        }
+
+        // All levels afterwards
+        while (true)
+        {
+            if (!LevelManager.Instance.TryGetNextLevel(out var config))
+                break;
+
+            yield return RunLevel(config);
+        }
+
+        // Victory delay
+        yield return new WaitForSeconds(2f);
         WinGame();
+    }
+
+    private IEnumerator RunLevel(LevelConfig config, bool resetParty = false)
+    {
+        _levelCompleted = false;
+        EnemyManager.Instance.KillAllRemainingEnemies();
+
+        yield return StartCoroutine(
+            TransitionManager.Instance.PlayWorldTransition(
+                config,
+                onHiddenPhase: resetParty ? () => { _partyOfCharacters.ResetParty(); } : null
+            )
+        );
+
+        EnemyManager.Instance.StartWaveSet(config.waveSet);
+
+        yield return new WaitUntil(() => _levelCompleted);
+
+        // Level done delay
+        yield return new WaitForSeconds(2f);
+        UiManager.Instance.ShowTextOnLevelDone();
+    }
+
+    private IEnumerator RunTutorial(TutorialConfig config)
+    {
+        yield return StartCoroutine(
+            TransitionManager.Instance.PlayWorldTransition(config)
+        );
+
+        yield return TutorialManager.Instance.RunTutorial(config);
+    }
+
+    private void HandleLevelCompleted()
+    {
+        _levelCompleted = true;
     }
 
     private void WinGame()
     {
-        SoundManager.PlaySound(SoundType.GAME_WIN);
-        UiManager.Instance.ShowTextOnGameWin();
-
-        Debug.Log("Game won");
+        GameStateManager.Instance.SetGameState(GameState.Won);
     }
-
-    public void EndGame()
+    
+    public void LoseGame()
     {
-        SoundManager.PlaySound(SoundType.GAME_OVER);
-        UiManager.Instance.ShowTextOnGameOver();
-
-        _player.GetComponent<Collider>().enabled = false;
-
-        _grayScaleEffect.FadeToGray(_gameOverGrayFadeDuration);
-
-        // TODO stop enemies from clumping on player object
-        Debug.Log("Game Over");
-    }
-
-    public void AdjustCameraSize(bool increase)
-    {
-        _cameraSize += _cameraSizeStep * (increase ? 1 : -1);
-
-        _cameraAdjustment.TransitionSizeTo(_cameraSize);
+        GameStateManager.Instance.SetGameState(GameState.Lost);
     }
 }

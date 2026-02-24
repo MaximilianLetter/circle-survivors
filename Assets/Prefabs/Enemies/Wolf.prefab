@@ -110,6 +110,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4919044344880395738, guid: aa3782f5b52cedf4db66d98da8295635, type: 3}
+      propertyPath: _attackType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6000557281122451414, guid: aa3782f5b52cedf4db66d98da8295635, type: 3}
       propertyPath: m_Name
       value: Wolf

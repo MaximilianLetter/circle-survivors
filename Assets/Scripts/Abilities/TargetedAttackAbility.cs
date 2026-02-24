@@ -4,17 +4,15 @@ using UnityEngine;
 [RequireComponent (typeof(SpecialResource))]
 public class TargetedAttackAbility : CharacterAbility
 {
+    [SerializeField] protected CharacterStats _stats;
     [SerializeField] private GameObject _baseModel;
     [SerializeField] private GameObject _specialModel;
     
     [Header("Targeting")]
-    [SerializeField] protected float _range = 12f;
-    [SerializeField] protected float _angle = 90f;
     [SerializeField] protected LayerMask _targetLayer;
     [SerializeField] protected LayerMask _obstacleMask;
 
     [Header("Attacking")]
-    [SerializeField] private float _cooldown = 1f;
     [SerializeField] private SoundType _attackSound;
     [SerializeField] private SoundType _specialAttackSound;
 
@@ -39,6 +37,10 @@ public class TargetedAttackAbility : CharacterAbility
     private bool _returningToBase;
 
     private bool _visualSpecialActive;
+
+    // Events
+    public static event Action OnCharacterAttacked;
+    private bool _hasFiredAttackEvent;
 
     protected override void Awake()
     {
@@ -113,7 +115,7 @@ public class TargetedAttackAbility : CharacterAbility
     {
         Collider[] hits = Physics.OverlapSphere(
             transform.position,
-            _range,
+            _stats.AttackRange,
             _targetLayer
         );
 
@@ -134,7 +136,7 @@ public class TargetedAttackAbility : CharacterAbility
 
         float angle = Vector3.Angle(transform.forward, dirToTarget);
 
-        return angle < _angle * 0.5f;
+        return angle < _stats.AttackAngle * 0.5f;
     }
 
     private bool HasLineOfSight(Transform target)
@@ -144,7 +146,7 @@ public class TargetedAttackAbility : CharacterAbility
 
         Vector3 dir = targetPos - origin;
 
-        Physics.Raycast(origin, dir.normalized, out RaycastHit hit, _range, _obstacleMask | _targetLayer);
+        Physics.Raycast(origin, dir.normalized, out RaycastHit hit, _stats.AttackRange, _obstacleMask | _targetLayer);
 
         return hit.transform == target;
     }
@@ -166,6 +168,8 @@ public class TargetedAttackAbility : CharacterAbility
 
         _animator.SetTrigger("Attack");
         SoundManager.PlaySound(_attackSound);
+
+        OnCharacterAttacked?.Invoke();
     }
 
     protected virtual void ExecuteSpecialAttack(Transform target)
@@ -177,6 +181,8 @@ public class TargetedAttackAbility : CharacterAbility
 
         _animator.SetTrigger("SpecialAttack");
         SoundManager.PlaySound(_specialAttackSound);
+
+        OnCharacterAttacked?.Invoke();
     }
 
     // -------------------------
@@ -185,7 +191,7 @@ public class TargetedAttackAbility : CharacterAbility
 
     private bool IsOnCooldown()
     {
-        return Time.time < _lastFire + _cooldown;
+        return Time.time < _lastFire + _stats.AttackCooldown;
     }
 
     private void StartCooldown()
@@ -304,12 +310,12 @@ public class TargetedAttackAbility : CharacterAbility
     {
         // Draw range + angles
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, _range);
+        Gizmos.DrawWireSphere(transform.position, _stats.AttackRange);
 
-        Vector3 left = Quaternion.Euler(0, -_angle / 2, 0) * transform.forward;
-        Vector3 right = Quaternion.Euler(0, _angle / 2, 0) * transform.forward;
+        Vector3 left = Quaternion.Euler(0, -_stats.AttackAngle / 2, 0) * transform.forward;
+        Vector3 right = Quaternion.Euler(0, _stats.AttackAngle / 2, 0) * transform.forward;
 
-        Gizmos.DrawRay(transform.position, left * _range);
-        Gizmos.DrawRay(transform.position, right * _range);
+        Gizmos.DrawRay(transform.position, left * _stats.AttackRange);
+        Gizmos.DrawRay(transform.position, right * _stats.AttackRange);
     }
 }

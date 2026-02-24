@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class SmoothCameraSizeAdjustment : MonoBehaviour
 {
+    [SerializeField] private float _cameraSize = 5f;
+    [SerializeField] private float _cameraSizeStep = 0.5f;
     [SerializeField] private float _transitionTime = 2f;
 
     private bool _transition = false;
@@ -16,6 +18,7 @@ public class SmoothCameraSizeAdjustment : MonoBehaviour
         _cam = GetComponent<Camera>();
     }
 
+    // NOTE: could be moved into a Coroutine to have less update calls
     private void Update()
     {
         if (!_transition) return;
@@ -30,6 +33,13 @@ public class SmoothCameraSizeAdjustment : MonoBehaviour
             _transition = false;
             _elapsedTime = 0f;
         }
+    }
+
+    public void AdjustCameraSize(bool increase)
+    {
+        _cameraSize += _cameraSizeStep * (increase ? 1 : -1);
+
+        TransitionSizeTo(_cameraSize);
     }
 
     public void TransitionSizeTo(float size)

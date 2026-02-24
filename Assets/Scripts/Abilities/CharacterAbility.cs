@@ -2,14 +2,14 @@ using UnityEngine;
 
 public abstract class CharacterAbility : MonoBehaviour
 {
-    protected BaseCharacter Character;
+    protected BaseCharacter _character;
     protected Quaternion _baseRotation;
 
     [SerializeField] protected Animator _animator;
 
     protected virtual void Awake()
     {
-        Character = GetComponent<BaseCharacter>();
+        _character = GetComponent<BaseCharacter>();
     }
 
 

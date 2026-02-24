@@ -44,6 +44,7 @@ public class KnockBackEnvironmentInteraction : MonoBehaviour
             _knockBackByPlayer = false;
 
             SoundManager.PlaySound(_impactSound);
+            CameraShake.Instance.TriggerShake(0.5f, 0.025f);
         }
     }
 }

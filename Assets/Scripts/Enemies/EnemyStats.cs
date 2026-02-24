@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Enemies/Base Stats")]
+[CreateAssetMenu(menuName = "Stats/Enemy Base Stats")]
 public class EnemyStats : ScriptableObject
 {
     public float BaseHp = 18f;

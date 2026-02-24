@@ -5,6 +5,7 @@ public class BaseCollectable : MonoBehaviour
 {
     [SerializeField] private CollectableType _type;
     [SerializeField] private CharacterType _characterType;
+    [SerializeField] private StatModifierSO _statModifier;
 
     public CollectableType GetCollectableType()
     {
@@ -14,5 +15,10 @@ public class BaseCollectable : MonoBehaviour
     public CharacterType GetCharacterType()
     {
         return _characterType;
+    }
+
+    public StatModifierSO GetStatModifier()
+    {
+        return _statModifier;
     }
 }

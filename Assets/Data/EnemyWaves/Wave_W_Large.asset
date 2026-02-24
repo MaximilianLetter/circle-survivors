@@ -17,5 +17,5 @@ MonoBehaviour:
   enemyCount: 18
   spawnInterval: 0.5
   enemies:
-  - prefab: {fileID: 4315008323507486199, guid: e8600e70562311943945ba4b93415720, type: 3}
+  - prefab: {fileID: 4315008323507486199, guid: accfd951a82b21c46880f54aa76e3b84, type: 3}
     weight: 1

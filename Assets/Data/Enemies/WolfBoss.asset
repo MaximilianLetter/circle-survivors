@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535b1d8831e01b4aaa3ca9194238e38, type: 3}
   m_Name: WolfBoss
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
-  BaseHp: 400
+  BaseHp: 200
   Damage: 6
   KnockBackThreshold: 500
-  KnockBackDmg: 9
-  MoveSpeed: 2
+  KnockBackDmg: 24
+  MoveSpeed: 3
   MoveSpeedIncrease: 0.4
   MoveSpeedIncreaseInterval: 3
   GetHitSound: 25

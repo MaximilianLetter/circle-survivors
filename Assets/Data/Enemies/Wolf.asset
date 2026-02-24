@@ -15,7 +15,7 @@ MonoBehaviour:
   BaseHp: 18
   Damage: 6
   KnockBackThreshold: 500
-  KnockBackDmg: 9
+  KnockBackDmg: 12
   MoveSpeed: 2.4
   MoveSpeedIncrease: 0.4
   MoveSpeedIncreaseInterval: 3

@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d78135c98371dca4883104f8d76741fb, type: 3}
+  m_Name: Tutorial
+  m_EditorClassIdentifier: Assembly-CSharp::TutorialConfig
+  mapSize: {x: 50, y: 50}
+  minDistance: 15
+  characterAmount: 0
+  pickUpAmount: 0
+  obstacleWeights: {x: 0.8, y: 0.2, z: 0}
+  waveSet: {fileID: 0}
+  steps:
+  - instructionText: Move with WASD
+    conditionType: 0
+    requiredAmountOfActions: 5
+    objectToSpawn: {fileID: 0}
+    amountOfObjects: 0
+  - instructionText: Turn by moving the mouse
+    conditionType: 1
+    requiredAmountOfActions: 5
+    objectToSpawn: {fileID: 0}
+    amountOfObjects: 0
+  - instructionText: Characters automatically attack if they are in range
+    conditionType: 2
+    requiredAmountOfActions: 6
+    objectToSpawn: {fileID: 8117104751916057453, guid: a599cb2cdfbc35d4396f79e98bd557ca, type: 3}
+    amountOfObjects: 1
+  - instructionText: Fight enemies by being in range without being hit
+    conditionType: 3
+    requiredAmountOfActions: 1
+    objectToSpawn: {fileID: 4315008323507486199, guid: e8600e70562311943945ba4b93415720, type: 3}
+    amountOfObjects: 1
+  - instructionText: Characters join the party if picked up
+    conditionType: 4
+    requiredAmountOfActions: 1
+    objectToSpawn: {fileID: 2581656286734716916, guid: 37fb372fe2586f54fa68e797276b11f2, type: 3}
+    amountOfObjects: 1
+  - instructionText: Turn the party to allow the characters of your party to attack
+    conditionType: 3
+    requiredAmountOfActions: 3
+    objectToSpawn: {fileID: 4315008323507486199, guid: e8600e70562311943945ba4b93415720, type: 3}
+    amountOfObjects: 3
+  - instructionText: Characters rank up by collecting modifiers
+    conditionType: 5
+    requiredAmountOfActions: 2
+    objectToSpawn: {fileID: 1272758867241827572, guid: fcd4166cd9583cb48a0fef13c79adc43, type: 3}
+    amountOfObjects: 2
+  goodbyeMessage: Tutorial done!

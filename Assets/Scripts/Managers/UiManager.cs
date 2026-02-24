@@ -1,5 +1,6 @@
-using UnityEngine;
 using TMPro;
+using UnityEngine;
+using UnityEngine.Rendering;
 
 public class UiManager : MonoBehaviour
 {
@@ -7,6 +8,7 @@ public class UiManager : MonoBehaviour
 
     [SerializeField] private UITextData _uiTextData;
 
+    [SerializeField] private TextMeshProUGUI _versionText;
     [SerializeField] private TextMeshProUGUI _statusText;
     [SerializeField] private TextMeshProUGUI _bottomInstructions;
     [SerializeField] private TextMeshProUGUI _bigCenterInstructions;
@@ -34,6 +36,7 @@ public class UiManager : MonoBehaviour
     private void Start()
     {
         HideAll();
+        SetUItoColor(Color.white);
     }
 
     public void ShowInstructionsOnGameStart()
@@ -69,6 +72,18 @@ public class UiManager : MonoBehaviour
         _statusText.enabled = true;
     }
 
+    public void ShowRestartInstructions()
+    {
+        _bottomInstructions.text = _uiTextData.restartInstructions;
+        _bottomInstructions.enabled = true;
+    }
+
+    public void ShowTextOnLevelDone()
+    {
+        _statusText.text = _uiTextData.levelDoneText;
+        _statusText.enabled = true;
+    }
+
     public void ShowTextOnGameWin()
     {
         _statusText.text = _uiTextData.gameWonText;
@@ -91,10 +106,29 @@ public class UiManager : MonoBehaviour
         _bottomInstructions.enabled = false;
     }
 
+    public void ShowTutorialText(string tutorialText)
+    {
+        _bottomInstructions.enabled = true;
+        _bottomInstructions.text = tutorialText;
+    }
+
+    public void HideTutorialText()
+    {
+        _bottomInstructions.enabled = false;
+    }
+
     public void HideAll()
     {
         _statusText.enabled = false;
         _bottomInstructions.enabled = false;
         _bigCenterInstructions.enabled = false;
+    }
+
+    public void SetUItoColor(Color col)
+    {
+        _versionText.color = col;
+        _statusText.color = col;
+        _bottomInstructions.color = col;
+        _bigCenterInstructions.color = col;
     }
 }

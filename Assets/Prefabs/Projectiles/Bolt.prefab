@@ -70,7 +70,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   _speed: 30
   _timeToLive: 3
-  _sound: 11
+  _hitSound: {fileID: 11400000, guid: 61cddf69784782e40bf343b2867da0d1, type: 2}
   _maxPierces: 5
 --- !u!114 &7825679036443695445
 MonoBehaviour:

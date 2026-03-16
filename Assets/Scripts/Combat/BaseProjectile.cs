@@ -7,7 +7,7 @@ public abstract class BaseProjectile : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float _speed;
     [SerializeField] private float _timeToLive = 5;
-    [SerializeField] private SoundType _sound;
+    [SerializeField] private SFXEntry _hitSound;
 
     private float _dmg;
     private float _knockBack;
@@ -42,7 +42,7 @@ public abstract class BaseProjectile : MonoBehaviour
         _hitEnemies.Add(enemy);
 
         enemy.TakeDmg(_dmg, _knockBack);
-        SoundManager.PlaySound(_sound);
+        SoundManager.PlaySound(_hitSound);
 
         OnEnemyHit(enemy);
     }

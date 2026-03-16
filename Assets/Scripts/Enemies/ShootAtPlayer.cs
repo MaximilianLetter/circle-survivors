@@ -8,6 +8,7 @@ public class ShootAtPlayer : MonoBehaviour
     [SerializeField] private Animator _animator;
 
     private RunTowardsPlayer _movement;
+    private BaseEnemy _baseEnemy;
     private Transform _playerTransform;
 
     private bool _canAttack = true;
@@ -17,6 +18,7 @@ public class ShootAtPlayer : MonoBehaviour
     private void Start()
     {
         _movement = GetComponent<RunTowardsPlayer>();
+        _baseEnemy = GetComponent<BaseEnemy>();
         _playerTransform = GameObject.FindWithTag("Player").transform;
     }
 
@@ -48,7 +50,7 @@ public class ShootAtPlayer : MonoBehaviour
         _isMoving = false;
 
         _animator.SetTrigger("Attack");
-        SoundManager.PlaySound(_stats.RangedAttackSound);
+        SoundManager.PlaySound(_baseEnemy.Audio.Attack);
 
         Vector3 dir = transform.forward;
         GameObject projectile = Instantiate(_stats.Projectile, _projectileSpawn.position, Quaternion.LookRotation(dir));

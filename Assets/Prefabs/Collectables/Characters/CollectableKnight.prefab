@@ -21,6 +21,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -3837634868578074674, guid: 8e112db62cba0c1478a85ab406b89129, type: 3}
+      propertyPath: _showPlayerUI
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -3837634868578074674, guid: 8e112db62cba0c1478a85ab406b89129, type: 3}
       propertyPath: _characterType
       value: 3
       objectReference: {fileID: 0}

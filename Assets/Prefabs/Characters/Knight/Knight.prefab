@@ -136,6 +136,92 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FadeOutFx
   _lifetime: 0.15
+--- !u!1001 &1268783491845203209
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 395732716009478896}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: b4d4d32ec47ba4745ad6d641baf403c4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b4d4d32ec47ba4745ad6d641baf403c4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b4d4d32ec47ba4745ad6d641baf403c4, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b4d4d32ec47ba4745ad6d641baf403c4, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b4d4d32ec47ba4745ad6d641baf403c4, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b4d4d32ec47ba4745ad6d641baf403c4, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b4d4d32ec47ba4745ad6d641baf403c4, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b4d4d32ec47ba4745ad6d641baf403c4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b4d4d32ec47ba4745ad6d641baf403c4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: b4d4d32ec47ba4745ad6d641baf403c4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b4d4d32ec47ba4745ad6d641baf403c4, type: 3}
+      propertyPath: m_Name
+      value: export_swordman_waiting
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b4d4d32ec47ba4745ad6d641baf403c4, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b4d4d32ec47ba4745ad6d641baf403c4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1193129313354253882}
+  m_SourcePrefab: {fileID: 100100000, guid: b4d4d32ec47ba4745ad6d641baf403c4, type: 3}
+--- !u!4 &1590094613936161506 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b4d4d32ec47ba4745ad6d641baf403c4, type: 3}
+  m_PrefabInstance: {fileID: 1268783491845203209}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2115273510503651416 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: b4d4d32ec47ba4745ad6d641baf403c4, type: 3}
+  m_PrefabInstance: {fileID: 1268783491845203209}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1193129313354253882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2115273510503651416}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bb461be133fbbe4ebedc4c07a338ed7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FillBoundsSetter
 --- !u!1001 &1357529508611081655
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -243,6 +329,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -4285857816463271873, guid: 6d3aa132a07fc744a86d993ec86c68bd, type: 3}
+      propertyPath: _audio
+      value: 
+      objectReference: {fileID: 11400000, guid: 66c2f5a92145efa42aacbfc5531e2cbd, type: 2}
+    - target: {fileID: -4285857816463271873, guid: 6d3aa132a07fc744a86d993ec86c68bd, type: 3}
       propertyPath: _stats
       value: 
       objectReference: {fileID: 11400000, guid: 88c7bb7085046ef43983f3337b525ec4, type: 2}
@@ -250,6 +340,18 @@ PrefabInstance:
       propertyPath: _totalHp
       value: 24
       objectReference: {fileID: 0}
+    - target: {fileID: -4285857816463271873, guid: 6d3aa132a07fc744a86d993ec86c68bd, type: 3}
+      propertyPath: _idleModel
+      value: 
+      objectReference: {fileID: 2115273510503651416}
+    - target: {fileID: -4285857816463271873, guid: 6d3aa132a07fc744a86d993ec86c68bd, type: 3}
+      propertyPath: _fightModel
+      value: 
+      objectReference: {fileID: 2868091138567302983}
+    - target: {fileID: -4285857816463271873, guid: 6d3aa132a07fc744a86d993ec86c68bd, type: 3}
+      propertyPath: _specialModel
+      value: 
+      objectReference: {fileID: 2168342709127018726}
     - target: {fileID: -4285857816463271873, guid: 6d3aa132a07fc744a86d993ec86c68bd, type: 3}
       propertyPath: _characterType
       value: 3
@@ -337,6 +439,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1429237258604905132, guid: 6d3aa132a07fc744a86d993ec86c68bd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1539193787398660700}
+    - targetCorrespondingSourceObject: {fileID: 1429237258604905132, guid: 6d3aa132a07fc744a86d993ec86c68bd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1590094613936161506}
     - targetCorrespondingSourceObject: {fileID: 5808899827233163432, guid: 6d3aa132a07fc744a86d993ec86c68bd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7142290719217436562}
@@ -398,17 +503,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MeleeBoxAttack
   _animator: {fileID: 6408460072780222898}
-  _stats: {fileID: 11400000, guid: 88c7bb7085046ef43983f3337b525ec4, type: 2}
-  _baseModel: {fileID: 2868091138567302983}
-  _specialModel: {fileID: 2168342709127018726}
   _targetLayer:
     serializedVersion: 2
     m_Bits: 128
   _obstacleMask:
     serializedVersion: 2
     m_Bits: 64
-  _attackSound: 1
-  _specialAttackSound: 2
   _turnSpeed: 180
   _returnDelay: 0.5
   _hitOffset: {x: 0, y: 1, z: 0}

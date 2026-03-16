@@ -1,48 +1,97 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Windows;
 
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private Camera _cam;
     [SerializeField] private LayerMask _groundLayer;
-    [SerializeField] private InputActionReference _moveInput;
-    [SerializeField] private InputActionReference _turnInput;
     [SerializeField] private Rigidbody _rb;
 
     [SerializeField] private PartyStats _stats;
-    private float _turnSpeed = 360f; // Set from outside
+    private float _turnSpeed = 360f;    // Set from outside
+    private float _moveSpeed = 4f;      // Changes between in-fight or idle
 
-    private Vector3 _moveDirection;
+    // Control variables
+    private PlayerInput _playerInput;
+
+    private Vector2 _moveInputValue;
+    private Vector2 _lookInputValue;
+
+    private bool _isGamepad;
+
+    // Internal variables for movement
     private Quaternion _turnDirection = Quaternion.identity;
 
     // NOTE: used in tutorial, could also become relevant somewhere else later
     // Events
     public static event Action OnPlayerMoved;
-    private bool _hasFiredMoveEvent;
 
     public static event Action OnPlayerTurned;
-    private bool _hasFiredTurnEvent;
+
+    private void Awake()
+    {
+        _playerInput = GetComponent<PlayerInput>();
+    }
+
+    private void OnEnable()
+    {
+        _playerInput.onControlsChanged += OnControlsChanged;
+
+        // Check once at start
+        OnControlsChanged(_playerInput);
+    }
+
+    private void OnDisable()
+    {
+        _playerInput.onControlsChanged -= OnControlsChanged;
+    }
+
+    private void OnControlsChanged(PlayerInput input)
+    {
+        _isGamepad = input.currentControlScheme == "Gamepad";
+
+        //if (_isGamepad)
+        //    ShowGamepadUIHints();
+        //else
+        //    ShowKeyboardUIHints();
+    }
 
     private void Update()
     {
-        _moveDirection = _moveInput.action.ReadValue<Vector2>();
+        _moveInputValue = _playerInput.actions["Move"].ReadValue<Vector2>();
+        _lookInputValue = _playerInput.actions["Look"].ReadValue<Vector2>();
 
-        // Get mouse pointing position
-        // NOTE: only works for Keyboard + Mouse, not for Gamepad
-        Ray ray = _cam.ScreenPointToRay(_turnInput.action.ReadValue<Vector2>());
-        if (Physics.Raycast(ray, out RaycastHit hit, 100, _groundLayer))
+        HandleRotation();
+    }
+
+    private void HandleRotation()
+    {
+        Vector3 dir = Vector3.zero;
+
+        if (_isGamepad)
         {
-            Vector3 targetPos = hit.point;
-            Vector3 dir = targetPos - transform.position;
-            dir.y = 0f;
-
-
-            if (dir != Vector3.zero)
+            // NOTE: easiest variant, maybe turning should instead use only the
+            // "path" of the input value, not the direction of it
+            if (_lookInputValue.sqrMagnitude > 0.2f)
             {
-                _turnDirection = Quaternion.LookRotation(dir);
+                dir = new Vector3(_lookInputValue.x, 0, _lookInputValue.y).ToIso();
             }
         }
+        else
+        {
+            Ray ray = _cam.ScreenPointToRay(_lookInputValue);
+
+            if (Physics.Raycast(ray, out RaycastHit hit, 100, _groundLayer))
+            {
+                dir = hit.point - transform.position;
+                dir.y = 0f;
+            }
+        }
+
+        if (dir != Vector3.zero)
+            _turnDirection = Quaternion.LookRotation(dir);
     }
 
     private void FixedUpdate()
@@ -53,17 +102,11 @@ public class PlayerMovement : MonoBehaviour
 
     void Move()
     {
-        Vector3 moveDirOnPlane = new Vector3(_moveDirection.x, 0, _moveDirection.y).ToIso();
+        Vector3 moveDirOnPlane = new Vector3(_moveInputValue.x, 0, _moveInputValue.y).ToIso();
 
         // Smoothes movement notably
-        Vector3 targetVelocity = moveDirOnPlane * _stats.MovementSpeed;
+        Vector3 targetVelocity = moveDirOnPlane * _moveSpeed;
         _rb.linearVelocity = Vector3.Lerp(_rb.linearVelocity, targetVelocity, 0.5f);
-
-        //if (!_hasFiredMoveEvent)
-        //{
-        //    _hasFiredMoveEvent = true;
-        //    OnPlayerMoved?.Invoke();
-        //}
 
         if (moveDirOnPlane.sqrMagnitude > 0.002f)
             OnPlayerMoved?.Invoke();
@@ -79,11 +122,6 @@ public class PlayerMovement : MonoBehaviour
 
         _rb.MoveRotation(newRotation);
 
-        //if (!_hasFiredTurnEvent)
-        //{
-        //    _hasFiredTurnEvent = true;
-        //    OnPlayerTurned?.Invoke();
-        //}
         if (Quaternion.Angle(_rb.rotation, _turnDirection) > 1f)
             OnPlayerTurned?.Invoke();
     }
@@ -92,6 +130,11 @@ public class PlayerMovement : MonoBehaviour
     {
         float newTurnSpeed = Mathf.Clamp(_stats.MaxTurnSpeed - amountOfCharacters * _stats.TurnSpeedAdjustPerCharacter, _stats.MinTurnSpeed, _stats.MaxTurnSpeed);
         _turnSpeed = newTurnSpeed;
+    }
+
+    public void SetMoveSpeed(bool fightState)
+    {
+        _moveSpeed = fightState ? _stats.MovementSpeed : _stats.MovementSpeedIdle;
     }
 
     public void ToggleMovement(bool state)

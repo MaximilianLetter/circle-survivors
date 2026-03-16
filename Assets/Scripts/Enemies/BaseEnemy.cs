@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class BaseEnemy : MonoBehaviour, IStatContext
@@ -8,7 +9,18 @@ public class BaseEnemy : MonoBehaviour, IStatContext
     public CharacterType CharacterType => CharacterType.None;
 
     [SerializeField] protected AttackType _attackType;
+
+    public EnemyStats Stats => _stats;
     [SerializeField] protected EnemyStats _stats;
+
+    public EnemyAudioProfile Audio => _audio;
+    [SerializeField] private EnemyAudioProfile _audio;
+
+    [SerializeField] private GameObject _baseModel;
+    [SerializeField] private GameObject _getHitModel;
+    private GameObject _activeBaseModel;
+
+    private Coroutine _getHitRoutine;
 
     public static event Action<BaseEnemy> OnEnemyDied;
 
@@ -19,6 +31,9 @@ public class BaseEnemy : MonoBehaviour, IStatContext
     private Rigidbody _rb;
     private KnockBackEnvironmentInteraction _knockBackEnvironment;
     protected RunTowardsPlayer _movement;
+    protected DefensiveStance _defensiveStance;
+
+    private bool _overridesHitPose;
 
     protected virtual void Awake()
     {
@@ -27,10 +42,35 @@ public class BaseEnemy : MonoBehaviour, IStatContext
         _rb = GetComponent<Rigidbody>();
         _knockBackEnvironment = GetComponent<KnockBackEnvironmentInteraction>();
         _movement = GetComponent<RunTowardsPlayer>();
+        _defensiveStance = GetComponent<DefensiveStance>();
+
+        _activeBaseModel = _baseModel;
+    }
+
+    public void SetBaseModel(GameObject model = null, bool specialPose = false)
+    {
+        if (_activeBaseModel != null)
+            _activeBaseModel.SetActive(false);
+
+        _activeBaseModel = model == null ? _baseModel : model;
+        _activeBaseModel.SetActive(true);
+
+        _overridesHitPose = specialPose;
+        if (specialPose && _getHitRoutine != null)
+        {
+            _getHitModel.SetActive(false);
+            StopCoroutine(_getHitRoutine);
+            _getHitRoutine = null;
+        }
     }
 
     public void TakeDmg(float incomingDmg, float knockBack)
     {
+        if (_defensiveStance != null && _defensiveStance.StanceActive)
+        {
+            incomingDmg *= _defensiveStance.DmgReduce;
+        }
+
         _currentHP -= incomingDmg;
         _rb.AddForce(-transform.forward * knockBack);
 
@@ -45,10 +85,50 @@ public class BaseEnemy : MonoBehaviour, IStatContext
 
     protected virtual void OnDamageTaken(float amount, float knockBack)
     {
-        _knockBackEnvironment.CheckInteractionEnable(knockBack);
-        if (_stats.GetHitSound != SoundType.NONE) SoundManager.PlaySound(_stats.GetHitSound);
-
         _movement.ResetMoveSpeed();
+
+        // If colliding against a wall afterwards shall do damage
+        _knockBackEnvironment.CheckInteractionEnable(knockBack);
+
+        // If stance should take damage (if available)
+        if (_defensiveStance != null && _defensiveStance.StanceActive)
+        {
+            _defensiveStance.TakeStanceDamage(knockBack);
+            return;
+        }
+            
+        SoundManager.PlaySound(_audio.GetHit);
+
+        if (_overridesHitPose) return;
+
+        if (_getHitRoutine != null)
+            StopCoroutine(_getHitRoutine);
+        _getHitRoutine = StartCoroutine(ShowHitModel());
+    }
+
+    private void ToggleGetHitModel(bool state)
+    {
+        if (_getHitModel == null) return;
+
+        if (state)
+        {
+            _getHitModel.SetActive(true);
+            _activeBaseModel.SetActive(false);
+        } else
+        {
+            _getHitModel.SetActive(false);
+            _activeBaseModel.SetActive(true);
+        }
+    }
+
+    private IEnumerator ShowHitModel()
+    {
+        ToggleGetHitModel(true);
+
+        yield return new WaitForSeconds(0.25f);
+
+        ToggleGetHitModel(false);
+        _getHitRoutine = null;
     }
 
     public float GetDmgStat()
@@ -58,10 +138,16 @@ public class BaseEnemy : MonoBehaviour, IStatContext
 
     public void DeathSequence()
     {
-        if (_stats.DeathSound != SoundType.NONE) SoundManager.PlaySound(_stats.DeathSound);
+        SoundManager.PlaySound(_audio.Die);
 
         Collider collider = transform.GetComponent<Collider>();
         collider.enabled = false;
+
+        // Make sure model dies in damaged pose
+        if (_getHitRoutine != null) StopCoroutine(_getHitRoutine);
+        if (_defensiveStance) _defensiveStance.StopAllCoroutines();
+
+        ToggleGetHitModel(true);
 
         // Dirty fix for now
         // instead have base enemy know about abilities of the enemy and deactivate everything attached to it
@@ -74,6 +160,16 @@ public class BaseEnemy : MonoBehaviour, IStatContext
         }
 
         Die();
+    }
+
+    public void Flee()
+    {
+        // Remove enemy layer so that it does not become a target while dying
+        gameObject.layer = 0;
+
+        _movement.ReverseMoveDirection();
+
+        Destroy(gameObject, 6);
     }
 
     protected virtual void Die()

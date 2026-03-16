@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b12e5b69b55c17b4e92ad876a2c1e408, type: 3}
+  m_Name: GlobalAudioLibrary
+  m_EditorClassIdentifier: Assembly-CSharp::SFXLibrary
+  TextPlop: {fileID: 11400000, guid: 92b71cd9ce25d804da407596f36df6dc, type: 2}
+  CollectPickUp: {fileID: 11400000, guid: 58be8a44d09b6ea41b3e9b6d760f10a5, type: 2}
+  CollectCharacter: {fileID: 11400000, guid: 7be8b99139219a44e9a275f17650ffe4, type: 2}
+  NewWave: {fileID: 11400000, guid: 074175ff8d18b2548b5dde65947acb6a, type: 2}
+  HandPlaceObject: {fileID: 11400000, guid: 7c059e3873942ac48b79dada0abb1b21, type: 2}
+  Win: {fileID: 11400000, guid: a1893211352bab24bbf2c05f77d44db5, type: 2}
+  Lose: {fileID: 11400000, guid: 85f22a9216e560b448f0741f6222838c, type: 2}
+  Pause: {fileID: 11400000, guid: a5f2dc9ab57afe847b9d7b9630ccfc80, type: 2}
+  Unpause: {fileID: 11400000, guid: 6c4dff5e33281ff40bb495a84f5e751e, type: 2}

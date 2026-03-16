@@ -1,15 +1,12 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TransitionManager : MonoBehaviour
 {
     public static TransitionManager Instance => _instance;
     private static TransitionManager _instance;
-
-    [SerializeField] private PlaceObjectByHand _theHand;
-    [SerializeField] private PartyOfCharacters _party;
-    [SerializeField] private PlayerMovement _player;
 
     [SerializeField] private FadeFullscreenColor _fadeFullscreenColor;
     [SerializeField] private Vector3 _camTransitionOffset = new Vector3(0, 0.01f, 0);
@@ -23,16 +20,21 @@ public class TransitionManager : MonoBehaviour
     private float _liftDuration;
     private bool _initialTransition = true;
 
+    private PlaceObjectByHand _theHand;
+    private PartyOfCharacters _party;
+    private PlayerMovement _player;
     private SmoothTargetFollow _camFollow;
 
     private void Awake()
     {
-        _instance = this;
-    }
+        if (_instance != null && _instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
 
-    private void Start()
-    {
-        _camFollow = Camera.main.GetComponent<SmoothTargetFollow>();
+        _instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     public IEnumerator PlayWorldTransition(LevelConfig config, Action onHiddenPhase = null)
@@ -47,12 +49,9 @@ public class TransitionManager : MonoBehaviour
         }
         else
         {
-            yield return LiftParty();
-
-            Coroutine fadeIn = StartCoroutine(_fadeFullscreenColor.FadeIn(_fadeAndCamShiftDuration));
-            Coroutine camShiftUp = StartCoroutine(ShiftCameraCoroutine(_fadeAndCamShiftDuration, true));
-            yield return fadeIn;
-            yield return camShiftUp;
+            SoundManager.Instance.FadeOutAmbient(2);
+            SoundManager.Instance.FadeOutMusic(2);
+            yield return TransitionOut(liftParty: true);
         }
 
         // Hook to trigger "invisible" effects during transition
@@ -68,17 +67,47 @@ public class TransitionManager : MonoBehaviour
         SetCharacterAirPositions();
         UiManager.Instance.HideStatusText();
 
-        Coroutine fadeOut = StartCoroutine(_fadeFullscreenColor.FadeOut(_fadeAndCamShiftDuration));
-        Coroutine camShiftDown = StartCoroutine(ShiftCameraCoroutine(_fadeAndCamShiftDuration, false));
-        yield return fadeOut;
-        yield return camShiftDown;
+        // Start playing ambient from the level config 
+        // TODO shuffle different tracks and more
+        if (config.ambientTracks.Length > 0) 
+            SoundManager.Instance.PlayAmbient(config.ambientTracks[0]);
 
-        // Do transiton down
-        yield return DropParty();
+        // TODO check again
+        //if (config.musicTracks.Length > 0)
+        //    SoundManager.Instance.PlayMusic(config.musicTracks[0]);
+
+        yield return TransitionIn(dropParty: true);
 
         GameStateManager.Instance.SetMovementLocked(false);
 
         _initialTransition = false;
+    }
+
+    private IEnumerator TransitionOut(bool liftParty)
+    {
+        if (liftParty)
+            yield return LiftParty();
+
+        Coroutine fadeIn = StartCoroutine(_fadeFullscreenColor.FadeIn(_fadeAndCamShiftDuration));
+
+
+        if (_camFollow != null)
+            yield return StartCoroutine(ShiftCameraCoroutine(_fadeAndCamShiftDuration, true));
+        else
+            yield return fadeIn;
+    }
+
+    private IEnumerator TransitionIn(bool dropParty)
+    {
+        Coroutine fadeOut = StartCoroutine(_fadeFullscreenColor.FadeOut(_fadeAndCamShiftDuration));
+
+        if (_camFollow != null)
+            yield return StartCoroutine(ShiftCameraCoroutine(_fadeAndCamShiftDuration, false));
+        else
+            yield return fadeOut;
+
+        if (dropParty)
+            yield return DropParty();
     }
 
     private IEnumerator LiftParty()
@@ -140,5 +169,56 @@ public class TransitionManager : MonoBehaviour
         }
 
         _camFollow.SetEffectOffset(targetOffset);
+    }
+
+    public IEnumerator TransitionToScene(
+        string sceneName,
+        bool fadeBeforeLoad,
+        bool liftBeforeLoad,
+        bool fadeAfterLoad,
+        bool dropAfterLoad,
+        Action onHiddenPhase = null)
+    {
+        if (fadeBeforeLoad)
+        {
+            SoundManager.Instance.FadeOutAmbient(2);
+            SoundManager.Instance.FadeOutMusic(2);
+            yield return TransitionOut(liftBeforeLoad);
+        }
+
+        onHiddenPhase?.Invoke();
+
+        yield return SceneManager.LoadSceneAsync(sceneName);
+
+        // Wait for new references to register themselves
+        yield return null;
+
+        if (fadeAfterLoad)
+            yield return TransitionIn(dropAfterLoad);
+    }
+
+    public void RegisterGameplayReferences(
+        PlaceObjectByHand hand,
+        PartyOfCharacters party,
+        PlayerMovement player,
+        SmoothTargetFollow camFollow
+    ) {
+        _theHand = hand;
+        _party = party;
+        _player = player;
+        _camFollow = camFollow;
+    }
+
+    public void ClearGameplayReferences()
+    {
+        _theHand = null;
+        _party = null;
+        _player = null;
+        _camFollow = null;
+    }
+
+    public void SetFadeAlphaImmediate(float alpha)
+    {
+        _fadeFullscreenColor.SetAlpha(alpha);
     }
 }

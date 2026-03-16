@@ -9,6 +9,11 @@ ModelImporter:
       assembly: UnityEngine.CoreModule
       name: dummy_baked
     second: {fileID: 2100000, guid: 2b809c988573aeb44ac13b1f48e3f8de, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: dummy_baked_02
+    second: {fileID: 2100000, guid: ba988c0b07b26b149a79a0ed5dcc1684, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

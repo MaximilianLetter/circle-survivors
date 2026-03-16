@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52d2e71875ae6b048bf0743e1a0c1f2f, type: 3}
+  m_Name: Mix
+  m_EditorClassIdentifier: Assembly-CSharp::BiomeConfig
+  smallObstacles:
+  - {fileID: 7538681593046787618, guid: 08315cc84e3b53240b4fa05abcc98c68, type: 3}
+  - {fileID: 7538681593046787618, guid: a73f52edb6024ee468b847c57cc5e1ad, type: 3}
+  - {fileID: 7538681593046787618, guid: d6bdc3dc0a7c4b24387b908c73b00e53, type: 3}
+  - {fileID: 6267293406770754022, guid: 2fdff87fed4a8d44dbada0f4c6ca985f, type: 3}
+  - {fileID: 6267293406770754022, guid: 39f7d381d980cb043bdd90a9b79e339a, type: 3}
+  - {fileID: 6267293406770754022, guid: 1c8058b9b65feb94883ad2c70ea7b467, type: 3}
+  - {fileID: 7538681593046787618, guid: 851941935655f6d4783d94712630f3be, type: 3}
+  - {fileID: 4349414858485950123, guid: 4c4a2909bfbaa6048b394928c52127aa, type: 3}
+  - {fileID: 6267293406770754022, guid: daa79e41fa0c9374b85d6a258d88f9ae, type: 3}
+  - {fileID: 4976693323204143396, guid: 443c9c0fafc67b343a207f4ec982fb6b, type: 3}
+  - {fileID: 4976693323204143396, guid: 36c40d3bcad72654683edd0d6a59ad86, type: 3}
+  - {fileID: 4976693323204143396, guid: ea450b9a156ac5645be79eb2caeac210, type: 3}
+  mediumObstacles:
+  - {fileID: 7538681593046787618, guid: 7433b0b8560a04241b61d861f81dd742, type: 3}
+  - {fileID: 219331233842624807, guid: 458af038f54ed664a8151dfb2d2c1195, type: 3}
+  - {fileID: 4976693323204143396, guid: f2297ddfc0b8fbc469ed83a9233a2482, type: 3}
+  - {fileID: 4976693323204143396, guid: d9cf524b4db25244c8c7012bf87c4de1, type: 3}
+  largeObstacles:
+  - {fileID: 219331233842624807, guid: 55097780678bbf64daef7e43706ccf36, type: 3}
+  - {fileID: 3673823234886804481, guid: dc7fb7b27aedf494f9abbc1bbb5d79d6, type: 3}

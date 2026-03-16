@@ -18,5 +18,4 @@ public abstract class CharacterAbility : MonoBehaviour
     {
         _baseRotation = transform.localRotation;
     }
-
 }

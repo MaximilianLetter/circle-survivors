@@ -15,10 +15,7 @@ MonoBehaviour:
   BaseHp: 200
   Damage: 6
   KnockBackThreshold: 500
-  KnockBackDmg: 24
-  MoveSpeed: 3
-  MoveSpeedIncrease: 0.4
-  MoveSpeedIncreaseInterval: 3
-  GetHitSound: 25
-  DeathSound: 26
-  SpecialAbilitySound: 22
+  KnockBackDmg: 48
+  MoveSpeed: 2.6
+  MoveSpeedIncrease: 0.15
+  MoveSpeedIncreaseInterval: 1

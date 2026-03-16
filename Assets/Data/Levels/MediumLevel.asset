@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09e21bc2a4c977b4fa4b0fdebc87f1aa, type: 3}
+  m_Name: MediumLevel
+  m_EditorClassIdentifier: Assembly-CSharp::LevelConfig
+  title: 'The Escape '
+  subTitle: The dogs are on your trail.
+  mapSize: {x: 80, y: 80}
+  minDistance: 14
+  characterAmount: 6
+  characterModifierAmount: 6
+  pickUpHealthAmount: 12
+  partyIncreaseModifierAmount: 1
+  biomeConfig: {fileID: 11400000, guid: 2495004268e21034e888577c3daac59b, type: 2}
+  obstacleWeights: {x: 0.7, y: 0.2, z: 0.1}
+  weatherEffectPrefab: {fileID: 8907042233150814423, guid: f48f5c3a43729004aa4e8ef9b5bdb2a4, type: 3}
+  waveSet: {fileID: 11400000, guid: 8d04aaaf8c4542749bef54a35d8d661b, type: 2}
+  ambientTracks:
+  - {fileID: 8300000, guid: 34289cfe8aa1cca49a29be8ccb00b745, type: 3}
+  musicTracks: []

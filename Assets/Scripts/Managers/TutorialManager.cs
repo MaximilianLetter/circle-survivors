@@ -16,11 +16,20 @@ public class TutorialManager : MonoBehaviour
 
     private List<GameObject> _objectsToDestroyLater;
 
+    private PartyOfCharacters _partyOfCharacters;
+
+    private bool _fightingStep = false;
+
     private void Awake()
     {
         _instance = this;
 
         _objectsToDestroyLater = new List<GameObject>();
+    }
+
+    private void Start()
+    {
+        _partyOfCharacters = FindFirstObjectByType<PartyOfCharacters>();
     }
 
     public IEnumerator RunTutorial(TutorialConfig config)
@@ -29,8 +38,10 @@ public class TutorialManager : MonoBehaviour
         {
             yield return new WaitForSeconds(0.5f);
 
-            SoundManager.PlaySound(SoundType.TUTORIAL_STEP);
+            SoundManager.PlaySound(SoundManager.Instance.Library.TextPlop);
             UiManager.Instance.ShowTutorialText(step.instructionText);
+
+            CheckForFightStateTrigger(step);
 
             yield return WaitForCondition(step);
 
@@ -38,7 +49,7 @@ public class TutorialManager : MonoBehaviour
         }
 
         // End of tutorial
-        SoundManager.PlaySound(SoundType.TUTORIAL_STEP);
+        SoundManager.PlaySound(SoundManager.Instance.Library.TextPlop);
         UiManager.Instance.ShowTutorialText(config.goodbyeMessage);
 
         yield return new WaitForSeconds(2f);
@@ -163,8 +174,6 @@ public class TutorialManager : MonoBehaviour
             50
         );
 
-        Debug.Log("tutorial obj" + obj.transform.position);
-
         // Turn towards player
         Vector3 dir = _player.transform.position - obj.transform.position;
         obj.transform.rotation = Quaternion.LookRotation(dir.normalized);
@@ -172,5 +181,28 @@ public class TutorialManager : MonoBehaviour
         if (placeByHand) _theHand.DropObject(obj);
 
         return obj;
+    }
+
+    private bool IsTutorialStepWithFighting(TutorialStep step)
+    {
+        return
+            step.conditionType == TutorialConditionType.Attack ||
+            step.conditionType == TutorialConditionType.EnemiesDefeated;
+    }
+
+    private void CheckForFightStateTrigger(TutorialStep step)
+    {
+        bool newStepFighting = IsTutorialStepWithFighting(step);
+
+        if (newStepFighting && !_fightingStep)
+        {
+            _partyOfCharacters.SetPartyFightState(true);
+        }
+        else if (!newStepFighting && _fightingStep)
+        {
+            _partyOfCharacters.SetPartyFightState(false);
+        }
+
+        _fightingStep = newStepFighting;
     }
 }

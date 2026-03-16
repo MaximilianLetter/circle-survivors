@@ -70,7 +70,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ArrowProjectile
   _speed: 20
   _timeToLive: 4
-  _sound: 8
+  _hitSound: {fileID: 11400000, guid: 7f164e0e9a6511d499ea906162c0b04d, type: 2}
 --- !u!114 &-2122906457507627429
 MonoBehaviour:
   m_ObjectHideFlags: 0

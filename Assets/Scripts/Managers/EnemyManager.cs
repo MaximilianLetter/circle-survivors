@@ -17,8 +17,11 @@ public class EnemyManager : MonoBehaviour
     private bool _bossWaveRunning;
 
     public static event System.Action OnWaveSetCompleted;
+    public static event System.Action OnWaveStarted;
+    public static event System.Action OnWaveFinished;
 
     public static event System.Action OnEnemyKilled;
+
 
     public static EnemyManager Instance
     {
@@ -52,6 +55,11 @@ public class EnemyManager : MonoBehaviour
         BossEnemy.OnBossDefeated -= HandleBossDefeated;
     }
 
+    public bool GetWaveRunningState()
+    {
+        return (_waveRunning || _bossWaveRunning);
+    }
+
     // ------------
     // Wave
     // ------------
@@ -67,7 +75,10 @@ public class EnemyManager : MonoBehaviour
         {
             yield return new WaitForSeconds(wave.delayBefore);
 
-            SoundManager.PlaySound(SoundType.WAVE_INCOMING);
+            SoundManager.PlaySound(SoundManager.Instance.Library.NewWave);
+
+            yield return new WaitForSeconds(0.25f);
+            OnWaveStarted?.Invoke();
 
             if (wave is BossWave bossWave)
             {
@@ -84,6 +95,9 @@ public class EnemyManager : MonoBehaviour
             // NOTE: maybe should include a max duration timer
             yield return new WaitUntil(() => !_waveRunning);
             yield return new WaitUntil(() => !_bossWaveRunning);
+
+            yield return new WaitForSeconds(0.75f);
+            OnWaveFinished?.Invoke();
 
             yield return new WaitForSeconds(wave.delayAfter);
         }
@@ -102,7 +116,8 @@ public class EnemyManager : MonoBehaviour
             GameObject prefab = SelectEnemy(wave.enemies);
             GameObject enemyToSpawn = SpawnEnemy(prefab, _farFromPlayer);
 
-            _aliveEnemiesInWave++;
+            if (enemyToSpawn != null)
+                _aliveEnemiesInWave++;
 
             yield return new WaitForSeconds(wave.spawnInterval);
         }
@@ -183,13 +198,12 @@ public class EnemyManager : MonoBehaviour
 
     public void MakeEnemiesWalkAwayAndDie()
     {
-        RunTowardsPlayer[] enemyMovements = FindObjectsByType<RunTowardsPlayer>(FindObjectsSortMode.None);
+        // NOTE: enemies should better register themselves at enemyManager when spawned 
+        BaseEnemy[] enemies = FindObjectsByType<BaseEnemy>(FindObjectsSortMode.None);
 
-        foreach (var e in enemyMovements)
+        foreach (var e in enemies)
         {
-            e.RevertMoveDirection();
-
-            Destroy(e.gameObject, 6);
+            e.Flee();
         }
     }
 

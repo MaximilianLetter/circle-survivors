@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b74c7b25a5218a4d861f556f5d1b05d, type: 3}
+  m_Name: TargetDummy
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAudioProfile
+  GetHit: {fileID: 11400000, guid: 0715eb28464e7884584d8a874ac64a59, type: 2}
+  Die: {fileID: 0}
+  WallImpact: {fileID: 11400000, guid: f1ac4059ebb38d842b5694d5603d85dd, type: 2}
+  Attack: {fileID: 0}

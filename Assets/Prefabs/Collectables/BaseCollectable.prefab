@@ -466,6 +466,8 @@ MonoBehaviour:
   _type: 2
   _characterType: 0
   _statModifier: {fileID: 0}
+  _showPlayerUI: 0
+  _toggleText: {fileID: 3269720372738424624}
 --- !u!114 &4529791769945729598
 MonoBehaviour:
   m_ObjectHideFlags: 0

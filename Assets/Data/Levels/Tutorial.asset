@@ -12,12 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d78135c98371dca4883104f8d76741fb, type: 3}
   m_Name: Tutorial
   m_EditorClassIdentifier: Assembly-CSharp::TutorialConfig
+  title: Tutorial
+  subTitle: Learn basic controls and mechanics.
   mapSize: {x: 50, y: 50}
-  minDistance: 15
+  minDistance: 12
   characterAmount: 0
-  pickUpAmount: 0
+  characterModifierAmount: 0
+  pickUpHealthAmount: 0
+  partyIncreaseModifierAmount: 0
+  biomeConfig: {fileID: 11400000, guid: 550bfa1e12339c14dbc43ff7020d03a2, type: 2}
   obstacleWeights: {x: 0.8, y: 0.2, z: 0}
   waveSet: {fileID: 0}
+  ambientTracks:
+  - {fileID: 8300000, guid: 6522ff31e0026714788317ee8d19b423, type: 3}
+  musicTracks:
+  - {fileID: 8300000, guid: 621f44abef5209b429d0136162f8d9d1, type: 3}
   steps:
   - instructionText: Move with WASD
     conditionType: 0
@@ -37,7 +46,7 @@ MonoBehaviour:
   - instructionText: Fight enemies by being in range without being hit
     conditionType: 3
     requiredAmountOfActions: 1
-    objectToSpawn: {fileID: 4315008323507486199, guid: e8600e70562311943945ba4b93415720, type: 3}
+    objectToSpawn: {fileID: 4311052552757313818, guid: 6adbdbde21959f64a85aa1a102662ad5, type: 3}
     amountOfObjects: 1
   - instructionText: Characters join the party if picked up
     conditionType: 4
@@ -47,7 +56,7 @@ MonoBehaviour:
   - instructionText: Turn the party to allow the characters of your party to attack
     conditionType: 3
     requiredAmountOfActions: 3
-    objectToSpawn: {fileID: 4315008323507486199, guid: e8600e70562311943945ba4b93415720, type: 3}
+    objectToSpawn: {fileID: 4311052552757313818, guid: 6adbdbde21959f64a85aa1a102662ad5, type: 3}
     amountOfObjects: 3
   - instructionText: Characters rank up by collecting modifiers
     conditionType: 5

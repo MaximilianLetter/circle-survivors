@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 
 public enum GameState
 {
@@ -24,7 +23,6 @@ public class GameStateManager : MonoBehaviour
     [Header("Inputs")]
     [SerializeField] private InputActionReference _exit;
     [SerializeField] private InputActionReference _anyKeyPress;
-    [SerializeField] private bool _showInstructionsOnStart;
 
     private GameState _state;
     private GameState _lastState;
@@ -52,20 +50,12 @@ public class GameStateManager : MonoBehaviour
     {
         _grayScaleEffect = GetComponent<GrayScaleEffect>();
 
-        // NOTE: not sure how and when to use the start instructions
-        // if there is a starter level, dont use at all
-        if (_showInstructionsOnStart)
-        {
-            _grayScaleEffect.SetToGray();
-            UiManager.Instance.ShowInstructionsOnGameStart();
+        UiManager.Instance.HideAll();
+    }
 
-            // Start paused
-            PauseGame();
-        }
-        else
-        {
-            UiManager.Instance.HideAll();
-        }
+    private void OnEnable()
+    {
+        
     }
 
     private void OnDestroy()
@@ -130,11 +120,7 @@ public class GameStateManager : MonoBehaviour
         if (_state != GameState.Paused) StartCoroutine(PauseGameAfterFade());
         else
         {
-#if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-#else
-            Application.Quit();
-#endif
+            GameManager.Instance.ReturnToMenuFromGame();
         }
     }
 
@@ -142,13 +128,13 @@ public class GameStateManager : MonoBehaviour
     {
         _anyKeyPress.action.started -= RestartGame;
 
-        // NOTE: has to be revisited later, quick restart function
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        GameManager.Instance.RestartCurrentScene();
     }
 
     private IEnumerator PauseGameAfterFade()
     {
         _grayScaleEffect.FadeToGray(_pauseGrayFadeDuration);
+        SoundManager.PlaySound(SoundManager.Instance.Library.Pause);
 
         yield return new WaitForSecondsRealtime(_pauseGrayFadeDuration);
 
@@ -160,6 +146,7 @@ public class GameStateManager : MonoBehaviour
     {
         ResumeGame();
         UiManager.Instance.HideAll();
+        SoundManager.PlaySound(SoundManager.Instance.Library.Unpause);
 
         _grayScaleEffect.FadeToColor(_pauseGrayFadeDuration);
     }
@@ -187,7 +174,7 @@ public class GameStateManager : MonoBehaviour
         _grayScaleEffect.FadeToGray(_gameOverGrayFadeDuration);
 
         UiManager.Instance.ShowTextOnGameOver();
-        SoundManager.PlaySound(SoundType.GAME_OVER);
+        SoundManager.PlaySound(SoundManager.Instance.Library.Lose);
 
         EnemyManager.Instance.MakeEnemiesWalkAwayAndDie();
 
@@ -199,9 +186,9 @@ public class GameStateManager : MonoBehaviour
 
     private void HandleWonState()
     {
-        SoundManager.PlaySound(SoundType.GAME_WIN);
+        SoundManager.PlaySound(SoundManager.Instance.Library.Win);
         UiManager.Instance.ShowTextOnGameWin();
 
-        Debug.Log("Game won");
+        GameManager.Instance.ReturnToMenuAfterWin();
     }
 }

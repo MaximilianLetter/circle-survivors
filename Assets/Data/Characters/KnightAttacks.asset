@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 3
     height: 1
   SpecialDamage: 4
-  SpecialKnockBack: 1200
+  SpecialKnockBack: 1000
   SpecialHitShape:
     range: 5
     width: 2.5

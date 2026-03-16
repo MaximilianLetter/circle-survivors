@@ -15,15 +15,11 @@ MonoBehaviour:
   BaseHp: 18
   Damage: 6
   KnockBackThreshold: 500
-  KnockBackDmg: 12
+  KnockBackDmg: 18
   MoveSpeed: 2
-  MoveSpeedIncrease: 0.3
-  MoveSpeedIncreaseInterval: 3
-  GetHitSound: 17
-  DeathSound: 18
-  SpecialAbilitySound: 0
+  MoveSpeedIncrease: 0.1
+  MoveSpeedIncreaseInterval: 1
   RangedAttackRange: 8
   RangedAttackDamage: 6
   RangedAttackCooldown: 2.5
   Projectile: {fileID: 1614341048115884782, guid: d5d097dd3d96e8944852a3dfc253af56, type: 3}
-  RangedAttackSound: 24

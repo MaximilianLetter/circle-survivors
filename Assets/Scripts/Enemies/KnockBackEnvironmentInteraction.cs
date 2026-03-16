@@ -4,10 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(Collider))]
 public class KnockBackEnvironmentInteraction : MonoBehaviour
 {
-    [SerializeField] private EnemyStats _stats;
-    [SerializeField] private float _knockBackTurnOffDelay = 2f;
-
-    [SerializeField] private SoundType _impactSound;
+    [SerializeField] private float _knockBackTurnOffDelay = 1.25f;
 
     private BaseEnemy _baseEnemy;
     private bool _knockBackByPlayer;
@@ -19,7 +16,7 @@ public class KnockBackEnvironmentInteraction : MonoBehaviour
 
     public void CheckInteractionEnable(float knockBack)
     {
-        if (knockBack >= _stats.KnockBackThreshold)
+        if (knockBack >= _baseEnemy.Stats.KnockBackThreshold)
         {
             _knockBackByPlayer = true;
             Invoke(nameof(TurnOffKnockBackFlag), _knockBackTurnOffDelay);
@@ -39,11 +36,11 @@ public class KnockBackEnvironmentInteraction : MonoBehaviour
         {
             var forceSqr = collision.impulse.sqrMagnitude;
 
-            float dmg = _stats.KnockBackDmg * (forceSqr / _stats.KnockBackThreshold);
+            float dmg = _baseEnemy.Stats.KnockBackDmg * (forceSqr / _baseEnemy.Stats.KnockBackThreshold);
             _baseEnemy.TakeDmg(dmg, 0);
             _knockBackByPlayer = false;
 
-            SoundManager.PlaySound(_impactSound);
+            SoundManager.PlaySound(_baseEnemy.Audio.WallImpact);
             CameraShake.Instance.TriggerShake(0.5f, 0.025f);
         }
     }

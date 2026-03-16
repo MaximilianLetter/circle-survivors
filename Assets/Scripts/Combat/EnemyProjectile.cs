@@ -5,7 +5,6 @@ public class EnemyProjectile : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float _speed;
     [SerializeField] private float _timeToLive = 5;
-    [SerializeField] private SoundType _sound;
 
     private float _dmg;
 

@@ -13,4 +13,9 @@ MonoBehaviour:
   m_Name: _DEBUG
   m_EditorClassIdentifier: Assembly-CSharp::WaveSet
   waves:
-  - {fileID: 11400000, guid: 42c68fe909591c44ba44eb4273d31334, type: 2}
+  - {fileID: 11400000, guid: 412738d38690dfe4bb5db26b9489e1e5, type: 2}
+  - {fileID: 11400000, guid: 3b19fe2e35c0fd84dbe00f46735e0472, type: 2}
+  - {fileID: 11400000, guid: 79020a9d5f84e7a49879edeadb0ef1cd, type: 2}
+  - {fileID: 11400000, guid: 4bdc53ea56661a144ba1238908602422, type: 2}
+  - {fileID: 11400000, guid: 4041e807baa4f574ba82e12751e10883, type: 2}
+  - {fileID: 11400000, guid: 42502ba741cab104ab87f0cc39d1f4e4, type: 2}

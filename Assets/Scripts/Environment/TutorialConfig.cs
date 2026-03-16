@@ -23,6 +23,7 @@ public class TutorialStep
 [CreateAssetMenu(menuName = "World/TutorialConfig")]
 public class TutorialConfig : LevelConfig
 {
+    [Header("Tutorial Content")]
     public TutorialStep[] steps;
 
     public string goodbyeMessage;

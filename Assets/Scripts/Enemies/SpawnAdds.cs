@@ -1,41 +1,52 @@
 using System.Collections;
 using UnityEngine;
 
-public class SpawnAdds : MonoBehaviour
+public class SpawnAdds : BossAbility
 {
-    [SerializeField] private Vector2 _spawnDistance;
-    [SerializeField] private float _spawnInterval;
-    [SerializeField] private int _addsPerWave;
+    [SerializeField] private Vector2 _spawnDistance = new Vector2(20, 22);
+    [SerializeField] private int _addsPerWave = 4;
+    [SerializeField] private float _addSpawnCooldown = 4;
+
     [SerializeField] private GameObject _addPrefab;
+    [SerializeField] private SFXEntry _waveSpawnAudio;
 
     private Transform _playerTransform;
 
     private void Start()
     {
         _playerTransform = GameObject.FindWithTag("Player").transform;
-        StartCoroutine(SpawnAddsLoop());
     }
 
     private void OnDestroy()
     {
-        // Note this should rather be hooked up with health/death system of
-        // base enemy or boss enemy that inherits from base enemy
         StopAllCoroutines();
     }
 
-    private IEnumerator SpawnAddsLoop()
+    protected override IEnumerator RunAbilityRoutine()
     {
         while (true)
         {
-            yield return new WaitForSeconds(_spawnInterval);
+            yield return new WaitForSeconds(_addSpawnCooldown);
 
-            // Spawn one wolf every interval, spawn a lot of wolves when triggered by hp threshold
             SpawnAdd();
         }
     }
 
-    public void TriggerSpecialAbility()
+    public override void FireAbility()
     {
+        SpawnWaveOfAdds();
+    }
+
+    public override IEnumerator RunMovementRoutine()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    private void SpawnWaveOfAdds()
+    {
+        SoundManager.PlaySound(_waveSpawnAudio);
+        CameraShake.Instance.TriggerShake(2.5f, 0.02f);
+
         for (int i = 0; i < _addsPerWave; i++)
         {
             SpawnAdd();

@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class CameraShake : MonoBehaviour
 {
+    [SerializeField] private AnimationCurve _immediateCurve;
+    [SerializeField] private AnimationCurve _smoothCurve;
+
     public static CameraShake Instance { get; private set; }
 
     private SmoothTargetFollow _follow;
@@ -29,19 +32,23 @@ public class CameraShake : MonoBehaviour
         StopAllCoroutines();
     }
 
-    public void TriggerShake(float duration = 3f, float magnitude = 0.025f)
+    public void TriggerShake(float duration = 3f, float magnitude = 0.025f, bool fadeIn = false)
     {
-        StartCoroutine(Shake(duration, magnitude));
+        StartCoroutine(Shake(duration, magnitude, fadeIn));
     }
 
-    private IEnumerator Shake(float duration, float magnitude)
+    private IEnumerator Shake(float duration, float magnitude, bool fadeIn)
     {
+
+        AnimationCurve curve = fadeIn ? _smoothCurve : _immediateCurve;
+
         float elapsed = 0f;
 
         while (elapsed < duration)
         {
             float percent = elapsed / duration;
-            float damper = 1f - percent;
+            float damper = curve.Evaluate(percent);
+
             float appliedMagnitude = magnitude * damper;
 
             float x = Random.Range(-1f, 1f) * appliedMagnitude;

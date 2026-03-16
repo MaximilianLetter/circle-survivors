@@ -1,93 +1,37 @@
 using System;
+using System.Collections;
 using UnityEngine;
+using UnityEngine.Audio;
 
 // Soundmanager build after https://www.youtube.com/watch?v=g5WT91Sn3hg
 
-public enum SoundType
-{
-    NONE,
-    // Knight
-    KNIGHT_ATTACK,
-    KNIGHT_KICK,
-    // Sentinel
-    SENTINEL_SHIELD_BASH,
-    SENTINEL_MACE_ATTACK,
-    // Mercenary
-    MERCENARY_AXE_ATTACK,
-    MERCENARY_AXE_SPECIAL,
-    // Archer
-    ARCHER_BOW_SHOT,
-    ARCHER_ARROW_HIT,
-    ARCHER_RELOAD,
-    // Crossbow
-    CROSSBOW_SHOT,
-    CROSSBOW_BOLT_HIT,
-    CROSSBOW_RELOAD,
-    // Character_general
-    CHARACTER_GET_HIT,
-    CHARACTER_DEATH,
-    // Collectables
-    COLLECT_CHARACTER,
-    COLLECT_BOX,
-    // Enemies
-    ENEMY_GET_HIT,
-    ENEMY_DEATH,
-    ENEMY_WALL_IMPACT,
-    // General
-    GAME_OVER,
-    GAME_WIN,
-    // Added later because of stupid enum structure
-    ENEMY_SPECIAL_ABILITY,
-    WAVE_INCOMING,
-    AXE_THROW,
-    ENEMY_WOLF_GET_HIT,
-    ENEMY_WOLF_DEATH,
-    HAND_PLACING_CHAR,
-    TUTORIAL_STEP
-}
-
-[System.Serializable]
-public struct SoundList
-{
-    public AudioClip[] Sounds { get => sounds; }
-
-    [HideInInspector] public string name;
-    [SerializeField] private AudioClip[] sounds;
-}
-
-[RequireComponent(typeof(AudioSource)), ExecuteInEditMode]
 public class SoundManager : MonoBehaviour
 {
     private static SoundManager _instance;
-    private AudioSource _audioSource;
 
-    [Range(0, 1)]
-    [SerializeField] private float _globalVolume = 1f;
+    [SerializeField] private AudioMixer _mixer;
 
-    [SerializeField] private SoundList[] _soundList;
+    [SerializeField] private AudioSource _sfxSource;
+    [SerializeField] private AudioSource _musicSource;
+    [SerializeField] private AudioSource _ambientSource;
+
+    [SerializeField] private GlobalAudioLibrary _library;
+    public GlobalAudioLibrary Library => _library;
+
+    private Coroutine _ambientRoutine;
+    private Coroutine _musicRoutine;
 
     private void Awake()
     {
-        _instance = this;
-    }
-
-    private void Start()
-    {
-        _audioSource = GetComponent<AudioSource>();
-    }
-
-#if UNITY_EDITOR
-    private void OnEnable()
-    {
-        string[] names = Enum.GetNames(typeof(SoundType));
-        Array.Resize(ref _soundList, names.Length);
-
-        for (int i = 0; i < _soundList.Length; i++)
+        if (_instance != null && _instance != this)
         {
-            _soundList[i].name = names[i];
+            Destroy(gameObject);
+            return;
         }
+
+        _instance = this;
+        DontDestroyOnLoad(gameObject);
     }
-#endif
 
     public static SoundManager Instance
     {
@@ -99,11 +43,125 @@ public class SoundManager : MonoBehaviour
         }
     }
 
-    public static void PlaySound(SoundType sound, float volume = 1)
+    public void PauseBackgroundSounds()
     {
-        AudioClip[] clips = _instance._soundList[(int)sound].Sounds;
+        _musicSource.Pause();
+        _ambientSource.Pause();
+    }
+
+    public void UnPauseBackgroundSounds()
+    {
+        _musicSource.UnPause();
+        _ambientSource.UnPause();
+    }
+
+    // Music
+    public void PlayMusic(AudioClip clip, float fadeDuration = 1f)
+    {
+        if (_musicRoutine != null)
+            StopCoroutine(_musicRoutine);
+
+        _musicRoutine = StartCoroutine(FadeIn(_musicSource, clip, fadeDuration));
+    }
+
+    public void FadeOutMusic(float duration = 1f)
+    {
+        if (_musicRoutine != null)
+            StopCoroutine(_musicRoutine);
+
+        _musicRoutine = StartCoroutine(FadeOut(_musicSource, duration));
+    }
+
+    // Ambient
+    public void PlayAmbient(AudioClip clip, float fadeDuration = 1f)
+    {
+        if (_ambientRoutine != null)
+            StopCoroutine(_ambientRoutine);
+
+        _ambientRoutine = StartCoroutine(FadeIn(_ambientSource, clip, fadeDuration));
+    }
+
+    public void FadeOutAmbient(float duration = 1f)
+    {
+        if (_ambientRoutine != null)
+            StopCoroutine(_ambientRoutine);
+
+        _ambientRoutine = StartCoroutine(FadeOut(_ambientSource, duration));
+    }
+
+    // Transitions and Fades
+    private IEnumerator FadeIn(AudioSource source, AudioClip clip, float duration)
+    {
+        source.clip = clip;
+        source.volume = 0f;
+        source.Play();
+
+        float time = 0f;
+
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            source.volume = Mathf.Lerp(0f, 1f, time / duration);
+            yield return null;
+        }
+
+        source.volume = 1f;
+    }
+
+    private IEnumerator FadeOut(AudioSource source, float duration)
+    {
+        float startVolume = source.volume;
+        float time = 0f;
+
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            source.volume = Mathf.Lerp(startVolume, 0f, time / duration);
+            yield return null;
+        }
+
+        source.Stop();
+        source.volume = 1f;
+    }
+
+    // SFX
+    public static void PlaySound(SFXEntry entry, float volume = 1)
+    {
+        AudioClip[] clips = entry.Clips;
+        if (clips == null || clips.Length == 0)
+            return;
+
         AudioClip randomClip = clips[UnityEngine.Random.Range(0, clips.Length)];
 
-        _instance._audioSource.PlayOneShot(randomClip, volume * _instance._globalVolume);
+        _instance._sfxSource.PlayOneShot(randomClip, volume);
+    }
+
+    // Volumes
+    public void SetMasterVolume(float value)
+    {
+        _mixer.SetFloat("MasterVolume", LinearToDb(value));
+    }
+
+    public void SetMusicVolume(float value)
+    {
+        _mixer.SetFloat("MusicVolume", LinearToDb(value));
+    }
+
+    public void SetSFXVolume(float value)
+    {
+        _mixer.SetFloat("SFXVolume", LinearToDb(value));
+    }
+
+    public void SetAmbientVolume(float value)
+    {
+        _mixer.SetFloat("AmbientVolume", LinearToDb(value));
+    }
+
+    private float LinearToDb(float value)
+    {
+        if (value <= 0.0001f)
+            return -80f; // Silence
+
+        return Mathf.Log10(value) * 20f;
     }
 }

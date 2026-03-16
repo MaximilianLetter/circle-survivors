@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -37,10 +38,33 @@ public class PartyOfCharacters : MonoBehaviour, IStatContext
             GlobalModifierSystem.Instance.OnModifiersChanged += OnGlobalModifiersChanged;
         RecalculateMaxPartySize();
 
+        // Use serialized type only for testing, normally use None type to set it here in code afterwards
         if (_startAsType == CharacterType.None)
-            _startAsType = (CharacterType)UnityEngine.Random.Range(1, 4); // NOTE: not super clean, 0 is None
+        {
+            if (GameManager.Instance.Mode == GameMode.Tutorial)
+            {
+                _startAsType = CharacterType.Knight;
+            }
+            else
+            {
+                _startAsType = (CharacterType)UnityEngine.Random.Range(1, 4); // NOTE: not super clean, 0 is None
+            }
+        }
 
         AddCharacter(_startAsType);
+        _playerMovement.SetMoveSpeed(false); // Start in idle phase
+    }
+
+    private void OnEnable()
+    {
+        EnemyManager.OnWaveStarted += HandleWaveStart;
+        EnemyManager.OnWaveFinished += HandleWaveEnd;
+    }
+
+    private void OnDisable()
+    {
+        EnemyManager.OnWaveStarted -= HandleWaveStart;
+        EnemyManager.OnWaveFinished -= HandleWaveEnd;
     }
 
     private void OnDestroy()
@@ -82,7 +106,7 @@ public class PartyOfCharacters : MonoBehaviour, IStatContext
 
     public void AddCharacter(CharacterType type)
     {
-        GameObject newOne = Instantiate(_mappings.GetPlayable(type), transform);
+        GameObject newOne = Instantiate(_mappings.GetPlayableCharacter(type), transform);
         _characters.Add(newOne);
 
         RearrangeCircle();
@@ -120,7 +144,7 @@ public class PartyOfCharacters : MonoBehaviour, IStatContext
         Destroy(exchangingCharacter.gameObject);
 
         // Add new one
-        GameObject newOne = Instantiate(_mappings.GetPlayable(charType), transform);
+        GameObject newOne = Instantiate(_mappings.GetPlayableCharacter(charType), transform);
         _characters.Insert(index, newOne);
 
         newOne.GetComponent<BaseCharacter>().SetHpPercentage(hpPercentage);
@@ -130,6 +154,12 @@ public class PartyOfCharacters : MonoBehaviour, IStatContext
         // Leave behind exchanged character for pick up
         WorldManager.Instance.PlaceCollectableCharacter(pos, rot, exchangingCharacter.CharacterType);
     }
+
+    // TODO change different formation between fights
+
+    // TODO Animate formation change (maybe)
+
+    // TODO clean up a bit (make this singleton and more)
 
     public void RearrangeCircle()
     {
@@ -158,13 +188,39 @@ public class PartyOfCharacters : MonoBehaviour, IStatContext
         _playerMovement.AdjustTurnSpeed(amount);
     }
 
-    public void RestoreHpForAllCharacters()
+    private void HandleWaveStart()
     {
-        // NOTE: GetComponent call not great during runtime
-        // list could maybe be List<BaseCharacter> instead
-        foreach (var c in _characters)
+        SetPartyFightState(true);
+    }
+
+    private void HandleWaveEnd()
+    {
+        SetPartyFightState(false);
+    }
+
+    public void SetPartyFightState(bool fightState)
+    {
+        StartCoroutine(SetPartyFightStateRoutine(fightState));
+    }
+
+    private IEnumerator SetPartyFightStateRoutine(bool fightState)
+    {
+        _playerMovement.SetMoveSpeed(fightState);
+
+        float delayBetweenCharacters = 0.1f;
+        foreach (var cGO in _characters)
         {
-            c.GetComponent<BaseCharacter>().RestoreHp();
+            // Toggle all visual states
+            BaseCharacter character = cGO.GetComponent<BaseCharacter>();
+
+            SoundManager.PlaySound(character.Audio.StanceChange);
+
+            if (fightState)
+                character.ApplyVisualState(ModelVariant.Fight);
+            else
+                character.ResetCharacterState(); // Includes special resource reset
+
+            yield return new WaitForSeconds(delayBetweenCharacters + UnityEngine.Random.Range(0f, 0.03f));
         }
     }
 

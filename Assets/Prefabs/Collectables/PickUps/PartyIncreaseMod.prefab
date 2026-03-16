@@ -71,6 +71,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -3837634868578074674, guid: 8e112db62cba0c1478a85ab406b89129, type: 3}
+      propertyPath: _showPlayerUI
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -3837634868578074674, guid: 8e112db62cba0c1478a85ab406b89129, type: 3}
       propertyPath: _statModifier
       value: 
       objectReference: {fileID: 11400000, guid: c09c1166b0933c142a4fb168e3a81ee0, type: 2}

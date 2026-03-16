@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyWave
   delayBefore: 3
   delayAfter: 3
-  enemyCount: 4
+  enemyCount: 3
   spawnInterval: 0.5
   enemies:
   - prefab: {fileID: 4315008323507486199, guid: e8600e70562311943945ba4b93415720, type: 3}

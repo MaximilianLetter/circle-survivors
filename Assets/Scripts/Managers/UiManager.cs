@@ -5,32 +5,33 @@ using UnityEngine.Rendering;
 public class UiManager : MonoBehaviour
 {
     private static UiManager _instance;
+    public static UiManager Instance => _instance;
 
     [SerializeField] private UITextData _uiTextData;
 
     [SerializeField] private TextMeshProUGUI _versionText;
     [SerializeField] private TextMeshProUGUI _statusText;
     [SerializeField] private TextMeshProUGUI _bottomInstructions;
-    [SerializeField] private TextMeshProUGUI _bigCenterInstructions;
+
+    [SerializeField] private CanvasGroup _titleCanvasGroup;
+    [SerializeField] private TextMeshProUGUI _titleText;
+    [SerializeField] private TextMeshProUGUI _subtitleText;
 
     [SerializeField] private float _statusHideTimer = 3f;
 
     // NOTE: this manager is a bit junk, needs refactor at some point
     // texts can break if going in pause mode overlaps
 
-    public static UiManager Instance
-    {
-        get
-        {
-            if (_instance == null) Debug.LogError("UiManager is NULL");
-
-            return _instance;
-        }
-    }
-
     private void Awake()
     {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         _instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     private void Start()
@@ -39,16 +40,15 @@ public class UiManager : MonoBehaviour
         SetUItoColor(Color.white);
     }
 
-    public void ShowInstructionsOnGameStart()
+    public void ShowLevelTitle(string title, string subtitle)
     {
-        _statusText.text = _uiTextData.demoTitle + " " + Application.version;
-        _statusText.enabled = true;
+        _titleText.text = title;
+        //_titleText.enabled = true;
 
-        _bigCenterInstructions.text = _uiTextData.gameStartGameplayInstructions;
-        _bigCenterInstructions.enabled = true;
+        _subtitleText.text = subtitle;
+        //_subtitleText.enabled = true;
 
-        _bottomInstructions.text = _uiTextData.gameStartResumeInstructions;
-        _bottomInstructions.enabled = true;
+        _titleCanvasGroup.gameObject.SetActive(true);
     }
 
     public void ShowNewWaveText(bool boss = false)
@@ -121,7 +121,8 @@ public class UiManager : MonoBehaviour
     {
         _statusText.enabled = false;
         _bottomInstructions.enabled = false;
-        _bigCenterInstructions.enabled = false;
+        //_titleText.enabled = false;
+        //_subtitleText.enabled = false;
     }
 
     public void SetUItoColor(Color col)
@@ -129,6 +130,10 @@ public class UiManager : MonoBehaviour
         _versionText.color = col;
         _statusText.color = col;
         _bottomInstructions.color = col;
-        _bigCenterInstructions.color = col;
+    }
+
+    public string GetTextData()
+    {
+        return _uiTextData.pauseText;
     }
 }

@@ -12,10 +12,4 @@ public class EnemyStats : ScriptableObject
     public float MoveSpeed = 2f;
     public float MoveSpeedIncrease = 0.4f;
     public float MoveSpeedIncreaseInterval = 3;
-
-    public SoundType GetHitSound;
-    public SoundType DeathSound;
-
-    [Header("Special Abilities")]
-    public SoundType SpecialAbilitySound;
 }

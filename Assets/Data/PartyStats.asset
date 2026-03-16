@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: PartyStats
   m_EditorClassIdentifier: Assembly-CSharp::PartyStats
   MaxPartySize: 3
-  MovementSpeed: 4
+  MovementSpeedIdle: 6
+  MovementSpeed: 3.5
   MaxTurnSpeed: 360
   MinTurnSpeed: 90
   TurnSpeedAdjustPerCharacter: 30

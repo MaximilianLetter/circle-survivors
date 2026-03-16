@@ -5,6 +5,7 @@ public class PartyStats : ScriptableObject
 {
     public int MaxPartySize = 3;
 
+    public float MovementSpeedIdle = 6;
     public float MovementSpeed = 4;
     public float MaxTurnSpeed = 3360;
     public float MinTurnSpeed = 90;

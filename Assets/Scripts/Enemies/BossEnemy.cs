@@ -6,11 +6,10 @@ public class BossEnemy : BaseEnemy
 {
     // NOTE: restructure this in special abilities or something
     [SerializeField] private float[] _phaseThresholds = { 0.75f, 0.5f, 0.25f };
-    [SerializeField] private float _retreatDuration = 2f;
-    [SerializeField] private float _retreatDistance = 4f;
 
     private HealthPointsIndicator _healthPointsIndicator;
-    private SpawnAdds _spawnAdds;
+
+    private BossAbility[] _abilities;
 
     public static event Action OnBossDefeated;
 
@@ -22,7 +21,21 @@ public class BossEnemy : BaseEnemy
         base.Awake();
 
         _healthPointsIndicator = GetComponent<HealthPointsIndicator>();
-        _spawnAdds = GetComponent<SpawnAdds>();
+        //_spawnAdds = GetComponent<SpawnAdds>();
+
+        _abilities = GetComponents<BossAbility>();
+    }
+
+    private void Start()
+    {
+        // Start all regular returning boss effects (like spawning adds)
+        foreach (var ability in _abilities)
+        {
+            if (ability.HasIntervalEffect)
+            {
+                ability.StartAbilityRoutine();
+            }   
+        }
     }
 
     protected override void OnDamageTaken(float incomingDmg, float knockBack)
@@ -35,48 +48,45 @@ public class BossEnemy : BaseEnemy
         if (_currentPhase < _phaseThresholds.Length &&
             hpPercent <= _phaseThresholds[_currentPhase])
         {
-            StartCoroutine(SpecialAttackSequence());
+            foreach (var ability in _abilities)
+            {
+                if (ability.HasTriggerEffect)
+                {
+                    if (ability.HasMoveEffect)
+                    {
+                        StartCoroutine(AbilityMovement(ability));
+                    }
+                    else
+                        ability.FireAbility();
+                }
+            }
 
             _currentPhase++;
         }
     }
 
-    private IEnumerator SpecialAttackSequence()
+    private IEnumerator AbilityMovement(BossAbility ability)
     {
-        //_specialInProgress = true;
         _movement.EnableMovement(false);
+        _movement.EnableTurning(false);
 
-        if (_stats.SpecialAbilitySound != SoundType.NONE) SoundManager.PlaySound(_stats.SpecialAbilitySound);
-        CameraShake.Instance.TriggerShake(2.5f, 0.01f);
-
-        _spawnAdds.TriggerSpecialAbility();
-
-        yield return StartCoroutine(Retreat());
+        yield return StartCoroutine(ability.RunMovementRoutine());
 
         _movement.EnableMovement(true);
-        //_specialInProgress = false;
-    }
-
-    private IEnumerator Retreat()
-    {
-        float elapsed = 0f;
-        Vector3 retreatDir = -transform.forward;
-
-        while (elapsed < _retreatDuration)
-        {
-            transform.position += retreatDir * _retreatDistance * Time.deltaTime;
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
+        _movement.EnableTurning(true);
     }
 
     protected override void Die()
     {
         base.Die();
 
+        foreach (var ability in _abilities)
+        {
+            ability.StopAllCoroutines();
+        }
+        StopAllCoroutines();
+
         _movement.EnableMovement(false);
         OnBossDefeated?.Invoke();
-        _spawnAdds.StopAllCoroutines();
-        StopAllCoroutines();
     }
 }

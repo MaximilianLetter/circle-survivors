@@ -22,7 +22,7 @@ public class PlaceObjectByHand : MonoBehaviour
         return _dropHeight;
     }
 
-    public void DropObject(GameObject obj)
+    public void DropObject(GameObject obj, bool isCollectable = false)
     {
         if (!gameObject.activeSelf)
         {
@@ -42,8 +42,14 @@ public class PlaceObjectByHand : MonoBehaviour
         StartCoroutine(LiftObjectCoroutine(obj.transform, _singleDropDuration, true));
     }
 
-    public IEnumerator DropObjectCoroutine(Transform objTransform, float dropDuration, bool deactivateAfter = false)
+    public IEnumerator DropObjectCoroutine(Transform objTransform, float dropDuration, bool deactivateAfter = false, bool deactivateDuringDrop = false)
     {
+        BaseCollectable collectable = objTransform.GetComponent<BaseCollectable>();
+        if (deactivateDuringDrop && collectable != null)
+        {
+            collectable.ToggleCollectableColliders(false);
+        }
+
         Vector3 targetPos = objTransform.position;
         targetPos.y = 0f;
 
@@ -72,7 +78,12 @@ public class PlaceObjectByHand : MonoBehaviour
         objTransform.position = targetPos;
         transform.position = targetPos;
 
-        SoundManager.PlaySound(SoundType.HAND_PLACING_CHAR);
+        if (deactivateDuringDrop && collectable != null)
+        {
+            collectable.ToggleCollectableColliders(true);
+        }
+
+        SoundManager.PlaySound(SoundManager.Instance.Library.HandPlaceObject);
 
         // Hand leaves without object
         startPos = transform.localPosition;
@@ -117,7 +128,7 @@ public class PlaceObjectByHand : MonoBehaviour
         }
         transform.position = objStartPos;
 
-        SoundManager.PlaySound(SoundType.HAND_PLACING_CHAR);
+        SoundManager.PlaySound(SoundManager.Instance.Library.HandPlaceObject);
 
         // Hand leaves with object
         time = 0f;

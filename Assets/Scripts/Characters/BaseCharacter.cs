@@ -1,6 +1,13 @@
 using System;
 using UnityEngine;
 
+public enum ModelVariant
+{
+    Idle,
+    Fight,
+    Special
+}
+
 [RequireComponent(typeof(LocalModifierSystem))]
 [RequireComponent(typeof(HealthPointsIndicator))]
 public class BaseCharacter : MonoBehaviour, IStatContext
@@ -12,7 +19,19 @@ public class BaseCharacter : MonoBehaviour, IStatContext
 
     [SerializeField] private AttackType _defaultAttackType;
     [SerializeField] private CharacterType _characterType;
+
+    public CharacterStats Stats => _stats;
     [SerializeField] private CharacterStats _stats;
+
+    public CharacterAudioProfile Audio => _audio;
+    [SerializeField] private CharacterAudioProfile _audio;
+
+
+    // NOTE: this is a bit doubled with TargetedAttackAbility
+    // maybe remove from there to here
+    [SerializeField] private GameObject _idleModel;
+    [SerializeField] private GameObject _fightModel;
+    [SerializeField] private GameObject _specialModel;
 
     public LocalModifierSystem LocalModifierSystem => _localModifierSystem;
     private LocalModifierSystem _localModifierSystem;
@@ -42,6 +61,8 @@ public class BaseCharacter : MonoBehaviour, IStatContext
     private DeathFall _deathFall;
     private PartyOfCharacters _party;
     private HealthPointsIndicator _healthPointsIndicator;
+    private SpecialResource _specialResource;
+    private BlockProjectiles _blockProjectiles;
 
     // Events
     public static event Action OnCollectablePickedUp;
@@ -55,6 +76,10 @@ public class BaseCharacter : MonoBehaviour, IStatContext
         _healthPointsIndicator = GetComponent<HealthPointsIndicator>();
         _localModifierSystem = GetComponent<LocalModifierSystem>();
         _modifierIndicator = GetComponent<ModifierIndicator>();
+        _specialResource = GetComponent<SpecialResource>();
+
+        if (_characterType == CharacterType.Guardian)
+            _blockProjectiles = GetComponent<BlockProjectiles>();
 
         _maxHp = ResolveStat(StatType.MaxHp, _stats.MaxHP);
         HP = _maxHp;
@@ -64,6 +89,10 @@ public class BaseCharacter : MonoBehaviour, IStatContext
     {
         _isInitialized = true;
         SetHealthVisuals();
+
+        // Differentiate between characters added during wave or in between
+        bool fightModel = EnemyManager.Instance.GetWaveRunningState();
+        ApplyVisualState(fightModel ? ModelVariant.Fight : ModelVariant.Idle);
     }
 
     private void OnEnable()
@@ -98,7 +127,7 @@ public class BaseCharacter : MonoBehaviour, IStatContext
 
         _lastHitTime = Time.time;
 
-        SoundManager.PlaySound(SoundType.CHARACTER_GET_HIT);
+        SoundManager.PlaySound(_audio.GetHit);
 
         if (HP <= 0)
         {
@@ -191,6 +220,12 @@ public class BaseCharacter : MonoBehaviour, IStatContext
                     if (!TryToPickUpHealth(collectable)) return;
                     break;
 
+                // NOTE: Party Increase is basically a stat modifier, the type
+                // enum is multi-used for spawning objects. Semi-clean.
+                case CollectableType.PartyIncrease:
+                    if (!TryToPickUpModifier(collectable)) return;
+                    break;
+
                 case CollectableType.StatModifier:
                     if (!TryToPickUpModifier(collectable)) return;
                     break;
@@ -215,7 +250,13 @@ public class BaseCharacter : MonoBehaviour, IStatContext
         if (other.CompareTag("EnemyProjectile"))
         {
             var projectile = other.GetComponent<EnemyProjectile>();
-            TakeDmg(projectile.GetDmgStat());
+
+            if (_blockProjectiles != null)
+            {
+                _blockProjectiles.Block();
+            }
+            else
+                TakeDmg(projectile.GetDmgStat());
 
             Destroy(projectile.gameObject);
         }
@@ -228,7 +269,7 @@ public class BaseCharacter : MonoBehaviour, IStatContext
         if (_party.CanAddCharacter())
         {
             _party.AddCharacter(type);
-            SoundManager.PlaySound(SoundType.COLLECT_CHARACTER);
+            SoundManager.PlaySound(SoundManager.Instance.Library.CollectCharacter);
         }
         else
         {
@@ -237,7 +278,7 @@ public class BaseCharacter : MonoBehaviour, IStatContext
             if (type == _characterType) return false;
 
             _party.ExchangeCharacter(type, this, pos, rot);
-            SoundManager.PlaySound(SoundType.COLLECT_CHARACTER);
+            SoundManager.PlaySound(SoundManager.Instance.Library.CollectCharacter);
         }
 
         return true;
@@ -249,7 +290,7 @@ public class BaseCharacter : MonoBehaviour, IStatContext
         if (HP == _maxHp) return false;
 
         RestoreHp();
-        SoundManager.PlaySound(SoundType.COLLECT_BOX);
+        SoundManager.PlaySound(SoundManager.Instance.Library.CollectPickUp); // TODO add heal sound
 
         return true;
     }
@@ -270,9 +311,38 @@ public class BaseCharacter : MonoBehaviour, IStatContext
             _localModifierSystem.AddModifier(mod.CreateRuntimeInstance());
         }
 
-        SoundManager.PlaySound(SoundType.COLLECT_BOX);
+        SoundManager.PlaySound(SoundManager.Instance.Library.CollectPickUp);
         OnCollectablePickedUp?.Invoke();
 
         return true;
+    }
+
+    public void ResetCharacterState()
+    {
+        _specialResource.ResetToDefault();
+
+        ApplyVisualState(ModelVariant.Idle);
+    }
+
+    public void ApplyVisualState(ModelVariant model)
+    {
+        _idleModel.SetActive(false);
+        _fightModel.SetActive(false);
+        _specialModel.SetActive(false);
+
+        switch (model)
+        {
+            case ModelVariant.Idle:
+                _idleModel.SetActive(true);
+                break;
+
+            case ModelVariant.Fight:
+                _fightModel.SetActive(true);
+                break;
+
+            case ModelVariant.Special:
+                _specialModel.SetActive(true);
+                break;
+        }
     }
 }

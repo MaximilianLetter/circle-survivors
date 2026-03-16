@@ -19,11 +19,6 @@ public class WorldManager : MonoBehaviour
     [SerializeField] private bool _showEndOfWorldIndicators = true;
     [SerializeField] private Material _lineMaterial;
 
-    [Header("Obstacles")]
-    [SerializeField] private GameObject[] _smallObstacles;
-    [SerializeField] private GameObject[] _mediumObstacles;
-    [SerializeField] private GameObject[] _largeObstacles;
-
     [Header("Collectables")]
     [SerializeField] private ObjectMappings _objMappings;
     [SerializeField] private GameObject[] _pickUps;
@@ -43,9 +38,16 @@ public class WorldManager : MonoBehaviour
 
     // Could be a custom struct, Vector3 works just as fine although less readable
     private Vector3 _occuranceWeights;
+
     private int _characterAmount;
-    private int _pickUpAmount;
+    private int _characterModifierAmount;
+    private int _partyIncreaseModifierAmount;
+    private int _pickUpHealAmount;
+
     private Vector2 _mapSize;
+    private BiomeConfig _biome;
+
+    private GameObject _activeWeatherEffect;
 
     private void Awake()
     {
@@ -65,10 +67,15 @@ public class WorldManager : MonoBehaviour
     public void GenerateWorld(LevelConfig config)
     {
         // Set all map values
+        _biome = config.biomeConfig;
         _mapSize = config.mapSize;
         _minDistance = config.minDistance;
+
         _characterAmount = config.characterAmount;
-        _pickUpAmount = config.pickUpAmount;
+        _characterModifierAmount = config.characterModifierAmount;
+        _pickUpHealAmount = config.pickUpHealthAmount;
+        _partyIncreaseModifierAmount = config.partyIncreaseModifierAmount;
+
         _occuranceWeights = config.obstacleWeights;
 
         _mapSpawnArea = _mapSize - new Vector2(_mapEdgePuffer, _mapEdgePuffer);
@@ -81,6 +88,12 @@ public class WorldManager : MonoBehaviour
         _collectableSpawnPoints = GenerateCollectables();
 
         BuildWorldBounds();
+
+        // Add weather effects if present
+        if (config.weatherEffectPrefab != null)
+        {
+            _activeWeatherEffect = Instantiate(config.weatherEffectPrefab, Vector3.zero, Quaternion.identity);
+        }
     }
 
     private List<Vector2> GenerateObstacles()
@@ -103,10 +116,28 @@ public class WorldManager : MonoBehaviour
 
     private List<Vector2> GenerateCollectables()
     {
-        List<Vector2> spawnPoints = GeneratePointsCollectables(_obstacleSpawnPoints, _characterAmount + _pickUpAmount);
+        int totalCollectablesAmount = _characterAmount + _characterModifierAmount + _pickUpHealAmount + _partyIncreaseModifierAmount;
+        List<Vector2> spawnPoints = GeneratePointsCollectables(_obstacleSpawnPoints, totalCollectablesAmount);
+
+        int remainingCharacters = _characterAmount;
+        int remainingCharModifiers = _characterModifierAmount;
+        int remainingHeal = _pickUpHealAmount;
+        int remainingPartyIncrease = _partyIncreaseModifierAmount;
 
         for (int i = 0; i < spawnPoints.Count; i++)
         {
+            int totalRemaining =
+                remainingCharacters +
+                remainingCharModifiers +
+                remainingHeal +
+                remainingPartyIncrease;
+
+            if (totalRemaining == 0)
+                break;
+
+            // Select collectable object to place next
+            GameObject objToPlace = GetNextPickup();
+
             const int maxAttempts = 5;
             bool spawned = false;
 
@@ -124,8 +155,6 @@ public class WorldManager : MonoBehaviour
                 if (!CheckIfPositionIsFree(pos, true))
                     continue;
 
-
-                GameObject objToPlace = i >= _pickUpAmount ? _objMappings.GetRandomCollectable() : _pickUps[Random.Range(0, _pickUps.Length)];
                 Quaternion rot = Quaternion.Euler(0, Random.Range(0, 360), 0);
 
                 Instantiate(objToPlace, pos, rot, _collectableContainer);
@@ -140,6 +169,41 @@ public class WorldManager : MonoBehaviour
         return spawnPoints;
     }
 
+    public GameObject GetNextPickup()
+    {
+        int totalRemaining = _characterAmount + _characterModifierAmount + _pickUpHealAmount + _partyIncreaseModifierAmount;
+        if (totalRemaining == 0)
+        {
+            return null;
+        }
+
+        int rng = Random.Range(0, totalRemaining);
+        GameObject prefab;
+
+        if (rng < _characterAmount)
+        {
+            prefab = _objMappings.GetRandomCollectableCharacter();
+            _characterAmount--;
+        }
+        else if (rng < _characterAmount + _characterModifierAmount)
+        {
+            prefab = _objMappings.GetCollectablePickup(CollectableType.StatModifier);
+            _characterModifierAmount--;
+        }
+        else if (rng < _characterAmount + _characterModifierAmount + _pickUpHealAmount)
+        {
+            prefab = _objMappings.GetCollectablePickup(CollectableType.HealthPickUp);
+            _pickUpHealAmount--;
+        }
+        else
+        {
+            prefab = _objMappings.GetCollectablePickup(CollectableType.PartyIncrease);
+            _partyIncreaseModifierAmount--;
+        }
+
+        return prefab;
+    }
+
     public void ClearWorld()
     {
         foreach (Transform child in _obstacleContainer)
@@ -150,13 +214,16 @@ public class WorldManager : MonoBehaviour
 
         if (_boundaryContainer != null)
             Destroy(_boundaryContainer);
+
+        if (_activeWeatherEffect != null)
+            Destroy(_activeWeatherEffect);
     }
 
     public void PlaceCollectableCharacter(Vector3 position, Quaternion rotation, CharacterType charType)
     {
         if (!CheckIfPositionIsFree(position)) return;
 
-        GameObject collCharacter = _objMappings.GetCollectable(charType);
+        GameObject collCharacter = _objMappings.GetCollectableCharacter(charType);
         if (collCharacter == null) return;
 
         Instantiate(
@@ -184,15 +251,15 @@ public class WorldManager : MonoBehaviour
         // Use cumulative weights to select
         if (rng < weights.x)
         {
-            return SelectRandomFromArray(_smallObstacles);
+            return SelectRandomFromArray(_biome.smallObstacles);
         }
         else if (rng < weights.y + weights.x)
         {
-            return SelectRandomFromArray(_mediumObstacles);
+            return SelectRandomFromArray(_biome.mediumObstacles);
         }
         else
         {
-            return SelectRandomFromArray(_largeObstacles);
+            return SelectRandomFromArray(_biome.largeObstacles);
         }
     }
 

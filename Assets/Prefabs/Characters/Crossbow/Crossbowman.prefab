@@ -9,6 +9,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -4285857816463271873, guid: 6d3aa132a07fc744a86d993ec86c68bd, type: 3}
+      propertyPath: _audio
+      value: 
+      objectReference: {fileID: 11400000, guid: 3529858d3e045c54fbdd6c3459d88993, type: 2}
+    - target: {fileID: -4285857816463271873, guid: 6d3aa132a07fc744a86d993ec86c68bd, type: 3}
       propertyPath: _stats
       value: 
       objectReference: {fileID: 11400000, guid: 67885d3db978adc40b17350fd24afb9a, type: 2}
@@ -16,6 +20,18 @@ PrefabInstance:
       propertyPath: _totalHp
       value: 18
       objectReference: {fileID: 0}
+    - target: {fileID: -4285857816463271873, guid: 6d3aa132a07fc744a86d993ec86c68bd, type: 3}
+      propertyPath: _idleModel
+      value: 
+      objectReference: {fileID: 5609020033638856532}
+    - target: {fileID: -4285857816463271873, guid: 6d3aa132a07fc744a86d993ec86c68bd, type: 3}
+      propertyPath: _fightModel
+      value: 
+      objectReference: {fileID: 5441149774956450980}
+    - target: {fileID: -4285857816463271873, guid: 6d3aa132a07fc744a86d993ec86c68bd, type: 3}
+      propertyPath: _specialModel
+      value: 
+      objectReference: {fileID: 4926527026419353506}
     - target: {fileID: -4285857816463271873, guid: 6d3aa132a07fc744a86d993ec86c68bd, type: 3}
       propertyPath: _characterType
       value: 2
@@ -88,6 +104,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1429237258604905132, guid: 6d3aa132a07fc744a86d993ec86c68bd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5698560504078146840}
+    - targetCorrespondingSourceObject: {fileID: 1429237258604905132, guid: 6d3aa132a07fc744a86d993ec86c68bd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5088204102222458350}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 5584326037215752057, guid: 6d3aa132a07fc744a86d993ec86c68bd, type: 3}
       insertIndex: -1
@@ -165,17 +184,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShootProjectileAbility
   _animator: {fileID: 2539556616931278518}
-  _stats: {fileID: 11400000, guid: 67885d3db978adc40b17350fd24afb9a, type: 2}
-  _baseModel: {fileID: 5441149774956450980}
-  _specialModel: {fileID: 4926527026419353506}
   _targetLayer:
     serializedVersion: 2
     m_Bits: 128
   _obstacleMask:
     serializedVersion: 2
     m_Bits: 64
-  _attackSound: 10
-  _specialAttackSound: 0
   _turnSpeed: 180
   _returnDelay: 0.5
   _projectileSpawn: {fileID: 7048688010550263057}
@@ -194,6 +208,92 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::DepleteSpecial
   _indicator: {fileID: 550516731605846948}
   _stats: {fileID: 11400000, guid: beb33aecb8051de45bb8a66a2d9bd3c1, type: 2}
+--- !u!1001 &4690032618574105093
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 2493032995557914389}
+    m_Modifications:
+    - target: {fileID: -8679921383154817045, guid: 0d71c76784cbaec4ca339530160821ac, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0d71c76784cbaec4ca339530160821ac, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0d71c76784cbaec4ca339530160821ac, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0d71c76784cbaec4ca339530160821ac, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0d71c76784cbaec4ca339530160821ac, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0d71c76784cbaec4ca339530160821ac, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0d71c76784cbaec4ca339530160821ac, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0d71c76784cbaec4ca339530160821ac, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0d71c76784cbaec4ca339530160821ac, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -8679921383154817045, guid: 0d71c76784cbaec4ca339530160821ac, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 0d71c76784cbaec4ca339530160821ac, type: 3}
+      propertyPath: m_Name
+      value: export_crossbowman_waiting
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 0d71c76784cbaec4ca339530160821ac, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0d71c76784cbaec4ca339530160821ac, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2366087660438535103}
+  m_SourcePrefab: {fileID: 100100000, guid: 0d71c76784cbaec4ca339530160821ac, type: 3}
+--- !u!4 &5088204102222458350 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0d71c76784cbaec4ca339530160821ac, type: 3}
+  m_PrefabInstance: {fileID: 4690032618574105093}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5609020033638856532 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 0d71c76784cbaec4ca339530160821ac, type: 3}
+  m_PrefabInstance: {fileID: 4690032618574105093}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2366087660438535103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5609020033638856532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bb461be133fbbe4ebedc4c07a338ed7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FillBoundsSetter
 --- !u!1001 &5135142844376607221
 PrefabInstance:
   m_ObjectHideFlags: 0

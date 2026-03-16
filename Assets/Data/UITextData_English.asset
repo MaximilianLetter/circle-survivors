@@ -35,5 +35,5 @@ MonoBehaviour:
     Press ESC to Quit.'
   pauseInstructions: 'Press any Key to Resume.
 
-    Press ESC to Quit.'
+    Press ESC to Return to Menu.'
   restartInstructions: Press any Key to Restart.

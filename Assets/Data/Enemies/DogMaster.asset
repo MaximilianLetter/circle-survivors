@@ -12,13 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535b1d8831e01b4aaa3ca9194238e38, type: 3}
   m_Name: DogMaster
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
-  BaseHp: 500
+  BaseHp: 400
   Damage: 6
   KnockBackThreshold: 500
-  KnockBackDmg: 24
+  KnockBackDmg: 48
   MoveSpeed: 2
-  MoveSpeedIncrease: 0.5
-  MoveSpeedIncreaseInterval: 3
-  GetHitSound: 17
-  DeathSound: 18
-  SpecialAbilitySound: 22
+  MoveSpeedIncrease: 0.2
+  MoveSpeedIncreaseInterval: 1

@@ -19,3 +19,4 @@ MonoBehaviour:
   MoveSpeed: 2
   MoveSpeedIncrease: 0.2
   MoveSpeedIncreaseInterval: 1
+  CatchPhrase: Let the dogs loose!

@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class WorldManager : MonoBehaviour
 {
     public static WorldManager Instance => _instance;
     private static WorldManager _instance;
+
+    [SerializeField] private GameObject _worldGround;
 
     [Header("Containers")]
     [SerializeField] private Transform _obstacleContainer;
@@ -26,7 +27,7 @@ public class WorldManager : MonoBehaviour
 
     [Header("Poisson Disk Sampling")]
     private float _minDistance = 4f;
-    private float _mapEdgePuffer = 10f;
+    private float _mapEdgePuffer = 14f;
     private int _maxAttempts = 30;
 
     private Vector2 _mapSpawnArea;
@@ -45,9 +46,12 @@ public class WorldManager : MonoBehaviour
     private int _pickUpHealAmount;
 
     private Vector2 _mapSize;
+    private Vector2 _startingPoint;
     private BiomeConfig _biome;
 
     private GameObject _activeWeatherEffect;
+    private GameObject _extractionPoint;
+    private GameObject _extractionPointGuidance;
 
     private void Awake()
     {
@@ -70,6 +74,7 @@ public class WorldManager : MonoBehaviour
         _biome = config.biomeConfig;
         _mapSize = config.mapSize;
         _minDistance = config.minDistance;
+        _startingPoint = config.playerStartPos;
 
         _characterAmount = config.characterAmount;
         _characterModifierAmount = config.characterModifierAmount;
@@ -87,7 +92,19 @@ public class WorldManager : MonoBehaviour
         _obstacleSpawnPoints = GenerateObstacles();
         _collectableSpawnPoints = GenerateCollectables();
 
+        ScaleGroundObject();
+
         BuildWorldBounds();
+
+        // Add extraction point if required
+        if (config.type == LevelType.Extraction)
+        {
+            // TODO -> have the extraction point be cleared of obstacles
+            _extractionPoint = Instantiate(config.extractionPoint, config.extractionPointPosition, Quaternion.identity);
+            _extractionPointGuidance = Instantiate(config.extractionGuidance);
+
+            _extractionPointGuidance.GetComponent<GuideTowardsTarget>().SetTarget(_extractionPoint.transform);
+        }
 
         // Add weather effects if present
         if (config.weatherEffectPrefab != null)
@@ -215,8 +232,27 @@ public class WorldManager : MonoBehaviour
         if (_boundaryContainer != null)
             Destroy(_boundaryContainer);
 
+        if (_extractionPoint != null)
+        {
+            // TODO can be made cleaner
+            Destroy(_extractionPoint);
+            Destroy(_extractionPointGuidance);
+        }
+
         if (_activeWeatherEffect != null)
             Destroy(_activeWeatherEffect);
+    }
+
+    private void ScaleGroundObject()
+    {
+        // NOTE: base model is 200x200 big
+        float factorX = _mapSize.x / 200f;
+        float factorZ = _mapSize.y / 200f;
+        _worldGround.transform.localScale = new Vector3(factorX, 1, factorZ);
+
+        // NOTE: base texture tiling is 10x10
+        Material worldGroundMaterial = _worldGround.GetComponent<Renderer>().material;
+        worldGroundMaterial.mainTextureScale = new Vector2(10 * factorX, 10 * factorZ);
     }
 
     public void PlaceCollectableCharacter(Vector3 position, Quaternion rotation, CharacterType charType)
@@ -300,16 +336,17 @@ public class WorldManager : MonoBehaviour
         int gridHeight = Mathf.CeilToInt(_mapSpawnArea.y / cellSize);
         Vector2[,] grid = new Vector2[gridWidth, gridHeight]; // Initializes 2D array
 
-        // Define the center and exclusion radius, center needs to stay empty
+        // Define the object and exclusion radius, center needs to stay empty
         Vector2 center = new Vector2(_mapSpawnArea.x / 2f, _mapSpawnArea.y / 2f);
-        float exclusionRadius = 6f;
+        Vector2 keepFreeZone = center + _startingPoint;
+        float exclusionRadius = 8f;
 
         // Generate first random pointVector2 firstPoint;
         Vector2 firstPoint;
         do
         {
             firstPoint = new Vector2(Random.Range(0, _mapSpawnArea.x), Random.Range(0, _mapSpawnArea.y));
-        } while (Vector2.Distance(firstPoint, center) < exclusionRadius);
+        } while (Vector2.Distance(firstPoint, keepFreeZone) < exclusionRadius);
 
         points.Add(firstPoint);
         grid[(int)(firstPoint.x / cellSize), (int)(firstPoint.y / cellSize)] = firstPoint;
@@ -336,8 +373,8 @@ public class WorldManager : MonoBehaviour
                 if (newPoint.x < 0 || newPoint.x >= _mapSpawnArea.x || newPoint.y < 0 || newPoint.y >= _mapSpawnArea.y)
                     continue;
 
-                // Check if the new point is within the exclusion zone
-                if (Vector2.Distance(newPoint, center) < exclusionRadius)
+                // Check if the new point has space to the starting point
+                if (Vector2.Distance(newPoint, keepFreeZone) < exclusionRadius)
                     continue;
 
                 // Check neighbors in the grid

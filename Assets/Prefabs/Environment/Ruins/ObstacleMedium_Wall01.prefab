@@ -64,6 +64,14 @@ PrefabInstance:
       propertyPath: _grassCount
       value: 35
       objectReference: {fileID: 0}
+    - target: {fileID: 8260878622921081658, guid: cec679eb413be9b41bd6cae15c28df3d, type: 3}
+      propertyPath: m_Size.x
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 8260878622921081658, guid: cec679eb413be9b41bd6cae15c28df3d, type: 3}
+      propertyPath: m_Size.y
+      value: 40
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 8286397757203300100, guid: cec679eb413be9b41bd6cae15c28df3d, type: 3}

@@ -9,8 +9,6 @@ public class SmoothTargetFollow : MonoBehaviour
     [Header("Optional Rotation Properties")]
     [SerializeField] private bool _doRotate = false;
     [SerializeField] private float _rotationStrength = 4f;
-    //[SerializeField] private float _rotationAmount = 10f;
-    //[SerializeField] private float _rotationSmoothTime = 0.2f;
 
     private Vector3 _offset;
 
@@ -42,7 +40,6 @@ public class SmoothTargetFollow : MonoBehaviour
         );
 
         transform.position = smoothPosition + _effectOffset;
-
 
         // NOTE: only used in menu currently
         if (!_doRotate) return;

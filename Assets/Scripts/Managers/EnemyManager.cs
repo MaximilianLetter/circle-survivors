@@ -15,6 +15,9 @@ public class EnemyManager : MonoBehaviour
     private int _aliveEnemiesInWave;
     private bool _waveRunning;
     private bool _bossWaveRunning;
+    private bool _continuousWave;
+
+    private Vector3? _lastDirection;
 
     public static event System.Action OnWaveSetCompleted;
     public static event System.Action OnWaveStarted;
@@ -69,6 +72,11 @@ public class EnemyManager : MonoBehaviour
         StartCoroutine(RunWaveSet(waveSet));
     }
 
+    public void StartContinuousWave(EnemyWave wave, BossWave boss)
+    {
+        StartCoroutine(SpawnContinuousWave(wave, boss));
+    }
+
     private IEnumerator RunWaveSet(WaveSet waveSet)
     {
         foreach (EnemyWave wave in waveSet.waves)
@@ -82,12 +90,18 @@ public class EnemyManager : MonoBehaviour
 
             if (wave is BossWave bossWave)
             {
-                UiManager.Instance.ShowNewWaveText(true);
+                WorldTextManager.Instance.ShowDoubleLineWorldText(
+                    WorldTextManager.Instance.TextData.newBossWaveText,
+                    LevelManager.Instance.ConfigInUse.bossText,
+                    null
+                );
+                yield return new WaitForSeconds(2f);
                 yield return StartCoroutine(SpawnBossWave(bossWave));
             }
             else
             {
-                UiManager.Instance.ShowNewWaveText(false);
+                WorldTextManager.Instance.ShowWorldText(WorldTextManager.Instance.TextData.newWaveText, null);
+                yield return new WaitForSeconds(1f);
                 yield return StartCoroutine(SpawnWave(wave));
             }
 
@@ -101,6 +115,61 @@ public class EnemyManager : MonoBehaviour
 
             yield return new WaitForSeconds(wave.delayAfter);
         }
+
+        MarkWaveSetAsFinished();
+    }
+
+    private IEnumerator SpawnContinuousWave(EnemyWave wave, BossWave bossWave)
+    {
+        yield return new WaitForSeconds(wave.delayBefore);
+
+        SoundManager.PlaySound(SoundManager.Instance.Library.NewWave);
+        WorldTextManager.Instance.ShowWorldText(WorldTextManager.Instance.TextData.extractionStartText, null);
+
+        yield return new WaitForSeconds(0.25f);
+        OnWaveStarted?.Invoke();
+
+        _waveRunning = true;
+        _continuousWave = true;
+        _aliveEnemiesInWave = 0;
+
+        while (_continuousWave)
+        {
+            GameObject prefab = SelectEnemy(wave.enemies);
+            GameObject enemyToSpawn = SpawnEnemy(prefab, _farFromPlayer);
+
+            if (enemyToSpawn != null)
+                _aliveEnemiesInWave++;
+
+            yield return new WaitForSeconds(wave.spawnInterval);
+
+            // ContinuousWave is set to false from outside
+            // Should be listener instead maybe
+        }
+
+        // Variant A: Kill all remaining enemies
+        //UiManager.Instance.ShowExtractionText(false);
+        //SoundManager.PlaySound(SoundManager.Instance.Library.CollectPickUp); // Placeholder
+        //yield return new WaitUntil(() => _aliveEnemiesInWave == 0);
+
+        // Variant B: Spawn boss and wait for him to be defeated
+
+        //UiManager.Instance.ShowNewWaveText(true);
+        WorldTextManager.Instance.ShowDoubleLineWorldText(
+            WorldTextManager.Instance.TextData.newBossWaveText,
+            LevelManager.Instance.ConfigInUse.bossText,
+            null
+        );
+        yield return new WaitForSeconds(2);
+
+        yield return StartCoroutine(SpawnBossWave(bossWave));
+
+        yield return new WaitUntil(() => !_bossWaveRunning);
+
+        yield return new WaitForSeconds(0.75f);
+        OnWaveFinished?.Invoke();
+
+        yield return new WaitForSeconds(wave.delayAfter);
 
         MarkWaveSetAsFinished();
     }
@@ -138,15 +207,22 @@ public class EnemyManager : MonoBehaviour
 
     private GameObject SpawnEnemy(GameObject enemyPrefab, Vector2 range, int attempts = 10)
     {
-        return SpawnHelper.SpawnEnemyAroundTarget(
+        GameObject enemy = SpawnHelper.SpawnEnemyAroundTarget(
             enemyPrefab,
             _playerTransform,
             range.x,
             range.y,
             WorldManager.Instance.GetWorldBounds(),
             LayerMask.GetMask("Obstacle"),
+            out Vector3 newDirection,
+            _lastDirection,
             attempts
         );
+
+        if (enemy != null)
+            _lastDirection = newDirection.normalized;
+
+        return enemy;
     }
 
     private void HandleEnemyDeath(BaseEnemy enemy)
@@ -161,6 +237,11 @@ public class EnemyManager : MonoBehaviour
         {
             _waveRunning = false;
         }
+    }
+
+    public void StopContinousWave()
+    {
+        _continuousWave = false;
     }
 
     private void HandleBossDefeated()

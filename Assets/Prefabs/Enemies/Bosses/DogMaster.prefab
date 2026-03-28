@@ -142,9 +142,10 @@ MonoBehaviour:
   _hasTriggerEffect: 1
   _hasMoveEffect: 0
   _spawnDistance: {x: 20, y: 22}
-  _addsPerWave: 6
+  _addsPerWave: 5
   _addSpawnCooldown: 3
-  _addPrefab: {fileID: 4315008323507486199, guid: accfd951a82b21c46880f54aa76e3b84, type: 3}
+  _addPrefabs:
+  - {fileID: 4315008323507486199, guid: accfd951a82b21c46880f54aa76e3b84, type: 3}
   _waveSpawnAudio: {fileID: 11400000, guid: 6ef5ef2f084532c45877ca16edf9164f, type: 2}
 --- !u!1001 &3930558494862812885
 PrefabInstance:

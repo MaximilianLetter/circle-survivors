@@ -12,6 +12,9 @@ public class LevelManager : MonoBehaviour
 
     private int _currentLevel;
 
+    private LevelConfig _configInUse;
+    public LevelConfig ConfigInUse => _configInUse;
+
     private void Awake()
     {
         _instance = this;
@@ -22,16 +25,20 @@ public class LevelManager : MonoBehaviour
         if (_debug)
         {
             config = _debugLevel;
+            _configInUse = config;
             return true;
         }
 
         if (_currentLevel >= _levels.Length)
         {
             config = null;
+            _configInUse = null;
             return false;
         }
 
         config = _levels[_currentLevel];
+        _configInUse = config;
+
         _currentLevel++;
         return true;
     }

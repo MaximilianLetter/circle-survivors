@@ -58,7 +58,7 @@ public class MeleeBoxAttack : TargetedAttackAbility
                 );
 
                 // Apply values
-                enemy.TakeDmg(dmg, knockBack);
+                enemy.TakeDmg(dmg, knockBack, transform.forward);
             }
 
             hitFx.SetActive(true);

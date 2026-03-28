@@ -9,7 +9,10 @@ public class EnemyStats : ScriptableObject
     public float KnockBackThreshold = 500f;
     public float KnockBackDmg = 9f;
 
+    public float TurnSpeed = 8f;
     public float MoveSpeed = 2f;
     public float MoveSpeedIncrease = 0.4f;
     public float MoveSpeedIncreaseInterval = 3;
+
+    public string CatchPhrase;
 }

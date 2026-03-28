@@ -52,14 +52,30 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 2757919988723965018, guid: cec679eb413be9b41bd6cae15c28df3d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4662982756362775279, guid: cec679eb413be9b41bd6cae15c28df3d, type: 3}
       propertyPath: m_Name
-      value: ObstacleMedium_Rock01
+      value: ObstacleLarge_Rock01
       objectReference: {fileID: 0}
     - target: {fileID: 8145274005030705061, guid: cec679eb413be9b41bd6cae15c28df3d, type: 3}
       propertyPath: _grassCount
       value: 35
       objectReference: {fileID: 0}
+    - target: {fileID: 8260878622921081658, guid: cec679eb413be9b41bd6cae15c28df3d, type: 3}
+      propertyPath: m_Size.x
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 8260878622921081658, guid: cec679eb413be9b41bd6cae15c28df3d, type: 3}
+      propertyPath: m_Size.y
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 8260878622921081658, guid: cec679eb413be9b41bd6cae15c28df3d, type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 2100000, guid: 1fa2eeff5796dcc4983d6d9b2bed41d5, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 8286397757203300100, guid: cec679eb413be9b41bd6cae15c28df3d, type: 3}

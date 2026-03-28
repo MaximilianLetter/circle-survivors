@@ -9,9 +9,14 @@ public class BaseCollectable : MonoBehaviour
     [SerializeField] private bool _showPlayerUI;
     [SerializeField] private ToggleTextOnPlayerNearby _toggleText;
 
+    private bool _detached;
+
     private void Start()
     {
         _toggleText.SetFlagPlayerUI(_showPlayerUI);
+
+        _toggleText.DetachFromParentAndRealign(transform.parent);
+        _detached = true;
     }
 
     public void ToggleCollectableColliders(bool state)
@@ -21,6 +26,12 @@ public class BaseCollectable : MonoBehaviour
 
         Collider textColl = _toggleText.GetComponent<Collider>();
         textColl.enabled = state;
+
+        // During hand-drop, attach to collectable again
+        if (!state && _detached)
+            _toggleText.DetachFromParentAndRealign(transform);
+        else
+            _toggleText.DetachFromParentAndRealign(transform.parent);
     }
 
     public CollectableType GetCollectableType()
@@ -36,5 +47,12 @@ public class BaseCollectable : MonoBehaviour
     public StatModifierSO GetStatModifier()
     {
         return _statModifier;
+    }
+
+    public void DestroyCollectable()
+    {
+        _toggleText.DeactivateToDestroy();
+
+        Destroy(gameObject);
     }
 }

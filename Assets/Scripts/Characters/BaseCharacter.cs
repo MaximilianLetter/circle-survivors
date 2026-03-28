@@ -232,7 +232,7 @@ public class BaseCharacter : MonoBehaviour, IStatContext
             }
 
             // Pick up was successful -> Destroy Object
-            Destroy(other.gameObject);
+            collectable.DestroyCollectable();
             return;
         }
 
@@ -244,7 +244,7 @@ public class BaseCharacter : MonoBehaviour, IStatContext
             // If character is hit, do not deal dmg but knock enemy back a bit
             var enemy = other.GetComponent<BaseEnemy>();
             TakeDmg(enemy.GetDmgStat());
-            enemy.TakeDmg(0, 600);
+            enemy.TakeDmg(0, 600, transform.forward);
         }
 
         if (other.CompareTag("EnemyProjectile"))

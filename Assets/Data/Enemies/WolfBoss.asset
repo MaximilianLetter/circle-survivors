@@ -19,3 +19,4 @@ MonoBehaviour:
   MoveSpeed: 2.6
   MoveSpeedIncrease: 0.15
   MoveSpeedIncreaseInterval: 1
+  CatchPhrase: Auuuhh!!

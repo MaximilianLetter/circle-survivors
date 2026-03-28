@@ -12,17 +12,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d78135c98371dca4883104f8d76741fb, type: 3}
   m_Name: Tutorial
   m_EditorClassIdentifier: Assembly-CSharp::TutorialConfig
+  type: 0
   title: Tutorial
   subTitle: Learn basic controls and mechanics.
+  bossText: 
+  completeText: Now go out there and face some real opponents.
   mapSize: {x: 50, y: 50}
-  minDistance: 12
+  playerStartPos: {x: 0, y: 0}
+  minDistance: 16
   characterAmount: 0
   characterModifierAmount: 0
   pickUpHealthAmount: 0
   partyIncreaseModifierAmount: 0
   biomeConfig: {fileID: 11400000, guid: 550bfa1e12339c14dbc43ff7020d03a2, type: 2}
   obstacleWeights: {x: 0.8, y: 0.2, z: 0}
+  weatherEffectPrefab: {fileID: 0}
   waveSet: {fileID: 0}
+  constantEnemyWave: {fileID: 0}
+  extractionBossWave: {fileID: 0}
+  extractionPoint: {fileID: 0}
+  extractionPointPosition: {x: 0, y: 0, z: 0}
+  extractionGuidance: {fileID: 3960113411586271650, guid: 673f03a0d15dd9147a3af8867a86c9be, type: 3}
   ambientTracks:
   - {fileID: 8300000, guid: 6522ff31e0026714788317ee8d19b423, type: 3}
   musicTracks:

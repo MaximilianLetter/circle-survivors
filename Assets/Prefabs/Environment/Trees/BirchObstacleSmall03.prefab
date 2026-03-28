@@ -765,7 +765,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4662982756362775279, guid: cec679eb413be9b41bd6cae15c28df3d, type: 3}
       propertyPath: m_Name
-      value: BirchObstacleLarge
+      value: BirchObstacleSmall03
       objectReference: {fileID: 0}
     - target: {fileID: 4823031487253620581, guid: cec679eb413be9b41bd6cae15c28df3d, type: 3}
       propertyPath: m_LocalPosition.x

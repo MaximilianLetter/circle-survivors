@@ -25,11 +25,15 @@ MonoBehaviour:
   - {fileID: 4976693323204143396, guid: 443c9c0fafc67b343a207f4ec982fb6b, type: 3}
   - {fileID: 4976693323204143396, guid: 36c40d3bcad72654683edd0d6a59ad86, type: 3}
   - {fileID: 4976693323204143396, guid: ea450b9a156ac5645be79eb2caeac210, type: 3}
+  - {fileID: 9198606477532623053, guid: 93563abcb9585994abde10c1863fe5d0, type: 3}
   mediumObstacles:
   - {fileID: 7538681593046787618, guid: 7433b0b8560a04241b61d861f81dd742, type: 3}
   - {fileID: 219331233842624807, guid: 458af038f54ed664a8151dfb2d2c1195, type: 3}
   - {fileID: 4976693323204143396, guid: f2297ddfc0b8fbc469ed83a9233a2482, type: 3}
   - {fileID: 4976693323204143396, guid: d9cf524b4db25244c8c7012bf87c4de1, type: 3}
-  largeObstacles:
   - {fileID: 219331233842624807, guid: 55097780678bbf64daef7e43706ccf36, type: 3}
-  - {fileID: 3673823234886804481, guid: dc7fb7b27aedf494f9abbc1bbb5d79d6, type: 3}
+  - {fileID: 9198606477532623053, guid: 4bfdf9e0b16c245449a750cd9a64d25f, type: 3}
+  largeObstacles:
+  - {fileID: 9198606477532623053, guid: 88910077ec9b61f449d83eb01dd64759, type: 3}
+  - {fileID: 9198606477532623053, guid: 7858ba24d4b6e8d4caeb6f334e227d87, type: 3}
+  - {fileID: 9198606477532623053, guid: 5e35e5a7ddd4c93458ddd4f04bf04518, type: 3}

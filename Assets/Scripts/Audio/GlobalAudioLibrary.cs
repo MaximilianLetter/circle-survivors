@@ -4,7 +4,9 @@ using UnityEngine;
 public class GlobalAudioLibrary : ScriptableObject
 {
     [Header("UI")]
-    public SFXEntry TextPlop;
+    //public SFXEntry TextPlop;
+    public SFXEntry WriteShort;
+    public SFXEntry WriteLong;
 
     [Header("Gameplay")]
     public SFXEntry CollectPickUp;

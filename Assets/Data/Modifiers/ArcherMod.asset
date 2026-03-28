@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::StatModifierSO
   StatType: 8
   Operation: 1
-  Value: 0.66
+  Value: 0.75
   TargetFaction: 1
   TargetAttackType: 2
   TargetCharacterType: 1

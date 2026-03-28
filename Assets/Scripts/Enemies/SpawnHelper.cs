@@ -19,15 +19,28 @@ public static class SpawnHelper
         float maxDistance,
         Bounds worldBounds,
         LayerMask obstacleLayer,
+        out Vector3 newDirection,
+        Vector3? lastDirection = null,
         int maxAttempts = 10)
     {
         for (int i = 0; i < maxAttempts; i++)
         {
             float distance = Random.Range(minDistance, maxDistance);
-            float angle = Random.Range(-Mathf.PI, Mathf.PI);
+            
+            // Only try to go onto opposite direction on initial placement
+            if (lastDirection.HasValue && i == 0)
+            {
+                Vector3 opposite = -lastDirection.Value;
+                float variation = 60f;
+                newDirection = Quaternion.Euler(0, Random.Range(-variation, variation), 0) * opposite;
+                newDirection = newDirection.normalized * distance;
+            } else
+            {
+                float angle = Random.Range(-Mathf.PI, Mathf.PI);
+                newDirection = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)) * distance;
+            }
 
-            Vector3 offset = new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)) * distance;
-            Vector3 spawnPos = target.position + offset;
+            Vector3 spawnPos = target.position + newDirection;
             spawnPos.y = 0.05f; // Helps with enemies falling through the ground
 
             if (!worldBounds.Contains(spawnPos))
@@ -38,7 +51,9 @@ public static class SpawnHelper
                 return Object.Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
             }
         }
+
         Debug.Log("Failed to find a valid spawn point after " + maxAttempts + " attempts.");
+        newDirection = Vector3.zero; // Fallback
         return null;
     }
 }

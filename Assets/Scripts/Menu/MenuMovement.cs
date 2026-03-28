@@ -1,7 +1,5 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using UnityEngine.Windows;
 
 public class MenuMovement : MonoBehaviour
 {
@@ -28,11 +26,11 @@ public class MenuMovement : MonoBehaviour
         _playerInput = GetComponent<PlayerInput>();
 
         // Set to center of screen in beginning
-        if (_playerInput.currentControlScheme == "Keyboard&Mouse")
-        {
-            Vector2 screenCenter = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
-            Mouse.current.WarpCursorPosition(screenCenter);
-        }
+        //if (_playerInput.currentControlScheme == "Keyboard&Mouse")
+        //{
+        //    Vector2 screenCenter = new Vector2(Screen.width * 0.5f, Screen.height * 0.5f);
+        //    Mouse.current.WarpCursorPosition(screenCenter);
+        //}
     }
 
     private void OnEnable()

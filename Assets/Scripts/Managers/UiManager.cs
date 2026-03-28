@@ -61,6 +61,14 @@ public class UiManager : MonoBehaviour
         Invoke(nameof(HideStatusText), _statusHideTimer);
     }
 
+    public void ShowExtractionText(bool start = true)
+    {
+        _statusText.text = start ? _uiTextData.extractionStartText : _uiTextData.extractionDoneText;
+        _statusText.enabled = true;
+
+        Invoke(nameof(HideStatusText), _statusHideTimer);
+    }
+
     public void HideStatusText()
     {
         _statusText.enabled = false;

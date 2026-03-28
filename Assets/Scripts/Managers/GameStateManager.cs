@@ -53,14 +53,8 @@ public class GameStateManager : MonoBehaviour
         UiManager.Instance.HideAll();
     }
 
-    private void OnEnable()
-    {
-        
-    }
-
     private void OnDestroy()
     {
-        // NOTE: should be unnecessary as the singleton always exists
         _anyKeyPress.action.started -= AnyKeyPress;
         _exit.action.started -= ExitPress;
     }
@@ -173,21 +167,29 @@ public class GameStateManager : MonoBehaviour
     {
         _grayScaleEffect.FadeToGray(_gameOverGrayFadeDuration);
 
-        UiManager.Instance.ShowTextOnGameOver();
+        //UiManager.Instance.ShowTextOnGameOver();
+        WorldTextManager.Instance.ShowWorldText(
+            WorldTextManager.Instance.TextData.gameOverText, null
+        );
         SoundManager.PlaySound(SoundManager.Instance.Library.Lose);
 
         EnemyManager.Instance.MakeEnemiesWalkAwayAndDie();
 
         yield return new WaitForSeconds(_gameOverGrayFadeDuration);
 
-        UiManager.Instance.ShowRestartInstructions();
+        //UiManager.Instance.ShowRestartInstructions();
+
+        WorldTextManager.Instance.ShowPersistentText(WorldTextManager.Instance.TextData.restartInstructions);
         _anyKeyPress.action.started += RestartGame;
     }
 
     private void HandleWonState()
     {
         SoundManager.PlaySound(SoundManager.Instance.Library.Win);
-        UiManager.Instance.ShowTextOnGameWin();
+        //UiManager.Instance.ShowTextOnGameWin();
+        WorldTextManager.Instance.ShowWorldText(
+            WorldTextManager.Instance.TextData.gameWonText, null
+        );
 
         GameManager.Instance.ReturnToMenuAfterWin();
     }

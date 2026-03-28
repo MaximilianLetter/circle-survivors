@@ -16,7 +16,7 @@ public class MenuManager : MonoBehaviour
     private static MenuManager _instance;
     public static MenuManager Instance => _instance;
 
-
+    [SerializeField] private PlayerUI _playerUI;
     [SerializeField] private InputActionReference _exit;
     [SerializeField] private InputActionReference _interact;
 
@@ -42,6 +42,8 @@ public class MenuManager : MonoBehaviour
 
         _exit.action.Enable();
         _exit.action.started += ExitGame;
+
+        //_playerUI.SetMenuPlayerUI();
     }
 
     private void OnDisable()

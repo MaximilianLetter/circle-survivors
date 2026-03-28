@@ -58,7 +58,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4662982756362775279, guid: cec679eb413be9b41bd6cae15c28df3d, type: 3}
       propertyPath: m_Name
-      value: ObstacleSmall_rock01 2
+      value: ObstacleTiny_rock03
       objectReference: {fileID: 0}
     - target: {fileID: 8145274005030705061, guid: cec679eb413be9b41bd6cae15c28df3d, type: 3}
       propertyPath: _plantRows.Array.data[0].count
@@ -79,6 +79,14 @@ PrefabInstance:
     - target: {fileID: 8145274005030705061, guid: cec679eb413be9b41bd6cae15c28df3d, type: 3}
       propertyPath: _plantRows.Array.data[0].minMaxDistance.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 8260878622921081658, guid: cec679eb413be9b41bd6cae15c28df3d, type: 3}
+      propertyPath: m_Size.x
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8260878622921081658, guid: cec679eb413be9b41bd6cae15c28df3d, type: 3}
+      propertyPath: m_Size.y
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:

@@ -7,11 +7,16 @@ public class UITextData : ScriptableObject
     // States
     public string demoTitle;
     public string pauseText;
+
     public string newWaveText;
     public string newBossWaveText;
+    public string levelDoneText;
+
+    public string extractionStartText;
+    public string extractionDoneText;
+
     public string gameOverText;
     public string gameWonText;
-    public string levelDoneText;
 
     // Instructions
     [TextArea(3, 10)]

@@ -196,7 +196,7 @@ public class GameManager : MonoBehaviour
         }
 
         // Victory delay
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(4f);
         WinGame();
     }
 
@@ -209,23 +209,38 @@ public class GameManager : MonoBehaviour
             TransitionManager.Instance.PlayWorldTransition(
                 config,
                 //onHiddenPhase: resetParty ? () => { _partyOfCharacters.ResetParty(); } : null
-                onHiddenPhase: () => UiManager.Instance.ShowLevelTitle(config.title, config.subTitle)
+                //onHiddenPhase: () => UiManager.Instance.ShowLevelTitle(config.title, config.subTitle)
+                onHiddenPhase: () => WorldTextManager.Instance.ShowDoubleLineWorldText(
+                    config.title, config.subTitle, null, true
+                )
             )
         );
 
-        EnemyManager.Instance.StartWaveSet(config.waveSet);
+        if (config.type == LevelType.Waves)
+            EnemyManager.Instance.StartWaveSet(config.waveSet);
+        else if (config.type == LevelType.Extraction)
+            EnemyManager.Instance.StartContinuousWave(config.constantEnemyWave, config.extractionBossWave);
 
         yield return new WaitUntil(() => _levelCompleted);
 
         // Level done delay
         yield return new WaitForSeconds(2f);
-        UiManager.Instance.ShowTextOnLevelDone();
+        WorldTextManager.Instance.ShowDoubleLineWorldText(
+            WorldTextManager.Instance.TextData.levelDoneText,
+            config.completeText,
+            null
+        );
     }
 
     private IEnumerator RunTutorial(TutorialConfig config)
     {
         yield return StartCoroutine(
-            TransitionManager.Instance.PlayWorldTransition(config)
+            TransitionManager.Instance.PlayWorldTransition(
+                config,
+                onHiddenPhase: () => WorldTextManager.Instance.ShowDoubleLineWorldText(
+                    config.title, config.subTitle, null, true
+                )
+            )
         );
 
         yield return TutorialManager.Instance.RunTutorial(config);

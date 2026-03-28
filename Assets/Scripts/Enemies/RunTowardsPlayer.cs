@@ -25,17 +25,18 @@ public class RunTowardsPlayer : MonoBehaviour
 
     private void Update()
     {
+        Vector3 dir = (_playerTransform.position - transform.position).normalized;
         if (_canTurn)
         {
-            // Always keep facing the player
-            var dir = _playerTransform.position - transform.position;
-            dir.Normalize();
-            transform.rotation = Quaternion.LookRotation(dir);
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * _stats.TurnSpeed);
         }
 
         if (!_canMove) return;
 
-        transform.position = Vector3.MoveTowards(transform.position, _playerTransform.position, _moveSpeed * Time.deltaTime);
+        if (Vector3.Angle(transform.forward, dir) < 10)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, _playerTransform.position, _moveSpeed * Time.deltaTime);
+        }
     }
 
     public void EnableMovement(bool enable)

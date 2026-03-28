@@ -7,10 +7,11 @@ public class SpawnAdds : BossAbility
     [SerializeField] private int _addsPerWave = 4;
     [SerializeField] private float _addSpawnCooldown = 4;
 
-    [SerializeField] private GameObject _addPrefab;
+    [SerializeField] private GameObject[] _addPrefabs;
     [SerializeField] private SFXEntry _waveSpawnAudio;
 
     private Transform _playerTransform;
+    private Vector3? _lastAddDirection;
 
     private void Start()
     {
@@ -55,13 +56,18 @@ public class SpawnAdds : BossAbility
 
     private void SpawnAdd()
     {
-        SpawnHelper.SpawnEnemyAroundTarget(
-            _addPrefab,
+        GameObject add = SpawnHelper.SpawnEnemyAroundTarget(
+            _addPrefabs[Random.Range(0, _addPrefabs.Length)],
             _playerTransform,
             _spawnDistance.x,
             _spawnDistance.y,
             WorldManager.Instance.GetWorldBounds(),
-            LayerMask.GetMask("Obstacle")
+            LayerMask.GetMask("Obstacle"),
+            out Vector3 newDirection,
+            _lastAddDirection
         );
+
+        if (add != null)
+            _lastAddDirection = newDirection;
     }
 }

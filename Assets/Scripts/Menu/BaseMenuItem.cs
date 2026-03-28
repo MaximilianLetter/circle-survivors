@@ -19,6 +19,7 @@ public class BaseMenuItem : MonoBehaviour
     private void Start()
     {
         _toggleText.SetFlagPlayerUI(_showPlayerUI);
+        _toggleText.DetachFromParentAndRealign(null);
     }
 
     public void ToggleActiveState(bool state)

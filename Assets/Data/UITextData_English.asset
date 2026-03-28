@@ -12,13 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 131faefc0a4d41d48a15111aa5fd14a6, type: 3}
   m_Name: UITextData_English
   m_EditorClassIdentifier: Assembly-CSharp::UITextData
-  demoTitle: CIRCLE DEMO
+  demoTitle: Circle Survivors Demo
   pauseText: PAUSED
-  newWaveText: New Wave Incoming!
-  newBossWaveText: Boss incoming!
-  gameOverText: YOU DIED
-  gameWonText: DEMO FINISHED
+  newWaveText: Enemies incoming!
+  newBossWaveText: Boss approaches!
   levelDoneText: Stage cleared!
+  extractionStartText: Get to the extraction point!
+  extractionDoneText: Extraction point reached!
+  gameOverText: YOU DIED
+  gameWonText: Well done. Story concludes.
   gameStartGameplayInstructions: 'Move with WASD.
 
     Turn by pointing the mouse.

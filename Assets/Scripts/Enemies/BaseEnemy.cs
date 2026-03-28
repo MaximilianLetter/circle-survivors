@@ -11,7 +11,7 @@ public class BaseEnemy : MonoBehaviour, IStatContext
     [SerializeField] protected AttackType _attackType;
 
     public EnemyStats Stats => _stats;
-    [SerializeField] protected EnemyStats _stats;
+    [SerializeField] private EnemyStats _stats;
 
     public EnemyAudioProfile Audio => _audio;
     [SerializeField] private EnemyAudioProfile _audio;
@@ -64,7 +64,7 @@ public class BaseEnemy : MonoBehaviour, IStatContext
         }
     }
 
-    public void TakeDmg(float incomingDmg, float knockBack)
+    public void TakeDmg(float incomingDmg, float knockBack, Vector3 hitDirection)
     {
         if (_defensiveStance != null && _defensiveStance.StanceActive)
         {
@@ -72,7 +72,7 @@ public class BaseEnemy : MonoBehaviour, IStatContext
         }
 
         _currentHP -= incomingDmg;
-        _rb.AddForce(-transform.forward * knockBack);
+        _rb.AddForce(hitDirection * knockBack);
 
         if (_currentHP <= 0)
         {
@@ -146,6 +146,7 @@ public class BaseEnemy : MonoBehaviour, IStatContext
         // Make sure model dies in damaged pose
         if (_getHitRoutine != null) StopCoroutine(_getHitRoutine);
         if (_defensiveStance) _defensiveStance.StopAllCoroutines();
+        //if (_movement) TODO: disable charge effect
 
         ToggleGetHitModel(true);
 

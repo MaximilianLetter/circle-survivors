@@ -12,19 +12,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09e21bc2a4c977b4fa4b0fdebc87f1aa, type: 3}
   m_Name: _DEBUG_Level
   m_EditorClassIdentifier: Assembly-CSharp::LevelConfig
+  type: 0
   title: DEBUG
   subTitle: Level for testing and debugging.
-  mapSize: {x: 200, y: 200}
-  minDistance: 14
+  bossText: Boss subtext example.
+  completeText: Debug level completed.
+  mapSize: {x: 100, y: 100}
+  playerStartPos: {x: 0, y: 0}
+  minDistance: 18
   characterAmount: 60
   characterModifierAmount: 5
   pickUpHealthAmount: 10
   partyIncreaseModifierAmount: 1
-  biomeConfig: {fileID: 11400000, guid: 8c1dc9914e85dcc4ca0303a885ffe6b0, type: 2}
-  obstacleWeights: {x: 0.6, y: 0.35, z: 0.05}
-  weatherEffectPrefab: {fileID: 8907042233150814423, guid: f48f5c3a43729004aa4e8ef9b5bdb2a4, type: 3}
+  biomeConfig: {fileID: 11400000, guid: 2495004268e21034e888577c3daac59b, type: 2}
+  obstacleWeights: {x: 0.4, y: 0.2, z: 0.3}
+  weatherEffectPrefab: {fileID: 3960113411586271650, guid: 673f03a0d15dd9147a3af8867a86c9be, type: 3}
   waveSet: {fileID: 11400000, guid: 528ec61cd36d21045bd618ce636d01f4, type: 2}
+  constantEnemyWave: {fileID: 0}
+  extractionBossWave: {fileID: 0}
+  extractionPoint: {fileID: 0}
+  extractionPointPosition: {x: 0, y: 0, z: 0}
+  extractionGuidance: {fileID: 0}
   ambientTracks:
-  - {fileID: 8300000, guid: 34289cfe8aa1cca49a29be8ccb00b745, type: 3}
+  - {fileID: 8300000, guid: 6522ff31e0026714788317ee8d19b423, type: 3}
   musicTracks:
   - {fileID: 8300000, guid: bb1ad85c1ecdcc649959b1233b10c665, type: 3}

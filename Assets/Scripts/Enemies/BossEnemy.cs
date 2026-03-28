@@ -61,6 +61,10 @@ public class BossEnemy : BaseEnemy
                 }
             }
 
+            string catchPhrase = Stats.CatchPhrase;
+            if (catchPhrase != null && catchPhrase != "")
+                WorldTextManager.Instance.ShowWorldText(catchPhrase, transform.position, false);
+
             _currentPhase++;
         }
     }

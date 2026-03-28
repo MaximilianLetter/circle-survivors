@@ -18,6 +18,7 @@ public class PartyOfCharacters : MonoBehaviour, IStatContext
     [SerializeField] private float _radiusIncrease = 0.25f;
 
     [SerializeField] private PlayerUI _playerUI;
+    [SerializeField] private Transform _directionIndicator;
 
     private int _maxPartySize;
     private int AmountOfCharacters => _characters.Count;
@@ -186,6 +187,8 @@ public class PartyOfCharacters : MonoBehaviour, IStatContext
         // Adjust collider for terrain collision & pickups
         _playerCollider.radius = (amount == 1) ? 0.5f : 1 + radiusIncrease;
         _playerMovement.AdjustTurnSpeed(amount);
+
+        _directionIndicator.localPosition = Vector3.forward * (1 + radius);
     }
 
     private void HandleWaveStart()

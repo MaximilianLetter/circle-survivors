@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76ca075e691a5994ebbe142f742bf83b, type: 3}
+  m_Name: Crossbow
+  m_EditorClassIdentifier: Assembly-CSharp::RangedEnemyStats
+  BaseHp: 24
+  Damage: 6
+  KnockBackThreshold: 500
+  KnockBackDmg: 24
+  TurnSpeed: 6
+  MoveSpeed: 2
+  MoveSpeedIncrease: 0.1
+  MoveSpeedIncreaseInterval: 1
+  CatchPhrase: 
+  RangedAttackRange: 8
+  RangedAttackDamage: 6
+  RangedAttackCooldown: 4
+  Projectile: {fileID: 1614341048115884782, guid: ef544e4dab8d96c47b0c2b6c48607d3e, type: 3}

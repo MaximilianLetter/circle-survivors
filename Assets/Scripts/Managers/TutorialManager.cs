@@ -34,27 +34,28 @@ public class TutorialManager : MonoBehaviour
 
     public IEnumerator RunTutorial(TutorialConfig config)
     {
+        // Initial wait during level description being present
+        yield return new WaitForSeconds(2f);
+
         foreach (var step in config.steps)
         {
             yield return new WaitForSeconds(0.5f);
 
-            SoundManager.PlaySound(SoundManager.Instance.Library.TextPlop);
-            UiManager.Instance.ShowTutorialText(step.instructionText);
+            WorldTextManager.Instance.ShowPersistentText(step.instructionText);
 
             CheckForFightStateTrigger(step);
 
             yield return WaitForCondition(step);
 
-            UiManager.Instance.HideTutorialText();
+            WorldTextManager.Instance.HidePersistentText();
         }
 
         // End of tutorial
-        SoundManager.PlaySound(SoundManager.Instance.Library.TextPlop);
-        UiManager.Instance.ShowTutorialText(config.goodbyeMessage);
+        WorldTextManager.Instance.ShowPersistentText(config.goodbyeMessage);
 
         yield return new WaitForSeconds(2f);
 
-        UiManager.Instance.HideTutorialText();
+        WorldTextManager.Instance.HidePersistentText();
     }
 
     private IEnumerator WaitForCondition(TutorialStep step)
@@ -110,7 +111,7 @@ public class TutorialManager : MonoBehaviour
         yield return new WaitForSeconds(_timeBetweenSteps);
 
         yield return TakeAwayStepObjects();
-        UiManager.Instance.HideTutorialText();
+        WorldTextManager.Instance.HidePersistentText();
 
         // Unsubscribe
         PlayerMovement.OnPlayerMoved -= Complete;
@@ -171,14 +172,15 @@ public class TutorialManager : MonoBehaviour
             distance.y,
             WorldManager.Instance.GetWorldBounds(),
             WorldManager.Instance.GetObstacleLayer(),
-            50
+            out _, // out circular direction around player, here omitted
+            maxAttempts: 50
         );
 
         // Turn towards player
         Vector3 dir = _player.transform.position - obj.transform.position;
         obj.transform.rotation = Quaternion.LookRotation(dir.normalized);
 
-        if (placeByHand) _theHand.DropObject(obj);
+        if (placeByHand) _theHand.DropObject(obj, true);
 
         return obj;
     }

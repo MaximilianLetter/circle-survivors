@@ -8,6 +8,7 @@ public class TransitionManager : MonoBehaviour
     public static TransitionManager Instance => _instance;
     private static TransitionManager _instance;
 
+    [SerializeField] private PullOverMap _mapPull;
     [SerializeField] private FadeFullscreenColor _fadeFullscreenColor;
     [SerializeField] private Vector3 _camTransitionOffset = new Vector3(0, 0.01f, 0);
 
@@ -55,17 +56,10 @@ public class TransitionManager : MonoBehaviour
         }
 
         // Hook to trigger "invisible" effects during transition
-        // This is used for resetting the party after tutorial level
         onHiddenPhase?.Invoke();
 
         WorldManager.Instance.ClearWorld();
         WorldManager.Instance.GenerateWorld(config);
-
-        // Center player, set every character to correct "in-air" position
-        _player.transform.position = Vector3.zero;
-        _camFollow.JumpToTarget();
-        SetCharacterAirPositions();
-        UiManager.Instance.HideStatusText();
 
         // Start playing ambient from the level config 
         // TODO shuffle different tracks and more
@@ -75,6 +69,15 @@ public class TransitionManager : MonoBehaviour
         // TODO check again
         //if (config.musicTracks.Length > 0)
         //    SoundManager.Instance.PlayMusic(config.musicTracks[0]);
+
+        // HACK: without waiting one frame, player always got reset to (0, 0, 0)
+        yield return new WaitForFixedUpdate();
+
+        // Center player, set every character to correct "in-air" position
+        _player.transform.position = config.playerStartPos;
+        _camFollow.JumpToTarget();
+        SetCharacterAirPositions();
+        UiManager.Instance.HideStatusText();
 
         yield return TransitionIn(dropParty: true);
 
@@ -88,8 +91,10 @@ public class TransitionManager : MonoBehaviour
         if (liftParty)
             yield return LiftParty();
 
-        Coroutine fadeIn = StartCoroutine(_fadeFullscreenColor.FadeIn(_fadeAndCamShiftDuration));
+        Vector3 centerScreenPos = (_player != null) ? _player.transform.position : Vector3.zero;
+        _mapPull.TriggerMapPull(centerScreenPos, _fadeAndCamShiftDuration);
 
+        Coroutine fadeIn = StartCoroutine(_fadeFullscreenColor.FadeIn(_fadeAndCamShiftDuration));
 
         if (_camFollow != null)
             yield return StartCoroutine(ShiftCameraCoroutine(_fadeAndCamShiftDuration, true));

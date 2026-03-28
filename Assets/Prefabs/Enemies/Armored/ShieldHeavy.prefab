@@ -79,10 +79,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2314624053231274904}
     m_Modifications:
-    - target: {fileID: 2829032522354716486, guid: 2d3c02a1e47110f4dbb662e25be95dd1, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 1.5
-      objectReference: {fileID: 0}
+    - target: {fileID: 1786161825028014955, guid: 2d3c02a1e47110f4dbb662e25be95dd1, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 22df96a5bd2e51849abf5cb72e672e23, type: 2}
     - target: {fileID: 7358991630653467405, guid: 2d3c02a1e47110f4dbb662e25be95dd1, type: 3}
       propertyPath: m_Name
       value: BlockFx

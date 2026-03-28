@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09e21bc2a4c977b4fa4b0fdebc87f1aa, type: 3}
+  m_Name: FaceOff_lvl
+  m_EditorClassIdentifier: Assembly-CSharp::LevelConfig
+  type: 0
+  title: Face Off.
+  subTitle: They catched up to you. No more running.
+  bossText: The shadow of the warhorse looms large. The armored knight challenges
+    you.
+  completeText: The slain commander lies in the dirt.
+  mapSize: {x: 100, y: 100}
+  playerStartPos: {x: 0, y: 0}
+  minDistance: 18
+  characterAmount: 8
+  characterModifierAmount: 8
+  pickUpHealthAmount: 16
+  partyIncreaseModifierAmount: 2
+  biomeConfig: {fileID: 11400000, guid: 418c5749f784d844ea326c5903cccfc3, type: 2}
+  obstacleWeights: {x: 0.4, y: 0.2, z: 0.3}
+  weatherEffectPrefab: {fileID: 8907042233150814423, guid: f48f5c3a43729004aa4e8ef9b5bdb2a4, type: 3}
+  waveSet: {fileID: 11400000, guid: f1557cd87768dfe419d8c02536a87e37, type: 2}
+  constantEnemyWave: {fileID: 0}
+  extractionBossWave: {fileID: 0}
+  extractionPoint: {fileID: 0}
+  extractionPointPosition: {x: 0, y: 0, z: 0}
+  extractionGuidance: {fileID: 0}
+  ambientTracks:
+  - {fileID: 8300000, guid: 34289cfe8aa1cca49a29be8ccb00b745, type: 3}
+  musicTracks: []

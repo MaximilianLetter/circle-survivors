@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98f3a0b7d2cd69a4585d2157258eb615, type: 3}
+  m_Name: Paper
+  m_EditorClassIdentifier: Assembly-CSharp::SFXEntry
+  Clips:
+  - {fileID: 8300000, guid: f6d710d79184eca41811a1189625f985, type: 3}
+  - {fileID: 8300000, guid: 5a805eaf0a4f148489c53af14cd27a6b, type: 3}
+  - {fileID: 8300000, guid: d7c6a93b5fdc5ef498c385f4a2a95309, type: 3}

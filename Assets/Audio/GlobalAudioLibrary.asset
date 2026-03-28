@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b12e5b69b55c17b4e92ad876a2c1e408, type: 3}
   m_Name: GlobalAudioLibrary
   m_EditorClassIdentifier: Assembly-CSharp::SFXLibrary
-  TextPlop: {fileID: 11400000, guid: 92b71cd9ce25d804da407596f36df6dc, type: 2}
+  WriteShort: {fileID: 11400000, guid: ce18efd0afc9a9242a95dc519142bad0, type: 2}
+  WriteLong: {fileID: 11400000, guid: 21bb9c14f8c76574d80ef5def3fce14b, type: 2}
   CollectPickUp: {fileID: 11400000, guid: 58be8a44d09b6ea41b3e9b6d760f10a5, type: 2}
   CollectCharacter: {fileID: 11400000, guid: 7be8b99139219a44e9a275f17650ffe4, type: 2}
   NewWave: {fileID: 11400000, guid: 074175ff8d18b2548b5dde65947acb6a, type: 2}

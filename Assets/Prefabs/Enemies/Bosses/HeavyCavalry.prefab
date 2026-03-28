@@ -210,6 +210,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6601052062380730075, guid: 9ae337bdab0c4c148a5e0c12e550cc21, type: 3}
       insertIndex: -1
       addedObject: {fileID: -3178563352105518500}
+    - targetCorrespondingSourceObject: {fileID: 6601052062380730075, guid: 9ae337bdab0c4c148a5e0c12e550cc21, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 146068717851080697}
   m_SourcePrefab: {fileID: 100100000, guid: 9ae337bdab0c4c148a5e0c12e550cc21, type: 3}
 --- !u!4 &2944045675017435593 stripped
 Transform:
@@ -242,6 +245,28 @@ MonoBehaviour:
   _makeReadyAudio: {fileID: 11400000, guid: c674d061295ba474da2dcb6f2283cbdd, type: 2}
   _chargeAudio: {fileID: 11400000, guid: 5c4606989c842a84db3d3d8ec427c169, type: 2}
   _chargeModel: {fileID: 9102212577529374251}
+--- !u!114 &146068717851080697
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8087224832481530758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84c321fa3f8bcda438e7966561ed9951, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SpawnAdds
+  _hasIntervalEffect: 1
+  _hasTriggerEffect: 0
+  _hasMoveEffect: 0
+  _spawnDistance: {x: 20, y: 22}
+  _addsPerWave: 4
+  _addSpawnCooldown: 6
+  _addPrefabs:
+  - {fileID: 3988817564089081587, guid: 353bc53046e0b8a4aa249a36473bd081, type: 3}
+  - {fileID: 4739154765922496850, guid: 8eb417cff7978894bb2eaf9063654778, type: 3}
+  _waveSpawnAudio: {fileID: 0}
 --- !u!1001 &8255352984586034042
 PrefabInstance:
   m_ObjectHideFlags: 0

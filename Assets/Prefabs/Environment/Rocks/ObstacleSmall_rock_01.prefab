@@ -50,7 +50,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4662982756362775279, guid: cec679eb413be9b41bd6cae15c28df3d, type: 3}
       propertyPath: m_Name
-      value: ObstacleSmall_pillar_03 1
+      value: ObstacleSmall_rock_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 8260878622921081658, guid: cec679eb413be9b41bd6cae15c28df3d, type: 3}
+      propertyPath: m_Size.x
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 8260878622921081658, guid: cec679eb413be9b41bd6cae15c28df3d, type: 3}
+      propertyPath: m_Size.y
+      value: 20
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:

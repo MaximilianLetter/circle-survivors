@@ -10,13 +10,6 @@ public class PlaceObjectByHand : MonoBehaviour
     [SerializeField] private AnimationCurve _dropCurve;
     [SerializeField] private AnimationCurve _leaveCurve;
 
-    private Vector3 _defaultPosition;
-
-    private void Awake()
-    {
-        _defaultPosition = transform.position + Vector3.up * _dropHeight;
-    }
-
     public float GetDropHeight()
     {
         return _dropHeight;
@@ -29,18 +22,18 @@ public class PlaceObjectByHand : MonoBehaviour
             gameObject.SetActive(true);
         }
 
-        StartCoroutine(DropObjectCoroutine(obj.transform, _singleDropDuration, true));
+        StartCoroutine(DropObjectCoroutine(obj.transform, _singleDropDuration, true, isCollectable));
     }
 
-    public void LiftObject(GameObject obj)
-    {
-        if (!gameObject.activeSelf)
-        {
-            gameObject.SetActive(true);
-        }
+    //public void LiftObject(GameObject obj)
+    //{
+    //    if (!gameObject.activeSelf)
+    //    {
+    //        gameObject.SetActive(true);
+    //    }
 
-        StartCoroutine(LiftObjectCoroutine(obj.transform, _singleDropDuration, true));
-    }
+    //    StartCoroutine(LiftObjectCoroutine(obj.transform, _singleDropDuration, true));
+    //}
 
     public IEnumerator DropObjectCoroutine(Transform objTransform, float dropDuration, bool deactivateAfter = false, bool deactivateDuringDrop = false)
     {
@@ -86,7 +79,7 @@ public class PlaceObjectByHand : MonoBehaviour
         SoundManager.PlaySound(SoundManager.Instance.Library.HandPlaceObject);
 
         // Hand leaves without object
-        startPos = transform.localPosition;
+        Vector3 leavePos = transform.localPosition;
         time = 0f;
         while (time < _handLeaveDuration)
         {
@@ -95,7 +88,7 @@ public class PlaceObjectByHand : MonoBehaviour
 
             float curvedT = _leaveCurve != null ? _leaveCurve.Evaluate(t) : t;
 
-            transform.localPosition = Vector3.Lerp(startPos, _defaultPosition, curvedT);
+            transform.localPosition = Vector3.Lerp(leavePos, startPos, curvedT);
 
             yield return null;
         }

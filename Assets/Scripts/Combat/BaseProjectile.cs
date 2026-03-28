@@ -41,7 +41,7 @@ public abstract class BaseProjectile : MonoBehaviour
         // Avoids double hitting the same enemy
         _hitEnemies.Add(enemy);
 
-        enemy.TakeDmg(_dmg, _knockBack);
+        enemy.TakeDmg(_dmg, _knockBack, transform.forward);
         SoundManager.PlaySound(_hitSound);
 
         OnEnemyHit(enemy);

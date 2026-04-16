@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.TextCore.Text;
 
 public class TransitionManager : MonoBehaviour
 {
@@ -20,6 +22,7 @@ public class TransitionManager : MonoBehaviour
     private float _dropDuration;
     private float _liftDuration;
     private bool _initialTransition = true;
+    private Coroutine _currentTransition;
 
     private PlaceObjectByHand _theHand;
     private PartyOfCharacters _party;
@@ -38,7 +41,23 @@ public class TransitionManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    public void ResetState()
+    {
+        _initialTransition = true;
+    }
+
     public IEnumerator PlayWorldTransition(LevelConfig config, Action onHiddenPhase = null)
+    {
+        if (_currentTransition != null)
+            StopCoroutine(_currentTransition);
+
+
+        _currentTransition = StartCoroutine(PlayWorldTransitionInternal(config, onHiddenPhase));
+        yield return _currentTransition;
+
+        _initialTransition = false;
+    }
+    private IEnumerator PlayWorldTransitionInternal(LevelConfig config, Action onHiddenPhase = null)
     {
         GameStateManager.Instance.SetMovementLocked(true);
 
@@ -63,7 +82,7 @@ public class TransitionManager : MonoBehaviour
 
         // Start playing ambient from the level config 
         // TODO shuffle different tracks and more
-        if (config.ambientTracks.Length > 0) 
+        if (config.ambientTracks.Length > 0)
             SoundManager.Instance.PlayAmbient(config.ambientTracks[0]);
 
         // TODO check again
@@ -82,8 +101,6 @@ public class TransitionManager : MonoBehaviour
         yield return TransitionIn(dropParty: true);
 
         GameStateManager.Instance.SetMovementLocked(false);
-
-        _initialTransition = false;
     }
 
     private IEnumerator TransitionOut(bool liftParty)
@@ -120,9 +137,11 @@ public class TransitionManager : MonoBehaviour
         _theHand.gameObject.SetActive(true);
 
         var party = _party.GetAllCharacters();
+        var snapshot = new List<GameObject>(party);
+
         _liftDuration = _totalLiftDuration / party.Count;
 
-        foreach (var character in party)
+        foreach (var character in snapshot)
         {
             yield return StartCoroutine(_theHand.LiftObjectCoroutine(character.transform, _liftDuration));
         }
@@ -135,9 +154,11 @@ public class TransitionManager : MonoBehaviour
         _theHand.gameObject.SetActive(true);
 
         var party = _party.GetAllCharacters();
+        var snapshot = new List<GameObject>(party);
+
         _dropDuration = _totalDropDuration / party.Count;
 
-        foreach (var character in party)
+        foreach (var character in snapshot)
         {
             yield return StartCoroutine(_theHand.DropObjectCoroutine(character.transform, _dropDuration));
         }
@@ -184,6 +205,23 @@ public class TransitionManager : MonoBehaviour
         bool dropAfterLoad,
         Action onHiddenPhase = null)
     {
+        if (_currentTransition != null)
+            StopCoroutine(_currentTransition);
+
+        _currentTransition = StartCoroutine(TransitionToSceneInternal(
+            sceneName, fadeBeforeLoad, liftBeforeLoad, fadeAfterLoad, dropAfterLoad, onHiddenPhase
+        ));
+        yield return _currentTransition;
+    }
+
+    private IEnumerator TransitionToSceneInternal(
+        string sceneName,
+        bool fadeBeforeLoad,
+        bool liftBeforeLoad,
+        bool fadeAfterLoad,
+        bool dropAfterLoad,
+        Action onHiddenPhase
+    ) {
         if (fadeBeforeLoad)
         {
             SoundManager.Instance.FadeOutAmbient(2);

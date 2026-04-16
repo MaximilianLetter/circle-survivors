@@ -16,6 +16,8 @@ MonoBehaviour:
   Damage: 6
   KnockBackThreshold: 500
   KnockBackDmg: 32
+  TurnSpeed: 270
   MoveSpeed: 1.5
   MoveSpeedIncrease: 0.1
   MoveSpeedIncreaseInterval: 1
+  CatchPhrase: 

@@ -7,6 +7,7 @@ public class RunTowardsPlayer : MonoBehaviour
 
     private Transform _playerTransform;
     private bool _canMove = true;
+    private bool _isFleeing;
 
     // NOTE: by default turned off for target dummy, chargin enemies also turn this off
     [SerializeField] private bool _canTurn = true;
@@ -28,12 +29,22 @@ public class RunTowardsPlayer : MonoBehaviour
         Vector3 dir = (_playerTransform.position - transform.position).normalized;
         if (_canTurn)
         {
-            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * _stats.TurnSpeed);
+            //transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * _stats.TurnSpeed);
+            transform.rotation = Quaternion.RotateTowards(
+                transform.rotation,
+                Quaternion.LookRotation(dir),
+                _stats.TurnSpeed * Time.deltaTime
+            );
         }
 
         if (!_canMove) return;
 
-        if (Vector3.Angle(transform.forward, dir) < 10)
+        // Ranged enemies need to turn towards the player before moving
+        bool allowedToMove = true;
+        if (_enemy.AttackType == AttackType.Ranged)
+            allowedToMove = Vector3.Angle(transform.forward, dir) < 5;
+
+        if (allowedToMove)
         {
             transform.position = Vector3.MoveTowards(transform.position, _playerTransform.position, _moveSpeed * Time.deltaTime);
         }
@@ -51,6 +62,9 @@ public class RunTowardsPlayer : MonoBehaviour
 
     public void ResetMoveSpeed()
     {
+        // Do not reset while the enemy is walking away
+        if (_isFleeing) return;
+
         _moveSpeed = _stats.MoveSpeed;
 
         ToggleSpeedModel(false);
@@ -70,8 +84,9 @@ public class RunTowardsPlayer : MonoBehaviour
         }
     }
 
-    public void ReverseMoveDirection()
+    public void Flee()
     {
+        _isFleeing = true;
         _moveSpeed *= -1;
     }
 

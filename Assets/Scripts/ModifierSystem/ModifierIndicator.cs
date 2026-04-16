@@ -4,43 +4,24 @@ using UnityEngine;
 
 public class ModifierIndicator : MonoBehaviour
 {
+    public int IndicatorLevel => _indicatorLevel;
     private int _indicatorLevel = 0;
+    private readonly int _maxIndicatorLevel = 3;
 
     [SerializeField] private GameObject _oneStar;
     [SerializeField] private GameObject _twoStar;
     [SerializeField] private GameObject _threeStar;
 
-    // NOTE: different materials are currently not in use
-
-    //[SerializeField] private Material _bronceMat;
-    //[SerializeField] private Material _silverMat;
-    //[SerializeField] private Material _goldMat;
-
-    //private Renderer[] _starRenderers;
-
-    // NOTE: this could be reworked so that it instead counts (local) modifications,
-    // for now it just increases whenever something (a modifier bundle?) is picked up
-
-    //private LocalModifierSystem _localModifierSystem;
-
-    //private void Start()
-    //{
-    //    _localModifierSystem = GetComponent<LocalModifierSystem>();
-    //}
-
 
     private void Start()
     {
-        // NOTE: different materials are currently not in use
-        //_starRenderers = new[]
-        //{
-        //    _oneStar.GetComponent<Renderer>(),
-        //    _twoStar.GetComponent<Renderer>(),
-        //    _threeStar.GetComponent<Renderer>(),
-        //};
-
         // Should reset everything
         ResolveIndicatorLevel();
+    }
+
+    public bool CanReceiveMoreModifiers()
+    {
+        return _indicatorLevel < _maxIndicatorLevel;
     }
 
     public void IncreaseIndicatorLevel()

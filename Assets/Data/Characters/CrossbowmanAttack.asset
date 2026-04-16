@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: CrossbowmanAttack
   m_EditorClassIdentifier: Assembly-CSharp::RangedCharacterStats
   ProjectilePrefab: {fileID: 1614341048115884782, guid: 8a47306e2b3da434281ed19fcaad2543, type: 3}
-  Dmg: 9
+  Damage: 12
   KnockBack: 600
   TotalAmmo: 1
   ReloadTime: 3

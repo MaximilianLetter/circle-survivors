@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7be63cc9c4d71334db55cbdc39574f7e, type: 3}
+  m_Name: _b_Cannon
+  m_EditorClassIdentifier: Assembly-CSharp::BossWave
+  delayBefore: 4
+  delayAfter: 1
+  enemyCount: 4
+  spawnInterval: 0.5
+  spawnText: 'The smell of powder and fire draw closer. Enemy warmachines roll towards
+    you. '
+  enemies:
+  - prefab: {fileID: 4739154765922496850, guid: 8eb417cff7978894bb2eaf9063654778, type: 3}
+    weight: 1
+  bossPrefabs:
+  - {fileID: 1763691473917548363, guid: dc30a561eff314646a7759c2e32c73ad, type: 3}
+  - {fileID: 1763691473917548363, guid: dc30a561eff314646a7759c2e32c73ad, type: 3}
+  - {fileID: 1763691473917548363, guid: dc30a561eff314646a7759c2e32c73ad, type: 3}
+  bossSpawnDelay: 2

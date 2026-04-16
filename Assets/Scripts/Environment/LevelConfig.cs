@@ -14,8 +14,6 @@ public class LevelConfig : ScriptableObject
     [TextArea(3, 5)]
     public string subTitle = "A big adventure.";
     [TextArea(3, 5)]
-    public string bossText = "A giant beast approaches";
-    [TextArea(3, 5)]
     public string completeText = "Enemies were shattered.";
 
     [Header("World")]
@@ -39,8 +37,11 @@ public class LevelConfig : ScriptableObject
     [Header("ExtractionType Properties")]
     public EnemyWave constantEnemyWave;
     public BossWave extractionBossWave;
+    public float pressureTimer;
+    public GameObject pressureEnemyPrefab;
     public GameObject extractionPoint;
-    public Vector3 extractionPointPosition;
+    public Vector2 extractionPointPosition;
+    public bool clearBeforeBoss;
     public GameObject extractionGuidance;
 
     [Header("Ambient")]

@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6535b1d8831e01b4aaa3ca9194238e38, type: 3}
   m_Name: HeavyCavalry
   m_EditorClassIdentifier: Assembly-CSharp::EnemyStats
-  BaseHp: 500
+  BaseHp: 400
   Damage: 6
   KnockBackThreshold: 500
   KnockBackDmg: 48
-  TurnSpeed: 4
+  TurnSpeed: 180
   MoveSpeed: 2.2
   MoveSpeedIncrease: 0.1
   MoveSpeedIncreaseInterval: 1

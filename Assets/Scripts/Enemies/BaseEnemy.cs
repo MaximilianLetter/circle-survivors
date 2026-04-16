@@ -56,7 +56,7 @@ public class BaseEnemy : MonoBehaviour, IStatContext
         _activeBaseModel.SetActive(true);
 
         _overridesHitPose = specialPose;
-        if (specialPose && _getHitRoutine != null)
+        if (specialPose && _getHitRoutine != null && _getHitModel != null)
         {
             _getHitModel.SetActive(false);
             StopCoroutine(_getHitRoutine);
@@ -131,9 +131,16 @@ public class BaseEnemy : MonoBehaviour, IStatContext
         _getHitRoutine = null;
     }
 
-    public float GetDmgStat()
+    private void OnTriggerEnter(Collider other)
     {
-        return _stats.Damage;
+        if (other.CompareTag("PlayerCharacter"))
+        {
+            // If a character is hit, push enemy a bit back
+            var character = other.GetComponent<BaseCharacter>();
+            TakeDmg(0, 600, -transform.forward);
+
+            character.TakeDmg(_stats.Damage);
+        }
     }
 
     public void DeathSequence()
@@ -168,7 +175,7 @@ public class BaseEnemy : MonoBehaviour, IStatContext
         // Remove enemy layer so that it does not become a target while dying
         gameObject.layer = 0;
 
-        _movement.ReverseMoveDirection();
+        _movement.Flee();
 
         Destroy(gameObject, 6);
     }

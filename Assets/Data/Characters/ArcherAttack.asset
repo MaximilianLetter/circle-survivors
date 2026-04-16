@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ArcherAttack
   m_EditorClassIdentifier: Assembly-CSharp::RangedCharacterStats
   ProjectilePrefab: {fileID: 1614341048115884782, guid: 35b14a52e515b044782f7948939fa0bb, type: 3}
-  Damage: 12
+  Damage: 14
   KnockBack: 100
   TotalAmmo: 1
   ReloadTime: 2

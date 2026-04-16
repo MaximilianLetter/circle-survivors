@@ -9,5 +9,8 @@ public class EnemyWave : ScriptableObject
     public int enemyCount = 10;
     public float spawnInterval = 0.5f;
 
+    [TextArea(3, 5)]
+    public string spawnText = string.Empty;
+
     public EnemySpawnEntry[] enemies;
 }

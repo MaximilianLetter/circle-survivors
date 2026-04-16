@@ -30,6 +30,9 @@ public class GameManager : MonoBehaviour
     public GameMode Mode => _mode;
     private GameMode _mode;
 
+    public CharacterType StartingCharacter => _startingCharacter;
+    private CharacterType _startingCharacter;
+
     private bool _levelCompleted;
 
     private void Awake()
@@ -84,18 +87,27 @@ public class GameManager : MonoBehaviour
 #endif
     }
 
-    public void StartGameFromMenu(bool playTutorial = false)
+    public void StartGameFromMenu(bool playTutorial = false, CharacterType charType = CharacterType.None)
     {
-        StartCoroutine(LoadIntoGameSceneAndStart(playTutorial));
+        StopAllCoroutines();
+        TransitionManager.Instance.StopAllCoroutines();
+
+        StartCoroutine(LoadIntoGameSceneAndStart(playTutorial, charType));
     }
 
     public void ReturnToMenuAfterWin()
     {
+        StopAllCoroutines();
+        TransitionManager.Instance.StopAllCoroutines();
+
         StartCoroutine(LoadIntoMenuAfterWin());
     }
 
     public void ReturnToMenuFromGame()
     {
+        StopAllCoroutines();
+        TransitionManager.Instance.StopAllCoroutines();
+
         StartCoroutine(LoadIntoMenuFromGame());
     }
 
@@ -118,10 +130,7 @@ public class GameManager : MonoBehaviour
             true,
             true,
             false,
-            () => {
-                UiManager.Instance.HideStatusText();
-                GameStateManager.Instance.SetGameState(GameState.Playing);
-            }) // Clear UI mid transition
+            () => ResetValues())
         );
     }
 
@@ -133,14 +142,23 @@ public class GameManager : MonoBehaviour
             false,
             true,
             false,
-            () => {
-                UiManager.Instance.HideStatusText();
-                GameStateManager.Instance.SetGameState(GameState.Playing);
-            })
+            () => ResetValues())
         );
     }
 
-    private IEnumerator LoadIntoGameSceneAndStart(bool playTutorial = false)
+    private void ResetValues()
+    {
+        _levelCompleted = false;
+
+        UiManager.Instance.HideStatusText();
+        GameStateManager.Instance.SetGameState(GameState.Playing);
+        TransitionManager.Instance.ResetState();
+
+        _startingCharacter = CharacterType.None;
+        _mode = GameMode.None;
+    }
+
+    private IEnumerator LoadIntoGameSceneAndStart(bool playTutorial = false, CharacterType charType = CharacterType.None)
     {
         yield return StartCoroutine(TransitionManager.Instance.TransitionToScene(
             "MainScene",
@@ -149,7 +167,12 @@ public class GameManager : MonoBehaviour
             false,
             false,
             // Set mid transition so that party initializes correctly
-            () => _mode = playTutorial ? GameMode.Tutorial : GameMode.Game)
+            () => {
+                _mode = playTutorial ? GameMode.Tutorial : GameMode.Game;
+
+                if (_mode != GameMode.Tutorial)
+                    _startingCharacter = charType;
+            })
         );
 
         if (playTutorial)
@@ -168,11 +191,6 @@ public class GameManager : MonoBehaviour
         StartCoroutine(RunGameLoop());
     }
 
-    public void RestartCurrentScene()
-    {
-        StartGameFromMenu(_mode == GameMode.Tutorial);
-    }
-
     private IEnumerator RunTutorial()
     {
         if (LevelManager.Instance.TryGetTutorialLevel(out var tutorial))
@@ -187,6 +205,7 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator RunGameLoop()
     {
+        TrackRecordManager.Instance.StartTracking();
         while (true)
         {
             if (!LevelManager.Instance.TryGetNextLevel(out var config))
@@ -211,7 +230,7 @@ public class GameManager : MonoBehaviour
                 //onHiddenPhase: resetParty ? () => { _partyOfCharacters.ResetParty(); } : null
                 //onHiddenPhase: () => UiManager.Instance.ShowLevelTitle(config.title, config.subTitle)
                 onHiddenPhase: () => WorldTextManager.Instance.ShowDoubleLineWorldText(
-                    config.title, config.subTitle, null, true
+                    config.title, config.subTitle, new Vector3(config.playerStartPos.x, 0, config.playerStartPos.y), true
                 )
             )
         );
@@ -219,7 +238,9 @@ public class GameManager : MonoBehaviour
         if (config.type == LevelType.Waves)
             EnemyManager.Instance.StartWaveSet(config.waveSet);
         else if (config.type == LevelType.Extraction)
-            EnemyManager.Instance.StartContinuousWave(config.constantEnemyWave, config.extractionBossWave);
+            EnemyManager.Instance.StartContinuousWave(
+                config.constantEnemyWave, config.extractionBossWave, config.clearBeforeBoss, config.pressureTimer, config.pressureEnemyPrefab
+            );
 
         yield return new WaitUntil(() => _levelCompleted);
 
@@ -254,11 +275,17 @@ public class GameManager : MonoBehaviour
     private void WinGame()
     {
         GameStateManager.Instance.SetGameState(GameState.Won);
+
+        if (_mode != GameMode.Tutorial)
+            TrackRecordManager.Instance.StopAndSaveTracking();
+        else
+            TrackRecordManager.Instance.OmitTracking();
     }
     
     public void LoseGame()
     {
         GameStateManager.Instance.SetGameState(GameState.Lost);
+        TrackRecordManager.Instance.OmitTracking();
     }
 
     public void ExitGame()

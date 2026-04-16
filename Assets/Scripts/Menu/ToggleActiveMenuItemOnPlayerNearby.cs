@@ -9,7 +9,10 @@ public class ToggleActiveMenuItemOnPlayerNearby : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
 
-        MenuManager.Instance.SetActiveMenuItem(_item.GetMenuItemType());
+        MenuManager.Instance.SetActiveMenuItem(
+            _item.GetMenuItemType(),
+            _item.transform
+        );
         _item.ToggleActiveState(true);
     }
 
@@ -18,7 +21,7 @@ public class ToggleActiveMenuItemOnPlayerNearby : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
 
-        MenuManager.Instance.SetActiveMenuItem(MenuItemType.None);
+        MenuManager.Instance.SetActiveMenuItem(MenuItemType.None, null);
         _item.ToggleActiveState(false);
     }
 }

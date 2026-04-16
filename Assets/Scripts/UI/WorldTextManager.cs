@@ -64,7 +64,7 @@ public class WorldTextManager : MonoBehaviour
             spawnPos = _player.position;
 
         Vector3 desired = spawnPos + new Vector3(-2, 0, -2);
-        Vector3 freeDecalPos = FindFreeDecalPosition(desired, new Size(8, 4));
+        Vector3 freeDecalPos = FindFreeDecalPosition(desired, new Size(12, 8));
 
         float holdDuration = holdLong ? _holdDuration : _shortHoldDuration;
 
@@ -73,7 +73,7 @@ public class WorldTextManager : MonoBehaviour
         SoundManager.PlaySound(SoundManager.Instance.Library.WriteLong);
     }
 
-    public void ShowDoubleLineWorldText(string title, string subtitle, Vector3? position, bool longHold = false)
+    public void ShowDoubleLineWorldText(string title, string subtitle, Vector3? position = null, bool longHold = false)
     {
         Vector3 spawnPos;
         if (position.HasValue)
@@ -89,7 +89,7 @@ public class WorldTextManager : MonoBehaviour
     private IEnumerator DoubleLineWorldTextRoutine(string title, string subtitle, Vector3 position, float holdDuration)
     {
         Vector3 desired = position + new Vector3(-2, 0, -2);
-        Vector3 freeDecalPos = FindFreeDecalPosition(desired, new Size(8, 6));
+        Vector3 freeDecalPos = FindFreeDecalPosition(desired, new Size(12, 10));
 
         var titleDecal = _factory.Create(title, freeDecalPos, this, fontSize: _fontSizeBig);
         SoundManager.PlaySound(SoundManager.Instance.Library.WriteLong);
@@ -97,7 +97,8 @@ public class WorldTextManager : MonoBehaviour
 
         yield return new WaitForSeconds(_fadeTime);
 
-        var subDecal = _factory.Create(subtitle, freeDecalPos + new Vector3(-1, 0, -1), this, fontSize: _fontSizeRegular);
+        Vector3 offset = new Vector3(-1, 0, -1) * subtitle.Length / 48; // TODO: just a guess, magicnumber
+        var subDecal = _factory.Create(subtitle, freeDecalPos + offset, this, fontSize: _fontSizeRegular);
         SoundManager.PlaySound(SoundManager.Instance.Library.WriteLong);
         StartCoroutine(subDecal.FadeInThenHoldThenOut(_fadeTime, holdDuration));
     }
@@ -116,21 +117,23 @@ public class WorldTextManager : MonoBehaviour
         StartCoroutine(_persistentDecal.FadeOutAndDestroy(_fadeTime));
     }
 
-    private Vector3 FindFreeDecalPosition(Vector3 center, Size size, int attempts = 12)
+    private Vector3 FindFreeDecalPosition(Vector3 center, Size size, int attempts = 16)
     {
-        Vector3 halfExtents = new Vector3(size.Width / 2f, 0.5f, size.Height / 2f);
+        Vector3 halfExtents = new Vector3(size.Width / 2f, 0.05f, size.Height / 2f);
 
-        LayerMask mask = LayerMask.GetMask("Obstacle", "Collectable");
+        LayerMask mask = LayerMask.GetMask("Obstacle");
+
+        Collider[] hits = Physics.OverlapBox(center, halfExtents, Quaternion.identity, mask);
 
         // Try original position first
-        if (!Physics.CheckBox(center, halfExtents, Quaternion.identity, mask))
+        if (WorldManager.Instance.IsInsideBounds(center, halfExtents) && !Physics.CheckBox(center, halfExtents, Quaternion.identity, mask))
             return center;
 
         // Spiral / radial search
         for (int i = 0; i < attempts; i++)
         {
             float angle = Random.Range(0f, Mathf.PI * 2f);
-            float radius = 1.5f + i * 0.75f;
+            float radius = 1.5f + i * 0.5f;
 
             Vector3 offset = new Vector3(
                 Mathf.Cos(angle),
@@ -140,7 +143,7 @@ public class WorldTextManager : MonoBehaviour
 
             Vector3 candidate = center + offset;
 
-            if (!Physics.CheckBox(candidate, halfExtents, Quaternion.identity, mask))
+            if (WorldManager.Instance.IsInsideBounds(candidate, halfExtents) && !Physics.CheckBox(candidate, halfExtents, Quaternion.identity, mask))
             {
                 return candidate;
             }

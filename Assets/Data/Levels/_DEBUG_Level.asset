@@ -15,23 +15,25 @@ MonoBehaviour:
   type: 0
   title: DEBUG
   subTitle: Level for testing and debugging.
-  bossText: Boss subtext example.
   completeText: Debug level completed.
-  mapSize: {x: 100, y: 100}
+  mapSize: {x: 70, y: 70}
   playerStartPos: {x: 0, y: 0}
   minDistance: 18
-  characterAmount: 60
-  characterModifierAmount: 5
+  characterAmount: 12
+  characterModifierAmount: 12
   pickUpHealthAmount: 10
   partyIncreaseModifierAmount: 1
-  biomeConfig: {fileID: 11400000, guid: 2495004268e21034e888577c3daac59b, type: 2}
-  obstacleWeights: {x: 0.4, y: 0.2, z: 0.3}
+  biomeConfig: {fileID: 11400000, guid: 8c1dc9914e85dcc4ca0303a885ffe6b0, type: 2}
+  obstacleWeights: {x: 0.5, y: 0.3, z: 0.2}
   weatherEffectPrefab: {fileID: 3960113411586271650, guid: 673f03a0d15dd9147a3af8867a86c9be, type: 3}
   waveSet: {fileID: 11400000, guid: 528ec61cd36d21045bd618ce636d01f4, type: 2}
   constantEnemyWave: {fileID: 0}
   extractionBossWave: {fileID: 0}
+  pressureTimer: 0
+  pressureEnemyPrefab: {fileID: 0}
   extractionPoint: {fileID: 0}
-  extractionPointPosition: {x: 0, y: 0, z: 0}
+  extractionPointPosition: {x: 0, y: 0}
+  clearBeforeBoss: 0
   extractionGuidance: {fileID: 0}
   ambientTracks:
   - {fileID: 8300000, guid: 6522ff31e0026714788317ee8d19b423, type: 3}

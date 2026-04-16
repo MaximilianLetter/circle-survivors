@@ -41,7 +41,7 @@ public static class SpawnHelper
             }
 
             Vector3 spawnPos = target.position + newDirection;
-            spawnPos.y = 0.05f; // Helps with enemies falling through the ground
+            spawnPos.y = 0.2f; // Helps with enemies falling through the ground
 
             if (!worldBounds.Contains(spawnPos))
                 continue;

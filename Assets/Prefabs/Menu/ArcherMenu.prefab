@@ -54,11 +54,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5266260917832485114, guid: ee0e80d2d1ef4d8459e68a94c278ce95, type: 3}
       propertyPath: _titleText
-      value: Archer
+      value: 'Archer
+
+        Ranged single target damage with high firerate.'
       objectReference: {fileID: 0}
     - target: {fileID: 5266260917832485114, guid: ee0e80d2d1ef4d8459e68a94c278ce95, type: 3}
       propertyPath: _descriptionText
       value: Single target ranged attacks with short reload times.
+      objectReference: {fileID: 0}
+    - target: {fileID: 7022589931790217793, guid: ee0e80d2d1ef4d8459e68a94c278ce95, type: 3}
+      propertyPath: _type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7022589931790217793, guid: ee0e80d2d1ef4d8459e68a94c278ce95, type: 3}
+      propertyPath: _charType
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7022589931790217793, guid: ee0e80d2d1ef4d8459e68a94c278ce95, type: 3}
       propertyPath: _activeModel
@@ -69,9 +79,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 5184793843769049848}
     - target: {fileID: 7022589931790217793, guid: ee0e80d2d1ef4d8459e68a94c278ce95, type: 3}
+      propertyPath: _liftableObject
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7022589931790217793, guid: ee0e80d2d1ef4d8459e68a94c278ce95, type: 3}
       propertyPath: _stateChangeSound
       value: 
       objectReference: {fileID: 11400000, guid: 49b8067fd885c57429ec34cdb24f170a, type: 2}
+    - target: {fileID: 8438212592275963762, guid: ee0e80d2d1ef4d8459e68a94c278ce95, type: 3}
+      propertyPath: m_Radius
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:

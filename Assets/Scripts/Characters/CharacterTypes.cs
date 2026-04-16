@@ -1,13 +1,16 @@
-using UnityEngine;
-
 public enum CharacterType
 {
     None,
-    Archer,
-    Crossbowman,
-    Knight,
-    Guardian,
-    // Axeman
+    // First Gen
+    Archer,         // Bow
+    Crossbowman,    // Crossbow
+    Knight,         // Sword
+    Warden,         // Shield
+    // Second Gen
+    Footsoldier,    // Billhook
+    ManAtArms,      // 2hand Hammer
+    Raider,         // Spear
+    // Place for a 4th randed character
 }
 
 public enum AttackType

@@ -80,7 +80,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   _textInteraction: {fileID: 1862684463976937824}
   _titleText: Title
-  _align: 258
 --- !u!114 &7022589931790217793
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -258,4 +257,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 643975b2b263e36468ee23c4a3169a73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  _focusCam: 1

@@ -13,10 +13,14 @@ MonoBehaviour:
   m_Name: Ruins
   m_EditorClassIdentifier: Assembly-CSharp::BiomeConfig
   smallObstacles:
-  - {fileID: 7538681593046787618, guid: 851941935655f6d4783d94712630f3be, type: 3}
+  - {fileID: 9198606477532623053, guid: 93563abcb9585994abde10c1863fe5d0, type: 3}
   - {fileID: 4349414858485950123, guid: 4c4a2909bfbaa6048b394928c52127aa, type: 3}
   - {fileID: 6267293406770754022, guid: daa79e41fa0c9374b85d6a258d88f9ae, type: 3}
+  - {fileID: 7538681593046787618, guid: 851941935655f6d4783d94712630f3be, type: 3}
   mediumObstacles:
+  - {fileID: 9198606477532623053, guid: 4bfdf9e0b16c245449a750cd9a64d25f, type: 3}
   - {fileID: 219331233842624807, guid: 458af038f54ed664a8151dfb2d2c1195, type: 3}
   largeObstacles:
-  - {fileID: 3673823234886804481, guid: dc7fb7b27aedf494f9abbc1bbb5d79d6, type: 3}
+  - {fileID: 9198606477532623053, guid: 88910077ec9b61f449d83eb01dd64759, type: 3}
+  - {fileID: 9198606477532623053, guid: 7858ba24d4b6e8d4caeb6f334e227d87, type: 3}
+  - {fileID: 9198606477532623053, guid: 5e35e5a7ddd4c93458ddd4f04bf04518, type: 3}

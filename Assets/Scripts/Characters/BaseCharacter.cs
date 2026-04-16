@@ -26,16 +26,18 @@ public class BaseCharacter : MonoBehaviour, IStatContext
     public CharacterAudioProfile Audio => _audio;
     [SerializeField] private CharacterAudioProfile _audio;
 
-
     // NOTE: this is a bit doubled with TargetedAttackAbility
     // maybe remove from there to here
     [SerializeField] private GameObject _idleModel;
     [SerializeField] private GameObject _fightModel;
     [SerializeField] private GameObject _specialModel;
+    private GameObject _currentlyActiveModel;
 
     public LocalModifierSystem LocalModifierSystem => _localModifierSystem;
     private LocalModifierSystem _localModifierSystem;
 
+    // TODO: do renaming towards something like "rank system"
+    public ModifierIndicator Rank => _modifierIndicator;
     private ModifierIndicator _modifierIndicator;
 
     private float _hp;
@@ -62,10 +64,10 @@ public class BaseCharacter : MonoBehaviour, IStatContext
     private PartyOfCharacters _party;
     private HealthPointsIndicator _healthPointsIndicator;
     private SpecialResource _specialResource;
-    private BlockProjectiles _blockProjectiles;
 
     // Events
     public static event Action OnCollectablePickedUp;
+    public static event Action OnCharacterDied;
 
     private void Awake()
     {
@@ -78,9 +80,6 @@ public class BaseCharacter : MonoBehaviour, IStatContext
         _modifierIndicator = GetComponent<ModifierIndicator>();
         _specialResource = GetComponent<SpecialResource>();
 
-        if (_characterType == CharacterType.Guardian)
-            _blockProjectiles = GetComponent<BlockProjectiles>();
-
         _maxHp = ResolveStat(StatType.MaxHp, _stats.MaxHP);
         HP = _maxHp;
     }
@@ -91,8 +90,7 @@ public class BaseCharacter : MonoBehaviour, IStatContext
         SetHealthVisuals();
 
         // Differentiate between characters added during wave or in between
-        bool fightModel = EnemyManager.Instance.GetWaveRunningState();
-        ApplyVisualState(fightModel ? ModelVariant.Fight : ModelVariant.Idle);
+        ApplyVisualState(_party.FightState ? ModelVariant.Fight : ModelVariant.Idle);
     }
 
     private void OnEnable()
@@ -109,8 +107,6 @@ public class BaseCharacter : MonoBehaviour, IStatContext
 
     private void OnLocalModifiersChanged(StatType type)
     {
-        _modifierIndicator.IncreaseIndicatorLevel();
-
         if (type == StatType.MaxHp)
             RecalculateMaxHp();
     }
@@ -123,6 +119,9 @@ public class BaseCharacter : MonoBehaviour, IStatContext
 
     public void TakeDmg(float dmg)
     {
+        // NOTE: avoid double hits, could also be removed later on
+        if (_lastHitTime + _stats.InvincibleTimeFrame > Time.time) return;
+
         HP -= dmg;
 
         _lastHitTime = Time.time;
@@ -193,6 +192,8 @@ public class BaseCharacter : MonoBehaviour, IStatContext
 
         DisableAbilities();
         _deathFall.PlayDeathAnimation();
+
+        OnCharacterDied?.Invoke();
     }
 
     private void DisableAbilities()
@@ -235,31 +236,6 @@ public class BaseCharacter : MonoBehaviour, IStatContext
             collectable.DestroyCollectable();
             return;
         }
-
-        // NOTE: avoid double hits, could also be removed later on
-        if (_lastHitTime + _stats.InvincibleTimeFrame > Time.time) return;
-
-        if (other.CompareTag("Enemy"))
-        {
-            // If character is hit, do not deal dmg but knock enemy back a bit
-            var enemy = other.GetComponent<BaseEnemy>();
-            TakeDmg(enemy.GetDmgStat());
-            enemy.TakeDmg(0, 600, transform.forward);
-        }
-
-        if (other.CompareTag("EnemyProjectile"))
-        {
-            var projectile = other.GetComponent<EnemyProjectile>();
-
-            if (_blockProjectiles != null)
-            {
-                _blockProjectiles.Block();
-            }
-            else
-                TakeDmg(projectile.GetDmgStat());
-
-            Destroy(projectile.gameObject);
-        }
     }
 
     private bool TryToPickUpCharacter(BaseCollectable collectable, Vector3 pos, Quaternion rot)
@@ -297,18 +273,32 @@ public class BaseCharacter : MonoBehaviour, IStatContext
 
     private bool TryToPickUpModifier(BaseCollectable collectable)
     {
-        var mod = collectable.GetStatModifier();
+        CharacterType collectableCharacterType = collectable.GetCharacterType();
+        AttackType collectableAttackType = collectable.GetAttackType();
 
-        if (mod.StatType == StatType.PartySize)
+        // NOT CLEAN: but this is currently only increase in Party size
+        if (collectableAttackType == AttackType.None && collectableCharacterType == CharacterType.None)
         {
+            StatModifierSO mod = collectable.GetStatModifier();
             GlobalModifierSystem.Instance.AddModifier(mod.CreateRuntimeInstance());
         }
         else
         {
-            if (mod.TargetCharacterType != CharacterType.None && _characterType != mod.TargetCharacterType)
+            // Character fully leveled up -> cant pick up
+            if (!_modifierIndicator.CanReceiveMoreModifiers()) return false;
+
+            if (collectableCharacterType != CharacterType.None && _characterType != collectableCharacterType)
                 return false;
 
-            _localModifierSystem.AddModifier(mod.CreateRuntimeInstance());
+            if (collectableAttackType != AttackType.None && _defaultAttackType != collectableAttackType)
+                return false;
+
+            // Apply visual state and modifiers
+            _modifierIndicator.IncreaseIndicatorLevel();
+            foreach (StatModifierSO mod in _stats.ModBundle.GrantedModifiers)
+            {
+                _localModifierSystem.AddModifier(mod.CreateRuntimeInstance());
+            }
         }
 
         SoundManager.PlaySound(SoundManager.Instance.Library.CollectPickUp);
@@ -324,25 +314,40 @@ public class BaseCharacter : MonoBehaviour, IStatContext
         ApplyVisualState(ModelVariant.Idle);
     }
 
+    public void SetModelDuringAttack(GameObject model)
+    {
+        _currentlyActiveModel.SetActive(false);
+
+        model.SetActive(true);
+        _currentlyActiveModel = model;
+    }
+
     public void ApplyVisualState(ModelVariant model)
     {
-        _idleModel.SetActive(false);
-        _fightModel.SetActive(false);
-        _specialModel.SetActive(false);
+        if (_currentlyActiveModel != null) _currentlyActiveModel.SetActive(false);
+        else
+        {
+            _idleModel.SetActive(false);
+            _fightModel.SetActive(false);
+            _specialModel.SetActive(false);
+        }
 
         switch (model)
-        {
-            case ModelVariant.Idle:
-                _idleModel.SetActive(true);
-                break;
+            {
+                case ModelVariant.Idle:
+                    _idleModel.SetActive(true);
+                    _currentlyActiveModel = _idleModel;
+                    break;
 
-            case ModelVariant.Fight:
-                _fightModel.SetActive(true);
-                break;
+                case ModelVariant.Fight:
+                    _fightModel.SetActive(true);
+                    _currentlyActiveModel = _fightModel;
+                    break;
 
-            case ModelVariant.Special:
-                _specialModel.SetActive(true);
-                break;
-        }
+                case ModelVariant.Special:
+                    _specialModel.SetActive(true);
+                    _currentlyActiveModel = _specialModel;
+                    break;
+            }
     }
 }

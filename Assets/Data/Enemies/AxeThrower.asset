@@ -16,10 +16,13 @@ MonoBehaviour:
   Damage: 6
   KnockBackThreshold: 500
   KnockBackDmg: 18
+  TurnSpeed: 360
   MoveSpeed: 2
   MoveSpeedIncrease: 0.1
   MoveSpeedIncreaseInterval: 1
+  CatchPhrase: 
   RangedAttackRange: 8
   RangedAttackDamage: 6
   RangedAttackCooldown: 2.5
+  RangedAttackPrecision: 5
   Projectile: {fileID: 1614341048115884782, guid: d5d097dd3d96e8944852a3dfc253af56, type: 3}

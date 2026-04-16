@@ -5,6 +5,7 @@ public class EnemyProjectile : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float _speed;
     [SerializeField] private float _timeToLive = 5;
+    [SerializeField] private bool _blockable = true;
 
     private float _dmg;
 
@@ -28,12 +29,22 @@ public class EnemyProjectile : MonoBehaviour
         return _dmg;
     }
 
-    // TODO: getting damage is currently done by getting base enemy script -> handle that in characters, also destroy this gameobject on hit
-
-    // NOTE: Dmg application is done in Characters themselves
-
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Obstacle")) Destroy(gameObject);
+
+        if (other.CompareTag("PlayerBlock") && _blockable)
+        {
+            if (other.TryGetComponent(out BlockProjectiles block))
+            {
+                if (block.TryToBlock(transform)) return;
+            }
+        }
+
+        if (other.CompareTag("PlayerCharacter"))
+        {
+            other.GetComponent<BaseCharacter>().TakeDmg(_dmg);
+            Destroy(gameObject);
+        }
     }
 }

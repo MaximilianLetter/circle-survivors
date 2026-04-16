@@ -16,6 +16,7 @@ public class MeleeBoxAttack : TargetedAttackAbility
             _attackStats.Damage,
             _attackStats.KnockBack,
             _attackStats.HitShape,
+            _attackStats.HitDirectionAngle,
             _hitFx
         );
     }
@@ -28,12 +29,15 @@ public class MeleeBoxAttack : TargetedAttackAbility
             _attackStats.SpecialDamage,
             _attackStats.SpecialKnockBack,
             _attackStats.SpecialHitShape,
+            _attackStats.SpecialHitDirectionAngle,
             _specialHitFx
         );
     }
 
-    private void PerformAttack(float baseDamage, float baseKnockback, BoxHitShape shape, GameObject hitFx)
+    private void PerformAttack(float baseDamage, float baseKnockback, BoxHitShape shape, float directionAngle, GameObject hitFx)
     {
+        Vector3 direction = Quaternion.Euler(0f, directionAngle, 0f) * transform.forward;
+
         Collider[] hits = HitQuery.BoxForward(
             transform.position + _hitOffset,
             transform.forward,
@@ -58,7 +62,7 @@ public class MeleeBoxAttack : TargetedAttackAbility
                 );
 
                 // Apply values
-                enemy.TakeDmg(dmg, knockBack, transform.forward);
+                enemy.TakeDmg(dmg, knockBack, direction);
             }
 
             hitFx.SetActive(true);

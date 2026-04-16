@@ -17,3 +17,4 @@ MonoBehaviour:
   AttackCooldown: 1
   AttackRange: 12
   AttackAngle: 90
+  ModBundle: {fileID: 11400000, guid: fdc671a33da002243a6d18334e1d0735, type: 2}

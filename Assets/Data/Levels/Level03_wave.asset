@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09e21bc2a4c977b4fa4b0fdebc87f1aa, type: 3}
+  m_Name: Level03_wave
+  m_EditorClassIdentifier: Assembly-CSharp::LevelConfig
+  type: 0
+  title: Face Off.
+  subTitle: On the plains nearby, where the battle just concluded, they catched up
+    to you. No more running.
+  completeText: The armored knights lie in the dirt and you hope to see another day.
+  mapSize: {x: 70, y: 70}
+  playerStartPos: {x: 0, y: 0}
+  minDistance: 18
+  characterAmount: 6
+  characterModifierAmount: 6
+  pickUpHealthAmount: 8
+  partyIncreaseModifierAmount: 2
+  biomeConfig: {fileID: 11400000, guid: 418c5749f784d844ea326c5903cccfc3, type: 2}
+  obstacleWeights: {x: 0.4, y: 0.2, z: 0.3}
+  weatherEffectPrefab: {fileID: 8907042233150814423, guid: f48f5c3a43729004aa4e8ef9b5bdb2a4, type: 3}
+  waveSet: {fileID: 11400000, guid: f1557cd87768dfe419d8c02536a87e37, type: 2}
+  constantEnemyWave: {fileID: 0}
+  extractionBossWave: {fileID: 0}
+  pressureTimer: 0
+  pressureEnemyPrefab: {fileID: 0}
+  extractionPoint: {fileID: 0}
+  extractionPointPosition: {x: 0, y: 0, z: 0}
+  clearBeforeBoss: 0
+  extractionGuidance: {fileID: 0}
+  ambientTracks:
+  - {fileID: 8300000, guid: 34289cfe8aa1cca49a29be8ccb00b745, type: 3}
+  musicTracks: []

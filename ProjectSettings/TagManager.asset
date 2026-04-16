@@ -9,6 +9,8 @@ TagManager:
   - Enemy
   - Obstacle
   - EnemyProjectile
+  - PlayerCharacter
+  - PlayerBlock
   layers:
   - Default
   - TransparentFX

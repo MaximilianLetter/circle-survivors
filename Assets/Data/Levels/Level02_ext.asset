@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09e21bc2a4c977b4fa4b0fdebc87f1aa, type: 3}
+  m_Name: Level02_ext
+  m_EditorClassIdentifier: Assembly-CSharp::LevelConfig
+  type: 1
+  title: 'The Escape '
+  subTitle: The enemy army has sent some of their forces after you. Running from
+    the persecutors, you hear the dogs barking.
+  completeText: With the master of beasts defeated, the hounds flee.
+  mapSize: {x: 200, y: 40}
+  playerStartPos: {x: -90, y: 0}
+  minDistance: 16
+  characterAmount: 6
+  characterModifierAmount: 6
+  pickUpHealthAmount: 12
+  partyIncreaseModifierAmount: 2
+  biomeConfig: {fileID: 11400000, guid: 5d1920384fab6d441bb29d17fd53b998, type: 2}
+  obstacleWeights: {x: 0.7, y: 0.2, z: 0.1}
+  weatherEffectPrefab: {fileID: 0}
+  waveSet: {fileID: 0}
+  constantEnemyWave: {fileID: 11400000, guid: ceb24a3df851baa469035f1c65e993bb, type: 2}
+  extractionBossWave: {fileID: 11400000, guid: 42c68fe909591c44ba44eb4273d31334, type: 2}
+  pressureTimer: 100
+  pressureEnemyPrefab: {fileID: 6437383202725888917, guid: 5e8dd6ec2b4de3149b2a47d40d7d3b75, type: 3}
+  extractionPoint: {fileID: 2431316416247658729, guid: 82ed4f4499cf3eb4dbc367c5abbffe6d, type: 3}
+  extractionPointPosition: {x: 90, y: 0}
+  clearBeforeBoss: 1
+  extractionGuidance: {fileID: 4064144944480876934, guid: 2a4fe8c2ea6528b4f8332487c042e985, type: 3}
+  ambientTracks:
+  - {fileID: 8300000, guid: 6522ff31e0026714788317ee8d19b423, type: 3}
+  musicTracks: []

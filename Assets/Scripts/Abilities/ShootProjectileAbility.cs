@@ -4,12 +4,15 @@ public class ShootProjectileAbility : TargetedAttackAbility
 {
     [SerializeField] private Transform _projectileSpawn;
     [SerializeField] private RangedAttackStats _attackStats;
+    [SerializeField] private GameObject _attackModel; // TODO: TEST
 
     protected override void ExecuteAttack(Transform target)
     {
         base.ExecuteAttack(target);
 
         Vector3 dir = (target.position - _projectileSpawn.position).normalized;
+
+        if (_attackModel != null) _character.SetModelDuringAttack(_attackModel);
 
         // Projectiles are supposed to go straight, in order to hit potentially multiple targets
         dir.y = 0;

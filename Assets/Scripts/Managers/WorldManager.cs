@@ -19,6 +19,7 @@ public class WorldManager : MonoBehaviour
     [SerializeField] private float _wallHeight = 5f;
     [SerializeField] private bool _showEndOfWorldIndicators = true;
     [SerializeField] private Material _lineMaterial;
+    [SerializeField] private GameObject _cornerPrefab;
 
     [Header("Collectables")]
     [SerializeField] private ObjectMappings _objMappings;
@@ -34,8 +35,8 @@ public class WorldManager : MonoBehaviour
     private Bounds _mapSpawnBounds;
     private GameObject _boundaryContainer;
 
-    private List<Vector2> _obstacleSpawnPoints;
-    private List<Vector2> _collectableSpawnPoints;
+    //private List<Vector2> _obstacleSpawnPoints;
+    private List<BaseObstacle> _placedObstacles;
 
     // Could be a custom struct, Vector3 works just as fine although less readable
     private Vector3 _occuranceWeights;
@@ -47,6 +48,7 @@ public class WorldManager : MonoBehaviour
 
     private Vector2 _mapSize;
     private Vector2 _startingPoint;
+    private List<Vector2> _keepFreeZones;
     private BiomeConfig _biome;
 
     private GameObject _activeWeatherEffect;
@@ -75,6 +77,7 @@ public class WorldManager : MonoBehaviour
         _mapSize = config.mapSize;
         _minDistance = config.minDistance;
         _startingPoint = config.playerStartPos;
+        _keepFreeZones.Add(_startingPoint);
 
         _characterAmount = config.characterAmount;
         _characterModifierAmount = config.characterModifierAmount;
@@ -86,25 +89,30 @@ public class WorldManager : MonoBehaviour
         _mapSpawnArea = _mapSize - new Vector2(_mapEdgePuffer, _mapEdgePuffer);
         _mapSpawnBounds = new Bounds(Vector3.zero, new Vector3(_mapSize.x, 10f, _mapSize.y));
 
-        ClearWorld();
+        // Add extraction point if required
+        if (config.type == LevelType.Extraction)
+        {
+            Vector3 spawnPos = new Vector3(config.extractionPointPosition.x, 0, config.extractionPointPosition.y);
+            _extractionPoint = Instantiate(config.extractionPoint, spawnPos, Quaternion.identity);
+            _extractionPointGuidance = Instantiate(config.extractionGuidance);
+
+            _keepFreeZones.Add(config.extractionPointPosition);
+
+            // Set references to each other
+            var target = _extractionPointGuidance.GetComponent<GuideTowardsTarget>();
+            target.SetTarget(_extractionPoint.transform);
+
+            var endzone = _extractionPoint.GetComponent<ExtractionPoint>();
+            endzone.SetGuidanceRef(target);
+        }
 
         // Generate obstacles and collectables (based on the obstacles)
-        _obstacleSpawnPoints = GenerateObstacles();
-        _collectableSpawnPoints = GenerateCollectables();
+        GenerateObstacles();
+        GenerateCollectables();
 
         ScaleGroundObject();
 
         BuildWorldBounds();
-
-        // Add extraction point if required
-        if (config.type == LevelType.Extraction)
-        {
-            // TODO -> have the extraction point be cleared of obstacles
-            _extractionPoint = Instantiate(config.extractionPoint, config.extractionPointPosition, Quaternion.identity);
-            _extractionPointGuidance = Instantiate(config.extractionGuidance);
-
-            _extractionPointGuidance.GetComponent<GuideTowardsTarget>().SetTarget(_extractionPoint.transform);
-        }
 
         // Add weather effects if present
         if (config.weatherEffectPrefab != null)
@@ -120,70 +128,71 @@ public class WorldManager : MonoBehaviour
 
         foreach (var point in obstacleSpawnPoints)
         {
-            Instantiate(
+            GameObject newObstacle = Instantiate(
                 SelectObstacleByWeight(),
                 new Vector3(point.x, 0, point.y),
                 Quaternion.Euler(0, Random.Range(0, 360), 0),
                 _obstacleContainer
             );
+
+            _placedObstacles.Add(newObstacle.GetComponent<BaseObstacle>());
         }
 
         return obstacleSpawnPoints;
     }
 
-    private List<Vector2> GenerateCollectables()
+    private void GenerateCollectables()
     {
+        List<Transform> availableSlots = new List<Transform>();
+
+        foreach (BaseObstacle obstacle in _placedObstacles)
+        {
+            availableSlots.AddRange(obstacle.GetSpawnPoints());
+        }
+
+        // Shuffle slots
+        for (int i = 0; i < availableSlots.Count; i++)
+        {
+            int randomIndex = Random.Range(i, availableSlots.Count);
+            (availableSlots[i], availableSlots[randomIndex]) =
+                (availableSlots[randomIndex], availableSlots[i]);
+        }
+
         int totalCollectablesAmount = _characterAmount + _characterModifierAmount + _pickUpHealAmount + _partyIncreaseModifierAmount;
-        List<Vector2> spawnPoints = GeneratePointsCollectables(_obstacleSpawnPoints, totalCollectablesAmount);
 
-        int remainingCharacters = _characterAmount;
-        int remainingCharModifiers = _characterModifierAmount;
-        int remainingHeal = _pickUpHealAmount;
-        int remainingPartyIncrease = _partyIncreaseModifierAmount;
+        int slotIndex = 0;
+        int spawnedCount = 0;
 
-        for (int i = 0; i < spawnPoints.Count; i++)
+        while (slotIndex < availableSlots.Count)
         {
             int totalRemaining =
-                remainingCharacters +
-                remainingCharModifiers +
-                remainingHeal +
-                remainingPartyIncrease;
+                _characterAmount +
+                _characterModifierAmount +
+                _pickUpHealAmount +
+                _partyIncreaseModifierAmount;
 
             if (totalRemaining == 0)
                 break;
 
-            // Select collectable object to place next
+            Transform slot = availableSlots[slotIndex];
+            slotIndex++;
+
             GameObject objToPlace = GetNextPickup();
 
-            const int maxAttempts = 5;
-            bool spawned = false;
+            Vector3 pos = slot.position;
+            Quaternion rot = slot.rotation;
 
-            for (int attempt = 0; attempt < maxAttempts; attempt++)
-            {
-                Vector2 basePoint = spawnPoints[i];
-                Vector2 randomOffset = Random.insideUnitCircle * (1f + (attempt * 0.5f));
+            if (!CheckIfPositionIsFree(pos))
+                continue;
 
-                Vector3 pos = new Vector3(
-                    basePoint.x + randomOffset.x,
-                    0f,
-                    basePoint.y + randomOffset.y
-                );
-
-                if (!CheckIfPositionIsFree(pos, true))
-                    continue;
-
-                Quaternion rot = Quaternion.Euler(0, Random.Range(0, 360), 0);
-
-                Instantiate(objToPlace, pos, rot, _collectableContainer);
-
-                spawned = true;
-                break;
-            }
-
-            if (!spawned) Debug.Log($"Failed to spawn collectable at index {i}");
+            Instantiate(objToPlace, pos, rot, _collectableContainer);
+            spawnedCount++;
         }
 
-        return spawnPoints;
+        if (spawnedCount < totalCollectablesAmount)
+        {
+            Debug.LogError("Not enough spawn slots for all collectables!" + spawnedCount + "/" + totalCollectablesAmount);
+        }
     }
 
     public GameObject GetNextPickup()
@@ -223,20 +232,29 @@ public class WorldManager : MonoBehaviour
 
     public void ClearWorld()
     {
+        _keepFreeZones = new List<Vector2>();
+
+        // Obstacles
         foreach (Transform child in _obstacleContainer)
             Destroy(child.gameObject);
 
+        _placedObstacles = new List<BaseObstacle>();
+
+        // Collectables
         foreach (Transform child in _collectableContainer)
             Destroy(child.gameObject);
 
+        // Boundaries
         if (_boundaryContainer != null)
             Destroy(_boundaryContainer);
 
+        // Specials
         if (_extractionPoint != null)
         {
             // TODO can be made cleaner
             Destroy(_extractionPoint);
-            Destroy(_extractionPointGuidance);
+            //Destroy(_extractionPointGuidance);
+            // ^ guidance point should destroy itself
         }
 
         if (_activeWeatherEffect != null)
@@ -270,12 +288,20 @@ public class WorldManager : MonoBehaviour
         );
     }
 
-    private bool CheckIfPositionIsFree(Vector3 pos, bool checkCollectables = false)
+    private bool CheckIfPositionIsFree(Vector3 pos)
     {
-        if (checkCollectables && Physics.CheckSphere(pos, 1.5f, _collectableLayer))
-            return false;
+        float halfX = _mapSize.x * 0.5f;
+        float halfZ = _mapSize.y * 0.5f;
 
-        return !Physics.CheckSphere(pos, 0.5f, _obstacleLayer);
+        // Check world bounds first
+        if (pos.x < -halfX || pos.x > halfX ||
+            pos.z < -halfZ || pos.z > halfZ)
+        {
+            return false;
+        }
+
+        // Should always pass as placements are handcrafted next to obstacles, could also be deleted
+        return !Physics.CheckSphere(pos, 0.25f, _obstacleLayer);
     }
 
     private GameObject SelectObstacleByWeight()
@@ -336,17 +362,24 @@ public class WorldManager : MonoBehaviour
         int gridHeight = Mathf.CeilToInt(_mapSpawnArea.y / cellSize);
         Vector2[,] grid = new Vector2[gridWidth, gridHeight]; // Initializes 2D array
 
-        // Define the object and exclusion radius, center needs to stay empty
         Vector2 center = new Vector2(_mapSpawnArea.x / 2f, _mapSpawnArea.y / 2f);
-        Vector2 keepFreeZone = center + _startingPoint;
-        float exclusionRadius = 8f;
+
+        List<Vector2> keepFreeZonesWorld = new List<Vector2>();
+
+        // This holds starthing position and potentially extraction point
+        foreach (Vector2 zone in _keepFreeZones)
+        {
+            keepFreeZonesWorld.Add(center + zone);
+        }
+
+        float exclusionRadius = 10f;
 
         // Generate first random pointVector2 firstPoint;
         Vector2 firstPoint;
         do
         {
             firstPoint = new Vector2(Random.Range(0, _mapSpawnArea.x), Random.Range(0, _mapSpawnArea.y));
-        } while (Vector2.Distance(firstPoint, keepFreeZone) < exclusionRadius);
+        } while (IsInsideAnyExclusion(firstPoint, keepFreeZonesWorld, exclusionRadius));
 
         points.Add(firstPoint);
         grid[(int)(firstPoint.x / cellSize), (int)(firstPoint.y / cellSize)] = firstPoint;
@@ -374,7 +407,7 @@ public class WorldManager : MonoBehaviour
                     continue;
 
                 // Check if the new point has space to the starting point
-                if (Vector2.Distance(newPoint, keepFreeZone) < exclusionRadius)
+                if (IsInsideAnyExclusion(newPoint, keepFreeZonesWorld, exclusionRadius))
                     continue;
 
                 // Check neighbors in the grid
@@ -415,6 +448,16 @@ public class WorldManager : MonoBehaviour
         }
 
         return points;
+    }
+
+    private bool IsInsideAnyExclusion(Vector2 point, List<Vector2> zones, float radius)
+    {
+        foreach (Vector2 zone in zones)
+        {
+            if (Vector2.Distance(point, zone) < radius)
+                return true;
+        }
+        return false;
     }
 
     private List<Vector2> CenterPoints(List<Vector2> points, Vector2 mapSize)
@@ -479,25 +522,52 @@ public class WorldManager : MonoBehaviour
     {
         GameObject lines = new GameObject("BoundaryLines");
         lines.transform.parent = _boundaryContainer.transform;
-
-        LineRenderer lr = lines.AddComponent<LineRenderer>();
-        lr.material = _lineMaterial;
-        lr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-
-        lr.positionCount = 5;
-        lr.loop = true;
-        lr.widthMultiplier = 0.2f;
-
         float halfX = _mapSize.x * 0.5f;
         float halfZ = _mapSize.y * 0.5f;
 
-        lr.SetPositions(new Vector3[]
+        float offset = 10;
+
+        Vector3[] corners = new Vector3[]
         {
-            new Vector3(-halfX, 0.1f, -halfZ),
-            new Vector3(-halfX, 0.1f,  halfZ),
-            new Vector3( halfX, 0.1f,  halfZ),
-            new Vector3( halfX, 0.1f, -halfZ),
-            new Vector3(-halfX, 0.1f, -halfZ),
-        });
+            new Vector3(-halfX + offset, 0.5f, -halfZ + offset), // bottom-left
+            new Vector3(-halfX + offset, 0.5f,  halfZ - offset), // top-left (original)
+            new Vector3( halfX - offset, 0.5f,  halfZ - offset), // top-right
+            new Vector3( halfX - offset, 0.5f, -halfZ + offset), // bottom-right
+        };
+
+        // Spawn corner prefabs
+        for (int i = 0; i < corners.Length; i++)
+        {
+            Quaternion rotation = Quaternion.identity;
+
+            switch (i)
+            {
+                case 1: // top-left (original)
+                    rotation = Quaternion.Euler(0f, 0f, 0f);
+                    break;
+                case 2: // top-right
+                    rotation = Quaternion.Euler(0f, 90f, 0f);
+                    break;
+                case 3: // bottom-right
+                    rotation = Quaternion.Euler(0f, 180f, 0f);
+                    break;
+                case 0: // bottom-left
+                    rotation = Quaternion.Euler(0f, 270f, 0f);
+                    break;
+            }
+
+            Instantiate(_cornerPrefab, corners[i], rotation, lines.transform);
+        }
+    }
+
+    public bool IsInsideBounds(Vector3 pos, Vector3 halfExtents)
+    {
+        float halfX = _mapSize.x * 0.5f;
+        float halfZ = _mapSize.y * 0.5f;
+
+        return pos.x - halfExtents.x >= -halfX &&
+               pos.x + halfExtents.x <= halfX &&
+               pos.z - halfExtents.z >= -halfZ &&
+               pos.z + halfExtents.z <= halfZ;
     }
 }

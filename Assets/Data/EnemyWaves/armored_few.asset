@@ -16,6 +16,7 @@ MonoBehaviour:
   delayAfter: 1
   enemyCount: 3
   spawnInterval: 0.5
+  spawnText: Armored soldiers approach, trying to surround you.
   enemies:
   - prefab: {fileID: 4739154765922496850, guid: 75f62dbd802e4ba4d9e80531d10f06bc, type: 3}
     weight: 1

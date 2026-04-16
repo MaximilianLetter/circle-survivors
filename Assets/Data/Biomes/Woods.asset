@@ -16,8 +16,11 @@ MonoBehaviour:
   - {fileID: 4976693323204143396, guid: 443c9c0fafc67b343a207f4ec982fb6b, type: 3}
   - {fileID: 4976693323204143396, guid: 36c40d3bcad72654683edd0d6a59ad86, type: 3}
   - {fileID: 4976693323204143396, guid: ea450b9a156ac5645be79eb2caeac210, type: 3}
+  - {fileID: 6267293406770754022, guid: 39f7d381d980cb043bdd90a9b79e339a, type: 3}
+  - {fileID: 6267293406770754022, guid: 2fdff87fed4a8d44dbada0f4c6ca985f, type: 3}
   mediumObstacles:
   - {fileID: 4976693323204143396, guid: f2297ddfc0b8fbc469ed83a9233a2482, type: 3}
   - {fileID: 4976693323204143396, guid: d9cf524b4db25244c8c7012bf87c4de1, type: 3}
+  - {fileID: 7538681593046787618, guid: 7433b0b8560a04241b61d861f81dd742, type: 3}
   largeObstacles:
-  - {fileID: 4976693323204143396, guid: f2297ddfc0b8fbc469ed83a9233a2482, type: 3}
+  - {fileID: 7538681593046787618, guid: 7433b0b8560a04241b61d861f81dd742, type: 3}

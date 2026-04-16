@@ -10,4 +10,7 @@ public class CharacterStats : ScriptableObject
     public float AttackCooldown = 1f;
     public float AttackRange = 12f;
     public float AttackAngle = 90f;
+
+    [Header("Character Mods")]
+    public ModifierBundle ModBundle;
 }

@@ -3,6 +3,7 @@ using UnityEngine;
 public class BaseCollectable : MonoBehaviour
 {
     [SerializeField] private CollectableType _type;
+    [SerializeField] private AttackType _attackType;
     [SerializeField] private CharacterType _characterType;
     [SerializeField] private StatModifierSO _statModifier;
 
@@ -37,6 +38,11 @@ public class BaseCollectable : MonoBehaviour
     public CollectableType GetCollectableType()
     {
         return _type;
+    }
+
+    public AttackType GetAttackType()
+    {
+        return _attackType;
     }
 
     public CharacterType GetCharacterType()

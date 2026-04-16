@@ -3,6 +3,7 @@ using UnityEngine;
 public class BaseMenuItem : MonoBehaviour
 {
     [SerializeField] private MenuItemType _type;
+    [SerializeField] private CharacterType _charType;
 
     [SerializeField] private bool _showPlayerUI;
     [SerializeField] private ToggleTextOnPlayerNearby _toggleText;
@@ -14,6 +15,11 @@ public class BaseMenuItem : MonoBehaviour
     public MenuItemType GetMenuItemType()
     {
         return _type;
+    }
+
+    public CharacterType GetCharacterType()
+    {
+        return _charType;
     }
 
     private void Start()

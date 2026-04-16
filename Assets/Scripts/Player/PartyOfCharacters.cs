@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.TextCore.Text;
 
 public class PartyOfCharacters : MonoBehaviour, IStatContext
 {
@@ -20,6 +22,8 @@ public class PartyOfCharacters : MonoBehaviour, IStatContext
     [SerializeField] private PlayerUI _playerUI;
     [SerializeField] private Transform _directionIndicator;
 
+    public bool FightState => _fightState;
+    private bool _fightState;
     private int _maxPartySize;
     private int AmountOfCharacters => _characters.Count;
 
@@ -48,7 +52,12 @@ public class PartyOfCharacters : MonoBehaviour, IStatContext
             }
             else
             {
-                _startAsType = (CharacterType)UnityEngine.Random.Range(1, 4); // NOTE: not super clean, 0 is None
+                _startAsType = GameManager.Instance.StartingCharacter;
+
+                if (_startAsType == CharacterType.None)
+                {
+                    _startAsType = (CharacterType)UnityEngine.Random.Range(1, Enum.GetValues(typeof(CharacterType)).Length); // NOTE: not super clean, 0 is None
+                }
             }
         }
 
@@ -203,6 +212,7 @@ public class PartyOfCharacters : MonoBehaviour, IStatContext
 
     public void SetPartyFightState(bool fightState)
     {
+        _fightState = fightState;
         StartCoroutine(SetPartyFightStateRoutine(fightState));
     }
 
@@ -210,11 +220,16 @@ public class PartyOfCharacters : MonoBehaviour, IStatContext
     {
         _playerMovement.SetMoveSpeed(fightState);
 
+        var snapshot = new List<GameObject>(_characters);
+
         float delayBetweenCharacters = 0.1f;
-        foreach (var cGO in _characters)
+        foreach (var cGO in snapshot)
         {
-            // Toggle all visual states
-            BaseCharacter character = cGO.GetComponent<BaseCharacter>();
+            if (cGO == null)
+                continue;
+
+            if (!cGO.TryGetComponent<BaseCharacter>(out BaseCharacter character))
+                continue;
 
             SoundManager.PlaySound(character.Audio.StanceChange);
 

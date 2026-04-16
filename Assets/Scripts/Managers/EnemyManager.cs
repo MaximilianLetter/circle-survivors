@@ -13,6 +13,7 @@ public class EnemyManager : MonoBehaviour
     private Transform _playerTransform;
 
     private int _aliveEnemiesInWave;
+    private int _aliveBosses;
     private bool _waveRunning;
     private bool _bossWaveRunning;
     private bool _continuousWave;
@@ -24,7 +25,6 @@ public class EnemyManager : MonoBehaviour
     public static event System.Action OnWaveFinished;
 
     public static event System.Action OnEnemyKilled;
-
 
     public static EnemyManager Instance
     {
@@ -58,11 +58,6 @@ public class EnemyManager : MonoBehaviour
         BossEnemy.OnBossDefeated -= HandleBossDefeated;
     }
 
-    public bool GetWaveRunningState()
-    {
-        return (_waveRunning || _bossWaveRunning);
-    }
-
     // ------------
     // Wave
     // ------------
@@ -72,9 +67,9 @@ public class EnemyManager : MonoBehaviour
         StartCoroutine(RunWaveSet(waveSet));
     }
 
-    public void StartContinuousWave(EnemyWave wave, BossWave boss)
+    public void StartContinuousWave(EnemyWave wave, BossWave boss, bool clearBeforeBoss, float pressureTimer, GameObject pressureEnemy)
     {
-        StartCoroutine(SpawnContinuousWave(wave, boss));
+        StartCoroutine(SpawnContinuousWave(wave, boss, clearBeforeBoss, pressureTimer, pressureEnemy));
     }
 
     private IEnumerator RunWaveSet(WaveSet waveSet)
@@ -90,18 +85,31 @@ public class EnemyManager : MonoBehaviour
 
             if (wave is BossWave bossWave)
             {
-                WorldTextManager.Instance.ShowDoubleLineWorldText(
-                    WorldTextManager.Instance.TextData.newBossWaveText,
-                    LevelManager.Instance.ConfigInUse.bossText,
-                    null
-                );
+                if (wave.spawnText != string.Empty)
+                {
+                    WorldTextManager.Instance.ShowDoubleLineWorldText(
+                        WorldTextManager.Instance.TextData.newBossWaveText,
+                        wave.spawnText
+                    );
+                }
+                else
+                    WorldTextManager.Instance.ShowWorldText(WorldTextManager.Instance.TextData.newBossWaveText);
+
                 yield return new WaitForSeconds(2f);
                 yield return StartCoroutine(SpawnBossWave(bossWave));
             }
             else
             {
-                WorldTextManager.Instance.ShowWorldText(WorldTextManager.Instance.TextData.newWaveText, null);
-                yield return new WaitForSeconds(1f);
+                if (wave.spawnText != string.Empty)
+                {
+                    WorldTextManager.Instance.ShowDoubleLineWorldText(
+                        WorldTextManager.Instance.TextData.newWaveText,
+                        wave.spawnText
+                    );
+                } else
+                    WorldTextManager.Instance.ShowWorldText(WorldTextManager.Instance.TextData.newWaveText);
+
+                yield return new WaitForSeconds(2f);
                 yield return StartCoroutine(SpawnWave(wave));
             }
 
@@ -110,7 +118,7 @@ public class EnemyManager : MonoBehaviour
             yield return new WaitUntil(() => !_waveRunning);
             yield return new WaitUntil(() => !_bossWaveRunning);
 
-            yield return new WaitForSeconds(0.75f);
+            yield return new WaitForSeconds(1f);
             OnWaveFinished?.Invoke();
 
             yield return new WaitForSeconds(wave.delayAfter);
@@ -119,19 +127,25 @@ public class EnemyManager : MonoBehaviour
         MarkWaveSetAsFinished();
     }
 
-    private IEnumerator SpawnContinuousWave(EnemyWave wave, BossWave bossWave)
+    private IEnumerator SpawnContinuousWave(EnemyWave wave, BossWave bossWave, bool clearBeforeBoss, float pressureTimer, GameObject pressureEnemy)
     {
         yield return new WaitForSeconds(wave.delayBefore);
 
         SoundManager.PlaySound(SoundManager.Instance.Library.NewWave);
-        WorldTextManager.Instance.ShowWorldText(WorldTextManager.Instance.TextData.extractionStartText, null);
+        WorldTextManager.Instance.ShowDoubleLineWorldText(
+            WorldTextManager.Instance.TextData.extractionStartText,
+            wave.spawnText
+        );
 
-        yield return new WaitForSeconds(0.25f);
+        yield return new WaitForSeconds(0.5f);
         OnWaveStarted?.Invoke();
 
         _waveRunning = true;
         _continuousWave = true;
         _aliveEnemiesInWave = 0;
+
+        float timer = 0;
+        bool pressureOn = false;
 
         while (_continuousWave)
         {
@@ -141,24 +155,41 @@ public class EnemyManager : MonoBehaviour
             if (enemyToSpawn != null)
                 _aliveEnemiesInWave++;
 
+            // Pressure timer
+            timer += wave.spawnInterval;
+            if (timer >= pressureTimer && !pressureOn)
+            {
+                pressureOn = true;
+                SoundManager.PlaySound(SoundManager.Instance.Library.NewWave);
+                WorldTextManager.Instance.ShowWorldText(WorldTextManager.Instance.TextData.extractionPressureText);
+            }
+
+            if (pressureOn)
+            {
+                GameObject additionalEnemy = SpawnEnemy(pressureEnemy, _farFromPlayer);
+                if (additionalEnemy != null)
+                    _aliveEnemiesInWave++;
+            }
+
             yield return new WaitForSeconds(wave.spawnInterval);
 
-            // ContinuousWave is set to false from outside
-            // Should be listener instead maybe
+            // NOTE: ContinuousWave is set to false from outside
+            // Could be listener instead maybe
         }
 
-        // Variant A: Kill all remaining enemies
-        //UiManager.Instance.ShowExtractionText(false);
-        //SoundManager.PlaySound(SoundManager.Instance.Library.CollectPickUp); // Placeholder
-        //yield return new WaitUntil(() => _aliveEnemiesInWave == 0);
+        // Extraction point reached
+        SoundManager.PlaySound(SoundManager.Instance.Library.NewWave); // Placeholder
 
-        // Variant B: Spawn boss and wait for him to be defeated
+        // Optional: Kill all remaining enemies
+        if (clearBeforeBoss && _aliveEnemiesInWave > 0)
+        {
+            WorldTextManager.Instance.ShowWorldText(WorldTextManager.Instance.TextData.extractionDoneText);
+            yield return new WaitUntil(() => _aliveEnemiesInWave <= 0);
+        }
 
-        //UiManager.Instance.ShowNewWaveText(true);
         WorldTextManager.Instance.ShowDoubleLineWorldText(
             WorldTextManager.Instance.TextData.newBossWaveText,
-            LevelManager.Instance.ConfigInUse.bossText,
-            null
+            bossWave.spawnText
         );
         yield return new WaitForSeconds(2);
 
@@ -194,11 +225,16 @@ public class EnemyManager : MonoBehaviour
 
     private IEnumerator SpawnBossWave(BossWave wave)
     {
+        _aliveBosses = 0;
         _bossWaveRunning = true;
 
-        yield return new WaitForSeconds(wave.bossSpawnDelay);
-        var boss = SpawnEnemy(wave.bossPrefab, _closeToPlayer, 30);
-        _placeByHand.DropObject(boss);
+        foreach (var boss in wave.bossPrefabs)
+        {
+            yield return new WaitForSeconds(wave.bossSpawnDelay);
+            var spawned = SpawnEnemy(boss, _closeToPlayer, 30);
+            _placeByHand.DropObject(spawned);
+            _aliveBosses++;
+        }
     }
 
     // ------------
@@ -246,9 +282,13 @@ public class EnemyManager : MonoBehaviour
 
     private void HandleBossDefeated()
     {
-        _bossWaveRunning = false;
-        MakeEnemiesWalkAwayAndDie();
-        //MarkWaveSetAsFinished();
+        _aliveBosses--;
+
+        if (_aliveBosses <= 0)
+        {
+            _bossWaveRunning = false;
+            MakeEnemiesWalkAwayAndDie();
+        }
     }
 
     private void MarkWaveSetAsFinished()

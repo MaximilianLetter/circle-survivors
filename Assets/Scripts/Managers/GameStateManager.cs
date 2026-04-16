@@ -106,7 +106,16 @@ public class GameStateManager : MonoBehaviour
 
     private void AnyKeyPress(InputAction.CallbackContext obj)
     {
-        ResumeGameWithFade();
+        _anyKeyPress.action.started -= AnyKeyPress;
+
+        if (_state == GameState.Lost)
+        {
+            BackToMenu();
+        }
+        else
+        {
+            ResumeGameWithFade();
+        }
     }
 
     public void ExitPress(InputAction.CallbackContext obj)
@@ -114,16 +123,23 @@ public class GameStateManager : MonoBehaviour
         if (_state != GameState.Paused) StartCoroutine(PauseGameAfterFade());
         else
         {
-            GameManager.Instance.ReturnToMenuFromGame();
+            BackToMenu();
         }
     }
 
-    public void RestartGame(InputAction.CallbackContext obj)
+    private void BackToMenu()
     {
-        _anyKeyPress.action.started -= RestartGame;
+        TrackRecordManager.Instance.OmitTracking();
 
-        GameManager.Instance.RestartCurrentScene();
+        GameManager.Instance.ReturnToMenuFromGame();
     }
+
+    //public void RestartGame(InputAction.CallbackContext obj)
+    //{
+    //    _anyKeyPress.action.started -= RestartGame;
+
+    //    GameManager.Instance.RestartCurrentScene();
+    //}
 
     private IEnumerator PauseGameAfterFade()
     {
@@ -179,8 +195,8 @@ public class GameStateManager : MonoBehaviour
 
         //UiManager.Instance.ShowRestartInstructions();
 
-        WorldTextManager.Instance.ShowPersistentText(WorldTextManager.Instance.TextData.restartInstructions);
-        _anyKeyPress.action.started += RestartGame;
+        WorldTextManager.Instance.ShowPersistentText(WorldTextManager.Instance.TextData.backToMenuInstructions);
+        _anyKeyPress.action.started += AnyKeyPress;
     }
 
     private void HandleWonState()

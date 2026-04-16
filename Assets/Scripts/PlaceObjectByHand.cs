@@ -10,9 +10,18 @@ public class PlaceObjectByHand : MonoBehaviour
     [SerializeField] private AnimationCurve _dropCurve;
     [SerializeField] private AnimationCurve _leaveCurve;
 
+    [SerializeField] private GameObject _pointingModel;
+    [SerializeField] private GameObject _pickupModel;
+
     public float GetDropHeight()
     {
         return _dropHeight;
+    }
+
+    public void ChangeToPickupModel()
+    {
+        _pointingModel.SetActive(false);
+        _pickupModel.SetActive(true);
     }
 
     public void DropObject(GameObject obj, bool isCollectable = false)

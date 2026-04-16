@@ -274,7 +274,7 @@ GameObject:
   - component: {fileID: -1624324391606025614}
   m_Layer: 9
   m_Name: Character
-  m_TagString: Untagged
+  m_TagString: PlayerCharacter
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -312,6 +312,10 @@ MonoBehaviour:
   _defaultAttackType: 0
   _characterType: 0
   _stats: {fileID: 0}
+  _audio: {fileID: 0}
+  _idleModel: {fileID: 0}
+  _fightModel: {fileID: 0}
+  _specialModel: {fileID: 0}
 --- !u!114 &-1176589806309901840
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -107,6 +107,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -3208564183112489240, guid: cec679eb413be9b41bd6cae15c28df3d, type: 3}
+      propertyPath: _collectableSpawnPoints.Array.size
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1121786542806689580, guid: cec679eb413be9b41bd6cae15c28df3d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -155,9 +159,13 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1.5
       objectReference: {fileID: 0}
+    - target: {fileID: 3350786209320817732, guid: cec679eb413be9b41bd6cae15c28df3d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2.99
+      objectReference: {fileID: 0}
     - target: {fileID: 4662982756362775279, guid: cec679eb413be9b41bd6cae15c28df3d, type: 3}
       propertyPath: m_Name
-      value: ObstacleSmall_rock01
+      value: ObstacleTiny_rock01
       objectReference: {fileID: 0}
     - target: {fileID: 8145274005030705061, guid: cec679eb413be9b41bd6cae15c28df3d, type: 3}
       propertyPath: _plantRows.Array.data[0].count
@@ -182,6 +190,9 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 8286397757203300100, guid: cec679eb413be9b41bd6cae15c28df3d, type: 3}
+    - {fileID: 967388064658888998, guid: cec679eb413be9b41bd6cae15c28df3d, type: 3}
+    - {fileID: 9066614528201078908, guid: cec679eb413be9b41bd6cae15c28df3d, type: 3}
+    - {fileID: 6776087633245855194, guid: cec679eb413be9b41bd6cae15c28df3d, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 1121786542806689580, guid: cec679eb413be9b41bd6cae15c28df3d, type: 3}
       insertIndex: -1

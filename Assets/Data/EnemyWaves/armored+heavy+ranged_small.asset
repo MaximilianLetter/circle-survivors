@@ -16,12 +16,13 @@ MonoBehaviour:
   delayAfter: 3
   enemyCount: 5
   spawnInterval: 1
+  spawnText: 
   enemies:
   - prefab: {fileID: 4739154765922496850, guid: 75f62dbd802e4ba4d9e80531d10f06bc, type: 3}
     weight: 0.2
   - prefab: {fileID: 4739154765922496850, guid: 196a1a63ddcbc0847bbf602e5940715f, type: 3}
     weight: 0.2
-  - prefab: {fileID: 3988817564089081587, guid: 15a84565f8c88534ba79da13a08f20b3, type: 3}
+  - prefab: {fileID: 3988817564089081587, guid: 353bc53046e0b8a4aa249a36473bd081, type: 3}
     weight: 0.3
   - prefab: {fileID: 4739154765922496850, guid: 8eb417cff7978894bb2eaf9063654778, type: 3}
     weight: 0.3

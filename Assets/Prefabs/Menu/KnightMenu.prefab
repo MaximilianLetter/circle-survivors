@@ -125,7 +125,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5266260917832485114, guid: ee0e80d2d1ef4d8459e68a94c278ce95, type: 3}
       propertyPath: _titleText
-      value: Knight
+      value: 'Knight
+
+        Slashes enemies in front and kicks foes far away.'
       objectReference: {fileID: 0}
     - target: {fileID: 5266260917832485114, guid: ee0e80d2d1ef4d8459e68a94c278ce95, type: 3}
       propertyPath: _descriptionText
@@ -139,6 +141,14 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7022589931790217793, guid: ee0e80d2d1ef4d8459e68a94c278ce95, type: 3}
+      propertyPath: _type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7022589931790217793, guid: ee0e80d2d1ef4d8459e68a94c278ce95, type: 3}
+      propertyPath: _charType
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7022589931790217793, guid: ee0e80d2d1ef4d8459e68a94c278ce95, type: 3}
       propertyPath: _activeModel
       value: 
       objectReference: {fileID: 8290298342227079836}
@@ -146,6 +156,10 @@ PrefabInstance:
       propertyPath: _defaultModel
       value: 
       objectReference: {fileID: 462841408183177414}
+    - target: {fileID: 7022589931790217793, guid: ee0e80d2d1ef4d8459e68a94c278ce95, type: 3}
+      propertyPath: _liftableObject
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7022589931790217793, guid: ee0e80d2d1ef4d8459e68a94c278ce95, type: 3}
       propertyPath: _stateChangeSound
       value: 
@@ -161,6 +175,10 @@ PrefabInstance:
     - target: {fileID: 7485600854789388317, guid: ee0e80d2d1ef4d8459e68a94c278ce95, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 75
+      objectReference: {fileID: 0}
+    - target: {fileID: 8438212592275963762, guid: ee0e80d2d1ef4d8459e68a94c278ce95, type: 3}
+      propertyPath: m_Radius
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

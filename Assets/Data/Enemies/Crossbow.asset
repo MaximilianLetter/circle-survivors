@@ -16,7 +16,7 @@ MonoBehaviour:
   Damage: 6
   KnockBackThreshold: 500
   KnockBackDmg: 24
-  TurnSpeed: 6
+  TurnSpeed: 180
   MoveSpeed: 2
   MoveSpeedIncrease: 0.1
   MoveSpeedIncreaseInterval: 1
@@ -24,4 +24,5 @@ MonoBehaviour:
   RangedAttackRange: 8
   RangedAttackDamage: 6
   RangedAttackCooldown: 4
+  RangedAttackPrecision: 5
   Projectile: {fileID: 1614341048115884782, guid: ef544e4dab8d96c47b0c2b6c48607d3e, type: 3}

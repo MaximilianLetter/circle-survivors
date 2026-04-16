@@ -16,9 +16,8 @@ MonoBehaviour:
   Damage: 0
   KnockBackThreshold: 500
   KnockBackDmg: 12
+  TurnSpeed: 0
   MoveSpeed: 0
   MoveSpeedIncrease: 0
   MoveSpeedIncreaseInterval: 0
-  GetHitSound: 0
-  DeathSound: 0
-  SpecialAbilitySound: 0
+  CatchPhrase: 

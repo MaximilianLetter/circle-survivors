@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Camera _cam;
     [SerializeField] private LayerMask _groundLayer;
     [SerializeField] private Rigidbody _rb;
+    [SerializeField] private GroupDirectionIndicator _dirIndicator;
 
     [SerializeField] private PartyStats _stats;
     private float _turnSpeed = 360f;    // Set from outside
@@ -141,6 +142,8 @@ public class PlayerMovement : MonoBehaviour
     {
         _rb.linearVelocity = Vector3.zero;
         _rb.angularVelocity = Vector3.zero;
+
+        _dirIndicator.ToggleVisibility(state);
 
         this.enabled = state;
     }

@@ -4,7 +4,7 @@ using UnityEngine;
 public class BossWave : EnemyWave
 {
     [Header("Boss Info")]
-    public GameObject bossPrefab;
+    public GameObject[] bossPrefabs;
 
     [Tooltip("Delay before boss spawns")]
     public float bossSpawnDelay = 1f;

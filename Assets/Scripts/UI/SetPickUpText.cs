@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class SetPickUpText : MonoBehaviour
 {
-    //[SerializeField] private TextMeshProUGUI _textObj;
     [SerializeField] private ToggleTextOnPlayerNearby _textInteraction;
+    [SerializeField] private string _customReadableText;
 
     private BaseCollectable _collectable;
 
@@ -14,7 +14,11 @@ public class SetPickUpText : MonoBehaviour
         CollectableType type = _collectable.GetCollectableType();
 
         string finishedText = "";
-        if (type == CollectableType.HealthPickUp)
+        if (_customReadableText != string.Empty)
+        {
+            finishedText = _customReadableText;
+        }
+        else if (type == CollectableType.HealthPickUp)
         {
             finishedText = "Restores Full Health";
         }
@@ -26,26 +30,34 @@ public class SetPickUpText : MonoBehaviour
         }
         else if (type == CollectableType.StatModifier)
         {
-            var mod = _collectable.GetStatModifier();
+            var targetedAt = _collectable.GetAttackType();
 
-            if (mod.StatType == StatType.PartySize)
-            {
-                finishedText = $"Party Size +{mod.Value}";
-            }
-            else
-            {
-                string operationString = "plus";
-                string val = mod.Value.ToString();
-                if (mod.Operation == ModifierOperation.Multiply)
-                {
-                    operationString = "times";
-                }
+            if (targetedAt == AttackType.None)
+                finishedText = "Party Size + 1";
+            else if (targetedAt == AttackType.Melee)
+                finishedText = "Improves Melee Character";
+            else if (targetedAt == AttackType.Ranged)
+                finishedText = "Improves Ranged Character";
+            //var mod = _collectable.GetStatModifier();
 
-                finishedText = $"" +
-                    $"{mod.TargetCharacterType} Upgrade" +
-                    $"\n" +
-                    $"{mod.StatType} {operationString} {val}";
-            }
+            //if (mod.StatType == StatType.PartySize)
+            //{
+            //    finishedText = $"Party Size +{mod.Value}";
+            //}
+            //else
+            //{
+            //    string operationString = "plus";
+            //    string val = mod.Value.ToString();
+            //    if (mod.Operation == ModifierOperation.Multiply)
+            //    {
+            //        operationString = "times";
+            //    }
+
+            //    finishedText = $"" +
+            //        $"{mod.TargetCharacterType} Upgrade" +
+            //        $"\n" +
+            //        $"{mod.StatType} {operationString} {val}";
+            //}
         }
 
         _textInteraction.SetTextContent(finishedText);

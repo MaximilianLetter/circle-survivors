@@ -33,7 +33,6 @@ public class TargetedAttackAbility : CharacterAbility
 
     // Events
     public static event Action OnCharacterAttacked;
-    private bool _hasFiredAttackEvent;
 
     protected override void Awake()
     {
@@ -149,7 +148,7 @@ public class TargetedAttackAbility : CharacterAbility
     // -------------------------
 
     /// <summary>
-    /// Executes the actual attack, putting everything on cooldown.
+    /// Executes an attack, putting everything on cooldown.
     /// This is overwritten by the actual attack abilities.
     /// </summary>
     /// <param name="target">Target to execute attack towards.</param>

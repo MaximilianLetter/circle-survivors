@@ -14,8 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BossWave
   delayBefore: 2
   delayAfter: 1
-  enemyCount: 10
+  enemyCount: 0
   spawnInterval: 0.5
+  spawnText: 'The ground shudders beneath the weight of the warhorses. Two heavy
+    armored knights challenge you. '
   enemies: []
-  bossPrefab: {fileID: 8087224832481530758, guid: cdbe2cd2833c7f648947c060724ff2f5, type: 3}
-  bossSpawnDelay: 1
+  bossPrefabs:
+  - {fileID: 8087224832481530758, guid: cdbe2cd2833c7f648947c060724ff2f5, type: 3}
+  - {fileID: 8087224832481530758, guid: cdbe2cd2833c7f648947c060724ff2f5, type: 3}
+  bossSpawnDelay: 2

@@ -16,6 +16,7 @@ MonoBehaviour:
   delayAfter: 3
   enemyCount: 3
   spawnInterval: 0.5
+  spawnText: 'The smell of blood attracts beasts from the nearby forest. '
   enemies:
   - prefab: {fileID: 4315008323507486199, guid: e8600e70562311943945ba4b93415720, type: 3}
     weight: 1

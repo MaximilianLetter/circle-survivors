@@ -26,7 +26,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2342299763786567505, guid: aa3782f5b52cedf4db66d98da8295635, type: 3}
       propertyPath: m_Size.z
-      value: 3.6
+      value: 2.2
       objectReference: {fileID: 0}
     - target: {fileID: 2342299763786567505, guid: aa3782f5b52cedf4db66d98da8295635, type: 3}
       propertyPath: m_Center.y

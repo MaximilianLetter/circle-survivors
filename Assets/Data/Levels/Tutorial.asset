@@ -23,7 +23,7 @@ MonoBehaviour:
   characterModifierAmount: 0
   pickUpHealthAmount: 0
   partyIncreaseModifierAmount: 0
-  biomeConfig: {fileID: 11400000, guid: 550bfa1e12339c14dbc43ff7020d03a2, type: 2}
+  biomeConfig: {fileID: 11400000, guid: e57131ce0b9ad974ca5220c43b75eda5, type: 2}
   obstacleWeights: {x: 0.8, y: 0.2, z: 0}
   weatherEffectPrefab: {fileID: 0}
   waveSet: {fileID: 0}

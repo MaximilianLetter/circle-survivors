@@ -59,7 +59,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4841c72d2c4c45c44a2a655037162a24, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4377545797330524178}
   m_SourcePrefab: {fileID: 100100000, guid: 4841c72d2c4c45c44a2a655037162a24, type: 3}
 --- !u!4 &2482736927142199091 stripped
 Transform:
@@ -71,6 +74,18 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 4841c72d2c4c45c44a2a655037162a24, type: 3}
   m_PrefabInstance: {fileID: 2737851477492193496}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &4377545797330524178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2972275390875067785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bb461be133fbbe4ebedc4c07a338ed7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FillBoundsSetter
 --- !u!1001 &3552394508201670073
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -265,6 +280,7 @@ MonoBehaviour:
   _returnDelay: 0.5
   _projectileSpawn: {fileID: 7048688010550263057}
   _attackStats: {fileID: 11400000, guid: beb33aecb8051de45bb8a66a2d9bd3c1, type: 2}
+  _attackModel: {fileID: 0}
 --- !u!114 &7537192767844120188
 MonoBehaviour:
   m_ObjectHideFlags: 0

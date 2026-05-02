@@ -45,8 +45,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dba1d42918685747840ae229b36ed8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  _speed: 25
-  _timeToLive: 4
+  _speed: 20
+  _timeToLive: 5
   _turnSpeed: 60
   _soundFx: {fileID: 11400000, guid: 4b7986a1347df014e9d5a4faad975bd1, type: 2}
 --- !u!1001 &864038483245203449

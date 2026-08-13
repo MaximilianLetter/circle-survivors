@@ -1096,8 +1096,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e20605bfe94308b41b63897ca79dc84d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
-  _farFromPlayer: {x: 20, y: 22}
+  _farFromPlayer: {x: 22, y: 24}
   _closeToPlayer: {x: 7, y: 9}
+  _placeByHandCounterTarget: 8
   _placeByHand: {fileID: 2039898161}
 --- !u!4 &1185258878
 Transform:

@@ -10,7 +10,7 @@ public enum CharacterType
     Footsoldier,    // Billhook
     ManAtArms,      // 2hand Hammer
     Raider,         // Spear
-    // Place for a 4th randed character
+    Handgunner      // Handgun
 }
 
 public enum AttackType

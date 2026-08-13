@@ -211,7 +211,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5266260917832485114, guid: ee0e80d2d1ef4d8459e68a94c278ce95, type: 3}
       propertyPath: _titleText
-      value: Tutorial
+      value: 'Tutorial
+
+        Press ''E'' to Start'
       objectReference: {fileID: 0}
     - target: {fileID: 5266260917832485114, guid: ee0e80d2d1ef4d8459e68a94c278ce95, type: 3}
       propertyPath: _descriptionText

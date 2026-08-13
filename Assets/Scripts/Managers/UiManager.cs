@@ -9,6 +9,8 @@ public class UiManager : MonoBehaviour
 
     [SerializeField] private UITextData _uiTextData;
 
+    [SerializeField] private GameObject _settingsMenu;
+
     [SerializeField] private TextMeshProUGUI _versionText;
     [SerializeField] private TextMeshProUGUI _statusText;
     [SerializeField] private TextMeshProUGUI _bottomInstructions;
@@ -18,6 +20,9 @@ public class UiManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _subtitleText;
 
     [SerializeField] private float _statusHideTimer = 3f;
+
+    public bool SettingsMenuOpen => _settingsMenuOpen;
+    private bool _settingsMenuOpen;
 
     // NOTE: this manager is a bit junk, needs refactor at some point
     // texts can break if going in pause mode overlaps
@@ -38,6 +43,27 @@ public class UiManager : MonoBehaviour
     {
         HideAll();
         SetUItoColor(Color.white);
+    }
+
+    public void ShowSettingsMenu()
+    {
+        if (_settingsMenuOpen) return;
+
+        _settingsMenu.SetActive(true);
+
+        _settingsMenuOpen = true;
+        Time.timeScale = 0f;
+    }
+
+    public void HideSettingsMenu()
+    {
+        if (!_settingsMenuOpen) return;
+
+        _settingsMenu.SetActive(false);
+        SoundManager.PlaySound(SoundManager.Instance.Library.Unpause);
+
+        _settingsMenuOpen = false;
+        Time.timeScale = 1f;
     }
 
     public void ShowLevelTitle(string title, string subtitle)

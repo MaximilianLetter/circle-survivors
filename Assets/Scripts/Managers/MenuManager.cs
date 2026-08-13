@@ -1,6 +1,4 @@
 using System.Collections;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -37,7 +35,7 @@ public class MenuManager : MonoBehaviour
     private MenuItemType _activeItem;
     private Transform _activeItemTransform;
 
-    private bool _inStartGameZone;
+    private bool _inSecondZone;
 
     private void Awake()
     {
@@ -58,6 +56,7 @@ public class MenuManager : MonoBehaviour
         _exit.action.Enable();
         _exit.action.started += ExitGame;
 
+        // NOTE: menu player ui is not in use, instructions on use are on menu items themselves
         //_playerUI.SetMenuPlayerUI();
     }
 
@@ -88,6 +87,9 @@ public class MenuManager : MonoBehaviour
     {
         if (_activeItem == MenuItemType.None) return;
 
+        // NOTE: this is not especially clean, but works on demo scale
+        if (UiManager.Instance.SettingsMenuOpen) return;
+
         switch (_activeItem)
         {
             case MenuItemType.None:
@@ -107,7 +109,7 @@ public class MenuManager : MonoBehaviour
                 break;
 
             case MenuItemType.GoToSettings:
-                // TODO
+                UiManager.Instance.ShowSettingsMenu();
                 break;
         }
 
@@ -129,23 +131,23 @@ public class MenuManager : MonoBehaviour
 
     private void MoveScreenTowardsNextZone()
     {
-        if (_inStartGameZone)
+        if (_inSecondZone)
         {
-            StartCoroutine(MoveToSecondZone(false));
+            StartCoroutine(MoveToMenuZone(false));
         }
         else
         {
-            StartCoroutine(MoveToSecondZone(true));
+            StartCoroutine(MoveToMenuZone(true));
         }
     }
 
-    private IEnumerator MoveToSecondZone(bool state)
+    private IEnumerator MoveToMenuZone(bool secondZone)
     {
         _firstZoneBounds.SetActive(false);
         _secondZoneBounds.SetActive(false);
 
-        Vector3 startPos = state ? _firstZoneTargetPos : _secondZoneTargetPos;
-        Vector3 targetPos = state ? _secondZoneTargetPos : _firstZoneTargetPos;
+        Vector3 startPos = secondZone ? _firstZoneTargetPos : _secondZoneTargetPos;
+        Vector3 targetPos = secondZone ? _secondZoneTargetPos : _firstZoneTargetPos;
 
         float t = 0f;
 
@@ -161,16 +163,22 @@ public class MenuManager : MonoBehaviour
 
         _cameraTarget.position = targetPos;
 
-        if (state)
+        if (secondZone)
             _secondZoneBounds.SetActive(true);
         else
             _firstZoneBounds.SetActive(true);
 
-        _inStartGameZone = state;
+        _inSecondZone = secondZone;
     }
 
     private void ExitGame(InputAction.CallbackContext obj)
     {
+        if (UiManager.Instance.SettingsMenuOpen)
+        {
+            UiManager.Instance.HideSettingsMenu();
+            return;
+        }
+
         GameManager.Instance.ExitGame();
     }
 }

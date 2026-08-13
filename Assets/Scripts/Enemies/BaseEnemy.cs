@@ -23,6 +23,7 @@ public class BaseEnemy : MonoBehaviour, IStatContext
     private Coroutine _getHitRoutine;
 
     public static event Action<BaseEnemy> OnEnemyDied;
+    public static event Action<BaseEnemy> OnEnemyRemoved;
 
     protected float CurrentHP => _currentHP;
     protected float MaxHP => _stats.BaseHp;
@@ -187,5 +188,10 @@ public class BaseEnemy : MonoBehaviour, IStatContext
         // Remove enemy layer so that it does not become a target while dying
         gameObject.layer = 0;
         Destroy(gameObject, 2);
+    }
+
+    private void OnDestroy()
+    {
+        OnEnemyRemoved?.Invoke(this);
     }
 }

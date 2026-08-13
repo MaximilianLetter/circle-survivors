@@ -34,6 +34,9 @@ MonoBehaviour:
   - type: 7
     collectablePrefab: {fileID: 8978200352822857236, guid: d16b15ad3bf0f1743b54e19bb0f54f65, type: 3}
     playablePrefab: {fileID: 8949533212512426688, guid: caea4da9f4ce6234193fcb4a3bf70e81, type: 3}
+  - type: 8
+    collectablePrefab: {fileID: 2581656286734716916, guid: c00c9a4a0478fc240a958e8dab14b463, type: 3}
+    playablePrefab: {fileID: 1519371829711652672, guid: 1f2fd21da3790ff4eab3c2d4b392c4c2, type: 3}
   healthPickup: {fileID: 1793929571053180942, guid: 616aed657705c034ebc19abcfd11d225, type: 3}
   modifierPickups:
   - {fileID: 1616898038943283894, guid: 7dfaab66954976b4a989f5ff02729f9f, type: 3}

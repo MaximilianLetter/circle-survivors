@@ -21,7 +21,8 @@ public static class SpawnHelper
         LayerMask obstacleLayer,
         out Vector3 newDirection,
         Vector3? lastDirection = null,
-        int maxAttempts = 10)
+        int maxAttempts = 10,
+        bool forcePlacement = false)
     {
         for (int i = 0; i < maxAttempts; i++)
         {
@@ -52,8 +53,15 @@ public static class SpawnHelper
             }
         }
 
-        Debug.Log("Failed to find a valid spawn point after " + maxAttempts + " attempts.");
-        newDirection = Vector3.zero; // Fallback
-        return null;
+        // No free space was found, fallback to dropping on top of player or spawning nothing
+        newDirection = Vector3.zero;
+        if (forcePlacement)
+        {
+            return Object.Instantiate(enemyPrefab, target.position, Quaternion.identity);
+        } else
+        {
+            Debug.Log("Failed to find a valid spawn point after " + maxAttempts + " attempts.");
+            return null;
+        }
     }
 }

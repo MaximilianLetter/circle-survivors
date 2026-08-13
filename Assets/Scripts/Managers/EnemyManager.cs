@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
@@ -7,18 +8,22 @@ public class EnemyManager : MonoBehaviour
 
     [SerializeField] private Vector2 _farFromPlayer = new Vector2(20f, 22f);
     [SerializeField] private Vector2 _closeToPlayer = new Vector2(5f, 8f);
+    [SerializeField] private int _placeByHandCounterTarget = 8;
+    [SerializeField] private float _clearBeforeBossTimeout = 15f;
 
     [SerializeField] private PlaceObjectByHand _placeByHand;
 
     private Transform _playerTransform;
 
     private int _aliveEnemiesInWave;
+    private readonly HashSet<BaseEnemy> _waveEnemies = new();
     private int _aliveBosses;
     private bool _waveRunning;
     private bool _bossWaveRunning;
     private bool _continuousWave;
 
     private Vector3? _lastDirection;
+    private int _placeByHandCounter;
 
     public static event System.Action OnWaveSetCompleted;
     public static event System.Action OnWaveStarted;
@@ -49,12 +54,14 @@ public class EnemyManager : MonoBehaviour
     private void OnEnable()
     {
         BaseEnemy.OnEnemyDied += HandleEnemyDeath;
+        BaseEnemy.OnEnemyRemoved += HandleEnemyRemoved;
         BossEnemy.OnBossDefeated += HandleBossDefeated;
     }
 
     private void OnDisable()
     {
         BaseEnemy.OnEnemyDied -= HandleEnemyDeath;
+        BaseEnemy.OnEnemyRemoved -= HandleEnemyRemoved;
         BossEnemy.OnBossDefeated -= HandleBossDefeated;
     }
 
@@ -142,7 +149,7 @@ public class EnemyManager : MonoBehaviour
 
         _waveRunning = true;
         _continuousWave = true;
-        _aliveEnemiesInWave = 0;
+        ResetWaveEnemies();
 
         float timer = 0;
         bool pressureOn = false;
@@ -150,10 +157,22 @@ public class EnemyManager : MonoBehaviour
         while (_continuousWave)
         {
             GameObject prefab = SelectEnemy(wave.enemies);
-            GameObject enemyToSpawn = SpawnEnemy(prefab, _farFromPlayer);
+            GameObject enemyToSpawn;
 
-            if (enemyToSpawn != null)
-                _aliveEnemiesInWave++;
+            // Every nth enemy, drop them by hand
+            _placeByHandCounter++;
+            if (_placeByHandCounter >= _placeByHandCounterTarget)
+            {
+                _placeByHandCounter = 0;
+                enemyToSpawn = SpawnEnemy(prefab, _closeToPlayer, 30);
+                if (enemyToSpawn != null) _placeByHand.DropObject(enemyToSpawn);
+            }
+            else
+            {
+                enemyToSpawn = SpawnEnemy(prefab, _farFromPlayer);
+            }
+
+            RegisterWaveEnemy(enemyToSpawn);
 
             // Pressure timer
             timer += wave.spawnInterval;
@@ -167,8 +186,7 @@ public class EnemyManager : MonoBehaviour
             if (pressureOn)
             {
                 GameObject additionalEnemy = SpawnEnemy(pressureEnemy, _farFromPlayer);
-                if (additionalEnemy != null)
-                    _aliveEnemiesInWave++;
+                RegisterWaveEnemy(additionalEnemy);
             }
 
             yield return new WaitForSeconds(wave.spawnInterval);
@@ -181,10 +199,22 @@ public class EnemyManager : MonoBehaviour
         SoundManager.PlaySound(SoundManager.Instance.Library.NewWave); // Placeholder
 
         // Optional: Kill all remaining enemies
-        if (clearBeforeBoss && _aliveEnemiesInWave > 0)
+        if (clearBeforeBoss && WaveEnemyCount > 0)
         {
             WorldTextManager.Instance.ShowWorldText(WorldTextManager.Instance.TextData.extractionDoneText);
-            yield return new WaitUntil(() => _aliveEnemiesInWave <= 0);
+
+            float clearTimer = 0f;
+            while (WaveEnemyCount > 0 && clearTimer < _clearBeforeBossTimeout)
+            {
+                clearTimer += Time.deltaTime;
+                yield return null;
+            }
+
+            if (WaveEnemyCount > 0)
+            {
+                Debug.LogWarning($"{WaveEnemyCount} wave enemies did not clear before the boss. Removing them so progression can continue.");
+                RemoveRemainingWaveEnemies();
+            }
         }
 
         WorldTextManager.Instance.ShowDoubleLineWorldText(
@@ -209,15 +239,26 @@ public class EnemyManager : MonoBehaviour
     {
         _waveRunning = true;
         _bossWaveRunning = false;
-        _aliveEnemiesInWave = 0;
+        ResetWaveEnemies();
 
         for (int i = 0; i < wave.enemyCount; i++)
         {
             GameObject prefab = SelectEnemy(wave.enemies);
-            GameObject enemyToSpawn = SpawnEnemy(prefab, _farFromPlayer);
+            GameObject enemyToSpawn;
 
-            if (enemyToSpawn != null)
-                _aliveEnemiesInWave++;
+            // Every nth enemy, drop them by hand
+            _placeByHandCounter++;
+            if (_placeByHandCounter >= _placeByHandCounterTarget)
+            {
+                _placeByHandCounter = 0;
+                enemyToSpawn = SpawnEnemy(prefab, _closeToPlayer, 30);
+                if (enemyToSpawn != null) _placeByHand.DropObject(enemyToSpawn);
+            } else
+            {
+                enemyToSpawn = SpawnEnemy(prefab, _farFromPlayer);
+            }
+
+            RegisterWaveEnemy(enemyToSpawn);
 
             yield return new WaitForSeconds(wave.spawnInterval);
         }
@@ -231,7 +272,7 @@ public class EnemyManager : MonoBehaviour
         foreach (var boss in wave.bossPrefabs)
         {
             yield return new WaitForSeconds(wave.bossSpawnDelay);
-            var spawned = SpawnEnemy(boss, _closeToPlayer, 30);
+            var spawned = SpawnEnemy(boss, _closeToPlayer, 30, true);
             _placeByHand.DropObject(spawned);
             _aliveBosses++;
         }
@@ -241,7 +282,7 @@ public class EnemyManager : MonoBehaviour
     // Enemy
     // ------------
 
-    private GameObject SpawnEnemy(GameObject enemyPrefab, Vector2 range, int attempts = 10)
+    private GameObject SpawnEnemy(GameObject enemyPrefab, Vector2 range, int attempts = 10, bool forceSpawn = false)
     {
         GameObject enemy = SpawnHelper.SpawnEnemyAroundTarget(
             enemyPrefab,
@@ -252,7 +293,8 @@ public class EnemyManager : MonoBehaviour
             LayerMask.GetMask("Obstacle"),
             out Vector3 newDirection,
             _lastDirection,
-            attempts
+            attempts,
+            forceSpawn
         );
 
         if (enemy != null)
@@ -265,14 +307,58 @@ public class EnemyManager : MonoBehaviour
     {
         OnEnemyKilled?.Invoke();
 
-        if (!_waveRunning) return;
+        RemoveWaveEnemy(enemy);
+    }
 
-        _aliveEnemiesInWave--;
+    private void HandleEnemyRemoved(BaseEnemy enemy)
+    {
+        RemoveWaveEnemy(enemy);
+    }
 
-        if (_aliveEnemiesInWave <= 0)
+    private void RemoveWaveEnemy(BaseEnemy enemy)
+    {
+        if (!_waveEnemies.Remove(enemy) || !_waveRunning) return;
+
+        if (WaveEnemyCount == 0)
         {
             _waveRunning = false;
         }
+    }
+
+    private int WaveEnemyCount
+    {
+        get
+        {
+            _waveEnemies.RemoveWhere(enemy => enemy == null);
+            _aliveEnemiesInWave = _waveEnemies.Count;
+            return _aliveEnemiesInWave;
+        }
+    }
+
+    private void ResetWaveEnemies()
+    {
+        _waveEnemies.Clear();
+        _aliveEnemiesInWave = 0;
+    }
+
+    private void RegisterWaveEnemy(GameObject enemyObject)
+    {
+        if (enemyObject == null || !enemyObject.TryGetComponent<BaseEnemy>(out var enemy)) return;
+
+        _waveEnemies.Add(enemy);
+        _aliveEnemiesInWave = _waveEnemies.Count;
+    }
+
+    private void RemoveRemainingWaveEnemies()
+    {
+        foreach (var enemy in _waveEnemies)
+        {
+            if (enemy != null)
+                Destroy(enemy.gameObject);
+        }
+
+        ResetWaveEnemies();
+        _waveRunning = false;
     }
 
     public void StopContinousWave()

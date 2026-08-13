@@ -1,10 +1,9 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class FpsDisplay : MonoBehaviour
 {
-    public int avgFrameRate;
+    private int avgFrameRate;
     private TextMeshProUGUI _textField;
 
     private void Start()

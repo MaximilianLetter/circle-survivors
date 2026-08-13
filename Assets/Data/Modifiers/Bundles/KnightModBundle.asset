@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ModifierBundle
   GrantedModifiers:
   - {fileID: 11400000, guid: b13556b77c102a24d914c8e069c069a6, type: 2}
-  - {fileID: 11400000, guid: a5137cb820ba8eb4ba726add7d592328, type: 2}
+  - {fileID: 11400000, guid: af14350e0b1de124a92c4248dc00e29f, type: 2}
